@@ -1,4 +1,3 @@
-import './App.css'
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
@@ -19,42 +18,39 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="app-shell">
-        <nav className="top-nav">
-          <Link to="/" className="top-nav-logo">
-            REALM YEJINGRAM
+      <div className="w-full">
+        <nav className="w-full max-w-[1140px] mx-auto pt-3.5 px-6 flex items-center justify-between text-xs tracking-[0.16em]">
+          <Link to="/" className="font-bold text-(--color-text-primary) no-underline">
+            YEJINGRAM REALM
           </Link>
-          <div className="top-nav-links">
-            <Link to="/" className="top-nav-link">
+          <div className="flex gap-3">
+            <Link to="/" className="no-underline text-(--color-text-secondary) uppercase">
               검색
             </Link>
             {auth.isAuthenticated ? (
               <>
+                {auth.user?.id_token}
                 <button
-                  className="top-nav-link"
+                  className="no-underline text-(--color-text-secondary) uppercase bg-transparent border-none cursor-pointer p-0 font-inherit"
                   onClick={() => auth.removeUser()}
-                  style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, font: 'inherit' }}
                 >
                   {auth.user?.profile.nickname} | 로그아웃
                 </button>
               </>
             ) : (
               <button
-                className="top-nav-link"
+                className="no-underline text-(--color-text-secondary) uppercase bg-transparent border-none cursor-pointer p-0 font-inherit"
                 onClick={() => auth.signinRedirect()}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, font: 'inherit' }}
               >
                 로그인
               </button>
             )}
           </div>
         </nav>
-        <main className="app-main">
-          <Routes>
-            <Route path="/" element={<SearchPage />} />
-            <Route path="/applicant" element={<Applicant />} />
-          </Routes>
-        </main>
+        <Routes>
+          <Route path="/" element={<SearchPage />} />
+          <Route path="/applicant" element={<Applicant />} />
+        </Routes>
       </div>
     </BrowserRouter>
   );
