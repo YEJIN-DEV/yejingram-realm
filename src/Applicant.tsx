@@ -98,7 +98,7 @@ function Applicant() {
   }
 
   return (
-    <div className={`grid gap-4 items-stretch transition-[grid-template-columns] duration-180 ease-out max-md:block ${!sidebarOpen ? 'grid-cols-[64px_minmax(0,1fr)]' : 'grid-cols-[260px_minmax(0,1fr)]'} ${sidebarOpen ? 'sidebar-open' : ''}`}>
+    <div className={`p-5 md:p-20 grid gap-4 items-stretch transition-[grid-template-columns] duration-180 ease-out max-md:block ${!sidebarOpen ? 'grid-cols-[64px_minmax(0,1fr)]' : 'grid-cols-[260px_minmax(0,1fr)]'} ${sidebarOpen ? 'sidebar-open' : ''}`}>
       {/* Mobile Sidebar Trigger */}
       <button
         className="hidden max-md:flex flex-col gap-1 items-center justify-center fixed bottom-6 right-6 w-14 h-14 rounded-full bg-[#111827] text-white border-none shadow-[0_4px_12px_rgba(0,0,0,0.3)] z-2000 cursor-pointer transition-transform duration-200 active:scale-95"
