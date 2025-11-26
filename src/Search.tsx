@@ -1,4 +1,4 @@
-import { Flame } from 'lucide-react'
+import { Flame, Loader2 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
 interface ApplicantData {
@@ -135,7 +135,11 @@ function SearchPage() {
                     </h2>
                 </div>
 
-                {filtered.length > 0 ? (
+                {loading ? (
+                    <div className="flex justify-center items-center py-20">
+                        <Loader2 className="w-10 h-10 text-[#6366f1] animate-spin" />
+                    </div>
+                ) : filtered.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {filtered.map((applicant) => (
                             <div
