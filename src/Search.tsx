@@ -18,12 +18,14 @@ interface LastKey {
 
 interface ApiResponse {
     items: ApplicantData[]
+    totalCount: number
     lastKey: LastKey | null
 }
 
 function SearchPage() {
     const [query, setQuery] = useState('')
     const [applicants, setApplicants] = useState<ApplicantData[]>([])
+    const [totalCount, setTotalCount] = useState(0)
     const [lastKey, setLastKey] = useState<LastKey | null>(null)
     const [pageStack, setPageStack] = useState<(LastKey | null)[]>([null])
     const [currentPageIndex, setCurrentPageIndex] = useState(0)
@@ -40,6 +42,7 @@ function SearchPage() {
             const data: ApiResponse = await response.json()
 
             setApplicants(data.items.slice(0, 9))
+            setTotalCount(data.totalCount || 0)
             setLastKey(data.lastKey)
         } catch (error) {
             console.error('Failed to fetch applicants:', error)
@@ -131,7 +134,7 @@ function SearchPage() {
             <div className="mt-10">
                 <div className="flex justify-between items-center mb-5 px-1">
                     <h2 className="text-lg font-bold text-(--color-text-primary) m-0">
-                        검색 결과 <span className="text-[#6366f1]">{filtered.length}</span>건
+                        총 <span className="text-[#6366f1]">{totalCount}</span>명의 캐릭터가 등록되어 있습니다.
                     </h2>
                 </div>
 

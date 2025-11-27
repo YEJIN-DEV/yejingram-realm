@@ -1,3 +1,4 @@
+import { Download, Eye, Flame, Heart } from 'lucide-react'
 import { useEffect, useState, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
@@ -6,11 +7,18 @@ interface ApplicantData {
   gsi_global_pk: number
   id: string
   name: string
+  gender?: number
   status_message: string
-  tags: string[]
+  tags?: string[]
   popularity: number
+  uploader_nickname: string
+  uploader_uid: string
+  view_count: number
+  download_count: number
+  created_at: number
+  updated_at: number
+  file_name: string
 }
-
 interface LastKey {
   id: string
   popularity: number
@@ -24,13 +32,11 @@ interface ApiResponse {
 function Applicant() {
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768)
   const [applicants, setApplicants] = useState<ApplicantData[]>([])
-  const [selectedId, setSelectedId] = useState<string>('')
+  const [selectedApplicant, setSelectedApplicant] = useState<ApplicantData | null>(null)
   const [lastKey, setLastKey] = useState<LastKey | null>(null)
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
 
-  const selected = applicants.find((a) => a.id === selectedId) ?? applicants[0]
-
-  const fetchApplicants = useCallback(async (key?: LastKey | null) => {
+  const fetchList = useCallback(async (key?: LastKey | null) => {
     try {
       let url = 'https://d3rd8muqzoyvtk.cloudfront.net/realm/list'
       if (key) {
@@ -41,20 +47,20 @@ function Applicant() {
 
       setApplicants(data.items.slice(0, 9))
       setLastKey(data.lastKey)
-
-      if (data.items.length > 0) {
-        const idParam = searchParams.get('id')
-        const found = data.items.find(a => a.id === idParam)
-        if (found) {
-          setSelectedId(found.id)
-        } else {
-          setSelectedId(data.items[0].id)
-        }
-      }
     } catch (error) {
       console.error('Failed to fetch applicants:', error)
     }
-  }, [searchParams])
+  }, [])
+
+  const fetchDetail = useCallback(async (id: string) => {
+    try {
+      const response = await fetch(`https://d3rd8muqzoyvtk.cloudfront.net/realm/${id}`)
+      const data: ApplicantData = await response.json()
+      setSelectedApplicant(data)
+    } catch (error) {
+      console.error('Failed to fetch applicant detail:', error)
+    }
+  }, [])
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(max-width: 768px)')
@@ -66,28 +72,41 @@ function Applicant() {
   }, [])
 
   useEffect(() => {
-    fetchApplicants()
-  }, [fetchApplicants])
+    fetchList()
+  }, [fetchList])
 
   useEffect(() => {
     const idParam = searchParams.get('id')
-    if (idParam && applicants.some((a) => a.id === idParam)) {
-      setSelectedId(idParam)
-
-      const button = document.querySelector(
-        `.sidebar-item[data-applicant-id="${idParam}"]`,
-      ) as HTMLButtonElement | null
-      button?.scrollIntoView({ block: 'center', behavior: 'smooth' })
+    if (idParam) {
+      fetchDetail(idParam)
     }
-  }, [searchParams, applicants])
+  }, [searchParams, fetchDetail])
+
+  useEffect(() => {
+    const idParam = searchParams.get('id')
+    if (!idParam && applicants.length > 0) {
+      setSearchParams({ id: applicants[0].id })
+    }
+  }, [applicants, searchParams, setSearchParams])
 
   const handleNext = () => {
     if (lastKey) {
-      fetchApplicants(lastKey)
+      fetchList(lastKey)
     }
   }
 
-  if (!selected) {
+  const isSelectedInList = selectedApplicant && applicants.some(a => a.id === selectedApplicant.id)
+
+  useEffect(() => {
+    if (selectedApplicant) {
+      const button = document.querySelector(
+        `button[data-applicant-id="${selectedApplicant.id}"]`,
+      ) as HTMLButtonElement | null
+      button?.scrollIntoView({ block: 'center', behavior: 'smooth' })
+    }
+  }, [selectedApplicant])
+
+  if (!selectedApplicant) {
     return (
       <div className="w-full max-w-[1140px] p-6">
         <div className="flex justify-center items-center h-screen">
@@ -132,14 +151,38 @@ function Applicant() {
           </div>
 
           <ul className="m-0 p-0 flex flex-col gap-1.5 overflow-y-auto flex-1 pr-1 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[rgba(156,163,175,0.3)] [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-[rgba(156,163,175,0.5)]">
+            {!isSelectedInList && (
+              <>
+                <button
+                  key={selectedApplicant.id}
+                  data-applicant-id={selectedApplicant.id}
+                  className={`group border-none bg-transparent rounded-[10px] p-2 flex items-center justify-between gap-2 cursor-pointer transition-all duration-120 text-[#9ca3af] hover:bg-[rgba(255,255,255,0.05)] hover:-translate-y-px hover:text-[#e5e7eb] w-full bg-[#111827]! shadow-[0_0_0_1px_rgba(248,250,252,0.14),0_10px_24px_rgba(15,23,42,0.6)] text-[#e5e7eb]!`}
+                  onClick={() => {
+                    setSearchParams({ id: selectedApplicant.id })
+                    if (window.innerWidth <= 768) setSidebarOpen(false)
+                  }}
+                >
+                  <div className="flex flex-col items-start">
+                    <span className="text-[13px] font-semibold text-inherit">{selectedApplicant.name}</span>
+                    <span className="text-[11px] text-[#6b7280] group-hover:text-[#9ca3af]">Developer</span>
+                  </div>
+                  {selectedApplicant.tags && selectedApplicant.tags.length > 0 && (
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full bg-[rgba(255,255,255,0.03)] border border-[#4b5563] text-[#9ca3af] whitespace-nowrap transition-all duration-200 group-hover:border-[#9ca3af] group-hover:text-[#e5e7eb] bg-[#fef3c7] border-[#facc15] text-[#92400e]`}>
+                      {selectedApplicant.tags[0]}
+                    </span>
+                  )}
+                </button>
+                <div className="h-px bg-[#374151] my-2 mx-2" />
+              </>
+            )}
             {applicants.map((applicant) => (
               <button
                 key={applicant.id}
                 data-applicant-id={applicant.id}
-                className={`group border-none bg-transparent rounded-[10px] p-2 flex items-center justify-between gap-2 cursor-pointer transition-all duration-120 text-[#9ca3af] hover:bg-[rgba(255,255,255,0.05)] hover:-translate-y-px hover:text-[#e5e7eb] w-full ${selectedId === applicant.id ? 'bg-[#111827]! shadow-[0_0_0_1px_rgba(248,250,252,0.14),0_10px_24px_rgba(15,23,42,0.6)] text-[#e5e7eb]!' : ''
+                className={`group border-none bg-transparent rounded-[10px] p-2 flex items-center justify-between gap-2 cursor-pointer transition-all duration-120 text-[#9ca3af] hover:bg-[rgba(255,255,255,0.05)] hover:-translate-y-px hover:text-[#e5e7eb] w-full ${selectedApplicant.id === applicant.id ? 'bg-[#111827]! shadow-[0_0_0_1px_rgba(248,250,252,0.14),0_10px_24px_rgba(15,23,42,0.6)] text-[#e5e7eb]!' : ''
                   }`}
                 onClick={() => {
-                  setSelectedId(applicant.id)
+                  setSearchParams({ id: applicant.id })
                   if (window.innerWidth <= 768) setSidebarOpen(false)
                 }}
               >
@@ -148,7 +191,7 @@ function Applicant() {
                   <span className="text-[11px] text-[#6b7280] group-hover:text-[#9ca3af]">Developer</span>
                 </div>
                 {applicant.tags && applicant.tags.length > 0 && (
-                  <span className={`text-[10px] px-2 py-0.5 rounded-full bg-[rgba(255,255,255,0.03)] border border-[#4b5563] text-[#9ca3af] whitespace-nowrap transition-all duration-200 group-hover:border-[#9ca3af] group-hover:text-[#e5e7eb] ${selectedId === applicant.id ? 'bg-[#fef3c7] border-[#facc15] text-[#92400e]' : ''}`}>
+                  <span className={`text-[10px] px-2 py-0.5 rounded-full bg-[rgba(255,255,255,0.03)] border border-[#4b5563] text-[#9ca3af] whitespace-nowrap transition-all duration-200 group-hover:border-[#9ca3af] group-hover:text-[#e5e7eb] ${selectedApplicant.id === applicant.id ? 'bg-[#fef3c7] border-[#facc15] text-[#92400e]' : ''}`}>
                     {applicant.tags[0]}
                   </span>
                 )}
@@ -170,12 +213,24 @@ function Applicant() {
         <div className="pr-[120px] overflow-y-auto flex-1 pb-5 max-md:pr-0 max-md:overflow-y-visible max-md:h-auto max-md:pb-20 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[rgba(156,163,175,0.3)] [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-[rgba(156,163,175,0.5)]">
           <header className="flex justify-between items-end mb-6 pb-3 border-b-2 border-[#e5e7eb]">
             <div className="resume-title">
-              <h1 className="m-0 text-[26px]">{selected.name}</h1>
-              <p className="mt-1 text-sm text-[#6b7280]">Senior Frontend Developer</p>
+              <h1 className="m-0 text-[26px]">{selectedApplicant.name}</h1>
+              <p className="mt-1 text-sm text-[#6b7280]">{selectedApplicant.status_message || 'No status message'}</p>
             </div>
             <div className="text-right text-xs text-[#6b7280]">
-              <div>ID: {selected.id}</div>
-              <div className="mt-0.5">Updated: 2024.03.15</div>
+              {/* <div>ID: {selectedApplicant.id}</div> */}
+              <div className="mt-0.5">Uploaded: {new Date(selectedApplicant.created_at * 1000).toLocaleString()}</div>
+              <div className="mt-0.5">Last Updated: {new Date(selectedApplicant.updated_at * 1000).toLocaleString()}</div>
+              <div className="mt-2 flex gap-3 justify-end text-[#4b5563]">
+                <span className="flex items-center gap-1" title="Popularity">
+                  <Flame className='w-3 h-3' /> {selectedApplicant.popularity}
+                </span>
+                <span className="flex items-center gap-1" title="Views">
+                  <Eye className='w-3 h-3' /> {selectedApplicant.view_count}
+                </span>
+                <span className="flex items-center gap-1" title="Downloads">
+                  <Download className='w-3 h-3' /> {selectedApplicant.download_count}
+                </span>
+              </div>
             </div>
           </header>
 
@@ -185,23 +240,31 @@ function Applicant() {
               <table className="w-full border-collapse border border-[#e5e7eb] text-[13px] m-0 max-md:border max-md:border-[#e5e7eb] max-md:rounded-lg max-md:overflow-hidden">
                 <tbody>
                   <tr className="max-md:flex max-md:flex-col max-md:border-b max-md:border-[#e5e7eb]">
-                    <th className="p-2 border border-[#e5e7eb] text-left bg-[#f9fafb] font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-[#f9fafb] max-md:text-[#6b7280] max-md:pb-1 max-md:border-none">Email</th>
-                    <td className="p-2 border border-[#e5e7eb] text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-[#f3f4f6]">user.{selected.id.slice(0, 6)}@example.com</td>
+                    <th className="p-2 border border-[#e5e7eb] text-left bg-[#f9fafb] font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-[#f9fafb] max-md:text-[#6b7280] max-md:pb-1 max-md:border-none">Name</th>
+                    <td className="p-2 border border-[#e5e7eb] text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-[#f3f4f6]">{selectedApplicant.name || 'Unknown'}</td>
+                    <th className="p-2 border border-[#e5e7eb] text-left bg-[#f9fafb] font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-[#f9fafb] max-md:text-[#6b7280] max-md:pb-1 max-md:border-none">Uploader</th>
+                    <td className="p-2 border border-[#e5e7eb] text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-[#f3f4f6]">{selectedApplicant.uploader_nickname || 'Unknown'}</td>
                   </tr>
                   <tr className="max-md:flex max-md:flex-col max-md:border-b max-md:border-[#e5e7eb]">
                     <th className="p-2 border border-[#e5e7eb] text-left bg-[#f9fafb] font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-[#f9fafb] max-md:text-[#6b7280] max-md:pb-1 max-md:border-none">Phone</th>
-                    <td className="p-2 border border-[#e5e7eb] text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-[#f3f4f6]">+82 10-1234-{selected.gsi_global_pk.toString().slice(-4)}</td>
+                    <td className="p-2 border border-[#e5e7eb] text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-[#f3f4f6]">{selectedApplicant.id.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3')}</td>
                   </tr>
                   <tr className="max-md:flex max-md:flex-col max-md:border-b max-md:border-[#e5e7eb]">
-                    <th className="p-2 border border-[#e5e7eb] text-left bg-[#f9fafb] font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-[#f9fafb] max-md:text-[#6b7280] max-md:pb-1 max-md:border-none">Location</th>
-                    <td className="p-2 border border-[#e5e7eb] text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-[#f3f4f6]">Seoul, South Korea</td>
+                    <th className="p-2 border border-[#e5e7eb] text-left bg-[#f9fafb] font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-[#f9fafb] max-md:text-[#6b7280] max-md:pb-1 max-md:border-none">Gender</th>
+                    <td className="p-2 border border-[#e5e7eb] text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-[#f3f4f6]">{selectedApplicant.gender === 0 ? 'Female' : selectedApplicant.gender === 1 ? 'Male' : 'Other'}</td>
                   </tr>
                 </tbody>
               </table>
               <div className="flex items-center max-md:w-full max-md:justify-center max-md:mb-2">
-                <div className="w-[110px] h-[140px] border border-[#9ca3af] rounded-md flex flex-col items-center justify-center text-[11px] text-[#6b7280] bg-[repeating-linear-gradient(-45deg,#f9fafb,#f9fafb_6px,#f3f4f6_6px,#f3f4f6_12px)]">
-                  <span className="font-semibold mb-1">PHOTO</span>
-                  <small>3x4</small>
+                <div className="w-[110px] h-[140px] border border-[#9ca3af] rounded-md flex flex-col items-center justify-center text-[11px] text-[#6b7280] bg-[repeating-linear-gradient(-45deg,#f9fafb,#f9fafb_6px,#f3f4f6_6px,#f3f4f6_12px)] overflow-hidden">
+                  <img
+                    src={`https://dt3lfi1tp9am3.cloudfront.net/${selectedApplicant.id}/${selectedApplicant.id}_thumb.webp`}
+                    alt={selectedApplicant.name}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
+                  />
                 </div>
               </div>
             </div>
@@ -210,14 +273,14 @@ function Applicant() {
           <section className="mt-[18px]">
             <h2 className="m-0 mb-1.5 text-[15px] tracking-[0.08em] uppercase text-[#4b5563]">Summary</h2>
             <p className="m-1.5 text-[#4b5563] leading-relaxed">
-              {selected.summary || selected.status_message || 'No summary available.'}
+              {selectedApplicant.summary || selectedApplicant.status_message || 'No summary available.'}
             </p>
           </section>
 
           <section className="mt-[18px]">
-            <h2 className="m-0 mb-1.5 text-[15px] tracking-[0.08em] uppercase text-[#4b5563]">Skills</h2>
+            <h2 className="m-0 mb-1.5 text-[15px] tracking-[0.08em] uppercase text-[#4b5563]">Tags</h2>
             <div className="flex flex-wrap gap-2 mt-2">
-              {selected.tags && selected.tags.map((tag, i) => (
+              {selectedApplicant.tags && selectedApplicant.tags.map((tag, i) => (
                 <span key={i} className="inline-flex items-center px-2.5 py-1 rounded-full bg-[#1d4ed8] text-[#eff6ff] text-[11px] tracking-[0.04em] lowercase cursor-default shadow-[0_6px_14px_rgba(37,99,235,0.35)]">
                   {tag}
                 </span>
@@ -237,8 +300,10 @@ function Applicant() {
         </div>
 
         <div className="absolute top-1/2 -right-16 -translate-y-1/2 flex flex-col gap-2.5 max-md:static max-md:transform-none max-md:flex-row max-md:mt-8 max-md:gap-2 max-md:overflow-x-auto max-md:pb-2 max-md:justify-start max-md:w-full [&::-webkit-scrollbar]:hidden">
-          <div className="relative min-w-[120px] px-[18px] py-2.5 rounded-l-[10px] text-[#111827] text-[13px] font-semibold tracking-[0.08em] text-center bg-linear-to-br from-[#fef3c7] to-[#fde68a] shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-160 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-auto max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap before:content-[''] before:absolute before:inset-0 before:rounded-[inherit] before:bg-[radial-gradient(circle_at_0_50%,rgba(0,0,0,0.12),transparent_60%)] before:opacity-40 before:mix-blend-multiply before:pointer-events-none">
-            RESUME
+          <div className="relative min-w-[120px] px-[18px] py-2.5 rounded-l-[10px] text-[#111827] text-[13px] font-semibold tracking-[0.08em] text-center bg-linear-to-br from-[#fef3c7] to-[#fde68a] shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-160 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-auto max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap before:content-[''] before:absolute before:inset-0 before:rounded-[inherit] before:bg-[radial-gradient(circle_at_0_50%,rgba(0,0,0,0.12),transparent_60%)] before:opacity-40 before:mix-blend-multiply before:pointer-events-none" onClick={() => {
+            window.open(`https://d3rd8muqzoyvtk.cloudfront.net/realm/${selectedApplicant.id}/download`, '_blank')
+          }}>
+            DOWNLOAD
           </div>
           <div className="relative min-w-[120px] px-[18px] py-2.5 rounded-l-[10px] text-[#111827] text-[13px] font-semibold tracking-[0.08em] text-center bg-linear-to-br from-[#e0f2fe] to-[#bfdbfe] shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-160 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-auto max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap before:content-[''] before:absolute before:inset-0 before:rounded-[inherit] before:bg-[radial-gradient(circle_at_0_50%,rgba(0,0,0,0.12),transparent_60%)] before:opacity-40 before:mix-blend-multiply before:pointer-events-none">
             PORTFOLIO
