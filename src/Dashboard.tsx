@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useAuth } from 'react-oidc-context'
-import { Edit, Eye, Download, Plus, Flame } from 'lucide-react'
+import { Eye, Download, Plus, Flame } from 'lucide-react'
+import UploadModal from './UploadModal'
 
 interface ApiCharacterItem {
     summary: string
@@ -34,6 +35,7 @@ export default function Dashboard() {
     const auth = useAuth()
     const [myCharacters, setMyCharacters] = useState<DashboardCharacter[]>([])
     const [charCount, setCharCount] = useState(0)
+    const [isModalOpen, setIsModalOpen] = useState(false)
 
     useEffect(() => {
         if (auth.user?.profile.sub) {
@@ -78,7 +80,10 @@ export default function Dashboard() {
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-2xl font-bold text-(--color-text-primary)">캐릭터 업로드</h2>
                 </div>
-                <div className="bg-white border-2 border-dashed border-(--color-border-secondary) rounded-3xl p-10 flex flex-col items-center justify-center text-center hover:border-[#6366f1] hover:bg-[#6366f1]/5 transition-all cursor-pointer group">
+                <div
+                    onClick={() => setIsModalOpen(true)}
+                    className="bg-white border-2 border-dashed border-(--color-border-secondary) rounded-3xl p-10 flex flex-col items-center justify-center text-center hover:border-[#6366f1] hover:bg-[#6366f1]/5 transition-all cursor-pointer group"
+                >
                     <div className="w-16 h-16 bg-(--color-bg-secondary) rounded-full flex items-center justify-center mb-4 group-hover:bg-[#6366f1]/10 transition-colors">
                         <Plus className="w-8 h-8 text-(--color-text-secondary) group-hover:text-[#6366f1]" />
                     </div>
@@ -141,6 +146,9 @@ export default function Dashboard() {
                     ))}
                 </div>
             </div>
+
+            {/* Modal */}
+            <UploadModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
         </div>
     )
 }
