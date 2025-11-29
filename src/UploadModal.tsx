@@ -9,9 +9,18 @@ interface Sticker {
     type: string;
 }
 
-interface Lore {
-    [key: string]: any
+export interface Lore {
+    id: string;
+    name: string;
+    activationKeys: string[]; // 1 or 2 keys
+    order: number;
+    prompt: string;
+    alwaysActive: boolean;
+    multiKey: boolean; // when true, require all activationKeys to match
+    characterId?: number;
+    roomId?: string;
 }
+
 
 interface Character {
     id: number
@@ -46,6 +55,10 @@ export default function UploadModal({ isOpen, onClose }: UploadModalProps) {
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
     const [previewUrl, setPreviewUrl] = useState<string | null>(null)
 
+    const [characterData, setCharacterData] = useState<Character | null>(null)
+
+    const [activeTab, setActiveTab] = useState<'info' | 'lore' | 'stickers'>('info')
+
     useEffect(() => {
         if (isOpen) {
             document.body.style.overflow = 'hidden'
@@ -69,7 +82,7 @@ export default function UploadModal({ isOpen, onClose }: UploadModalProps) {
                     const { text } = await decodeText(result)
                     if (!text) throw new Error("No hidden data found")
 
-                    const characterData = JSON.parse(text) as Character
+                    const parsedData = JSON.parse(text) as Character
 
                     // Validate required fields
                     const requiredFields: (keyof Character)[] = [
@@ -78,7 +91,7 @@ export default function UploadModal({ isOpen, onClose }: UploadModalProps) {
                         'messageCountSinceLastSummary', 'media', 'stickers'
                     ]
 
-                    const isValid = requiredFields.every(field => field in characterData)
+                    const isValid = requiredFields.every(field => field in parsedData)
 
                     if (!isValid) {
                         throw new Error("Invalid character data structure")
@@ -86,9 +99,10 @@ export default function UploadModal({ isOpen, onClose }: UploadModalProps) {
 
                     setSelectedFile(file)
                     setPreviewUrl(result)
+                    setCharacterData(parsedData)
                     setFormData(prev => ({
                         ...prev,
-                        name: characterData.name
+                        name: parsedData.name
                     }))
                 } catch (error) {
                     console.error(error)
@@ -96,6 +110,7 @@ export default function UploadModal({ isOpen, onClose }: UploadModalProps) {
                     inputElement.value = ''
                     setSelectedFile(null)
                     setPreviewUrl(null)
+                    setCharacterData(null)
                 }
             }
             reader.readAsDataURL(file)
@@ -147,6 +162,7 @@ export default function UploadModal({ isOpen, onClose }: UploadModalProps) {
             setTagInput('')
             setSelectedFile(null)
             setPreviewUrl(null)
+            setCharacterData(null)
         }
     }
 
@@ -161,135 +177,270 @@ export default function UploadModal({ isOpen, onClose }: UploadModalProps) {
 
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-            <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 relative shadow-2xl">
-                <button
-                    onClick={handleCloseModal}
-                    className="absolute top-4 right-4 p-2 hover:bg-gray-100 rounded-full transition-colors"
-                >
-                    <X className="w-6 h-6 text-gray-500" />
-                </button>
+            <div className="bg-white rounded-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden flex flex-col relative shadow-2xl">
+                <div className="p-6 border-b border-gray-100 flex justify-between items-center">
+                    <h2 className="text-2xl font-bold text-gray-900">새 캐릭터 등록</h2>
+                    <button
+                        onClick={handleCloseModal}
+                        className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                    >
+                        <X className="w-6 h-6 text-gray-500" />
+                    </button>
+                </div>
 
-                <h2 className="text-2xl font-bold mb-6 text-gray-900">새 캐릭터 등록</h2>
+                <div className="flex-1 overflow-y-auto p-6">
+                    <form onSubmit={handleSubmit} className="flex flex-col lg:flex-row gap-8 h-full">
+                        {/* Left Column: Metadata Inputs */}
+                        <div className="flex-1 space-y-6">
+                            {/* Name */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">이름</label>
+                                <input
+                                    type="text"
+                                    value={formData.name}
+                                    onChange={e => setFormData({ ...formData, name: e.target.value })}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                                    placeholder="캐릭터 이름을 입력하세요"
+                                    required
+                                />
+                            </div>
 
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    {/* Image Upload */}
-                    <div className="flex flex-col items-center justify-center">
-                        <div className="w-32 h-32 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center overflow-hidden relative bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer group">
-                            {previewUrl ? (
-                                <img src={previewUrl} alt="Preview" className="w-full h-full object-cover" />
-                            ) : (
-                                <div className="flex flex-col items-center text-gray-400 group-hover:text-indigo-500 transition-colors">
-                                    <Upload className="w-8 h-8 mb-1" />
-                                    <span className="text-xs font-medium">PNG Only</span>
+                            {/* Gender */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">성별</label>
+                                <div className="flex gap-4">
+                                    {[
+                                        { label: '여성', value: 0 },
+                                        { label: '남성', value: 1 },
+                                        { label: '기타', value: 2 }
+                                    ].map((option) => (
+                                        <label key={option.value} className={`flex items-center gap-2 cursor-pointer px-4 py-2 rounded-lg border transition-all ${formData.gender === option.value ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-gray-200 hover:bg-gray-50'}`}>
+                                            <input
+                                                type="radio"
+                                                name="gender"
+                                                checked={formData.gender === option.value}
+                                                onChange={() => setFormData({ ...formData, gender: option.value })}
+                                                className="w-4 h-4 text-indigo-600 focus:ring-indigo-500"
+                                            />
+                                            <span>{option.label}</span>
+                                        </label>
+                                    ))}
                                 </div>
-                            )}
-                            <input
-                                type="file"
-                                accept=".png"
-                                onChange={handleFileChange}
-                                className="absolute inset-0 opacity-0 cursor-pointer"
-                                required
-                            />
-                        </div>
-                        <p className="text-sm text-gray-500 mt-2">캐릭터 이미지를 업로드하세요</p>
-                    </div>
+                            </div>
 
-                    {/* Name */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">이름</label>
-                        <input
-                            type="text"
-                            value={formData.name}
-                            onChange={e => setFormData({ ...formData, name: e.target.value })}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-                            placeholder="캐릭터 이름을 입력하세요"
-                            required
-                        />
-                    </div>
-
-                    {/* Gender */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">성별</label>
-                        <div className="flex gap-4">
-                            {[
-                                { label: '여성', value: 0 },
-                                { label: '남성', value: 1 },
-                                { label: '기타', value: 2 }
-                            ].map((option) => (
-                                <label key={option.value} className={`flex items-center gap-2 cursor-pointer px-4 py-2 rounded-lg border transition-all ${formData.gender === option.value ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-gray-200 hover:bg-gray-50'}`}>
+                            {/* Tags */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">태그 (쉼표로 구분)</label>
+                                <div className="flex flex-wrap gap-2">
+                                    {formData.tags.map((tag, index) => (
+                                        <span key={index} className="bg-indigo-100 text-indigo-700 rounded-full px-3 py-1 text-sm font-medium flex items-center gap-1 hover:bg-indigo-200 transition-colors">
+                                            {tag}
+                                            <button
+                                                type="button"
+                                                onClick={() => removeTag(tag)}
+                                                className="text-indigo-500 hover:text-indigo-700 transition-colors"
+                                            >
+                                                <X className="w-4 h-4 cursor-pointer" />
+                                            </button>
+                                        </span>
+                                    ))}
                                     <input
-                                        type="radio"
-                                        name="gender"
-                                        checked={formData.gender === option.value}
-                                        onChange={() => setFormData({ ...formData, gender: option.value })}
-                                        className="w-4 h-4 text-indigo-600 focus:ring-indigo-500"
+                                        type="text"
+                                        value={tagInput}
+                                        onKeyDown={handleTagKeyDown}
+                                        onChange={handleTagChange}
+                                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                                        placeholder="태그를 입력하고 쉼표로 구분하세요"
                                     />
-                                    <span>{option.label}</span>
-                                </label>
-                            ))}
+                                </div>
+                            </div>
+
+                            {/* Status Message */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">상태 메시지</label>
+                                <input
+                                    type="text"
+                                    value={formData.status_message}
+                                    onChange={e => setFormData({ ...formData, status_message: e.target.value })}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                                    placeholder="캐릭터의 한 줄 상태 메시지를 입력하세요. 캐릭터의 매력을 한껏 어필해보세요!"
+                                    required
+                                />
+                            </div>
+
+                            {/* Summary */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">상태 메시지</label>
+                                <textarea
+                                    value={formData.summary}
+                                    onChange={e => setFormData({ ...formData, summary: e.target.value })}
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none h-70 resize-none transition-all"
+                                    placeholder="캐릭터의 소개글을 작성해주세요. 다른 유저들이 캐릭터를 이해하는 데 도움이 됩니다."
+                                />
+                            </div>
                         </div>
-                    </div>
 
-                    {/* Status Message */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">한줄 소개</label>
-                        <input
-                            type="text"
-                            value={formData.status_message}
-                            onChange={e => setFormData({ ...formData, status_message: e.target.value })}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-                            placeholder="캐릭터를 한 문장으로 소개해주세요"
-                            required
-                        />
-                    </div>
+                        {/* Right Column: File Upload & Data Preview */}
+                        <div className="flex-1 flex flex-col gap-6 border-l border-gray-100 pl-8">
+                            {/* Image Upload */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">캐릭터 파일</label>
+                                <div className="w-full h-64 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center overflow-hidden relative bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer group">
+                                    {previewUrl ? (
+                                        <img src={previewUrl} alt="Preview" className="w-full h-full object-contain" />
+                                    ) : (
+                                        <div className="flex flex-col items-center text-gray-400 group-hover:text-indigo-500 transition-colors">
+                                            <Upload className="w-12 h-12 mb-2" />
+                                            <span className="text-sm font-medium">PNG 파일 업로드</span>
+                                            <span className="text-xs text-gray-400 mt-1">클릭하거나 드래그하여 업로드</span>
+                                        </div>
+                                    )}
+                                    <input
+                                        type="file"
+                                        accept=".png"
+                                        onChange={handleFileChange}
+                                        className="absolute inset-0 opacity-0 cursor-pointer"
+                                        required
+                                    />
+                                </div>
+                            </div>
 
-                    {/* Summary */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">상태 메시지</label>
-                        <textarea
-                            value={formData.summary}
-                            onChange={e => setFormData({ ...formData, summary: e.target.value })}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none h-48 resize-none transition-all"
-                            placeholder="캐릭터 설명을 적어주세요"
-                        />
-                    </div>
+                            {/* Data Preview */}
+                            <div className="flex-1 flex flex-col min-h-0">
+                                <div className="flex items-center justify-between mb-2">
+                                    <label className="block text-sm font-medium text-gray-700">데이터 미리보기</label>
+                                    {characterData && (
+                                        <div className="flex bg-gray-100 rounded-lg p-1">
+                                            <button
+                                                type="button"
+                                                onClick={() => setActiveTab('info')}
+                                                className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${activeTab === 'info' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                                            >
+                                                정보
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setActiveTab('lore')}
+                                                className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${activeTab === 'lore' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                                            >
+                                                로어북 ({characterData.lorebook?.length || 0})
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setActiveTab('stickers')}
+                                                className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${activeTab === 'stickers' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                                            >
+                                                스티커 ({characterData.stickers?.length || 0})
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
 
-                    {/* Tags */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">태그 (쉼표로 구분)</label>
-                        <div className="flex flex-wrap gap-2">
-                            {formData.tags.map((tag, index) => (
-                                <span key={index} className="bg-indigo-100 text-indigo-700 rounded-full px-3 py-1 text-sm font-medium flex items-center gap-1 hover:bg-indigo-200 transition-colors">
-                                    {tag}
-                                    <button
-                                        type="button"
-                                        onClick={() => removeTag(tag)}
-                                        className="text-indigo-500 hover:text-indigo-700 transition-colors"
-                                    >
-                                        <X className="w-4 h-4 cursor-pointer" />
-                                    </button>
-                                </span>
-                            ))}
-                            <input
-                                type="text"
-                                value={tagInput}
-                                onKeyDown={handleTagKeyDown}
-                                onChange={handleTagChange}
-                                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-                                placeholder="태그를 입력하고 쉼표로 구분하세요"
-                            />
+                                <div className="flex-1 bg-gray-50 rounded-xl p-4 overflow-auto border border-gray-200">
+                                    {characterData ? (
+                                        <>
+                                            {activeTab === 'info' && (
+                                                <div className="space-y-4">
+                                                    <div>
+                                                        <h4 className="text-xs font-bold text-gray-500 uppercase mb-1">프롬프트</h4>
+                                                        <div className="text-sm text-gray-800 whitespace-pre-wrap bg-white p-3 rounded-lg border border-gray-200 max-h-60 overflow-y-auto">
+                                                            {characterData.prompt}
+                                                        </div>
+                                                    </div>
+                                                    <div className="grid grid-cols-2 gap-4">
+                                                        <div className="bg-white p-3 rounded-lg border border-gray-200">
+                                                            <div className="text-xs text-gray-500 mb-1">반응 속도</div>
+                                                            <div className="font-medium">{characterData.responseTime}</div>
+                                                        </div>
+                                                        <div className="bg-white p-3 rounded-lg border border-gray-200">
+                                                            <div className="text-xs text-gray-500 mb-1">생각하는 시간</div>
+                                                            <div className="font-medium">{characterData.thinkingTime}</div>
+                                                        </div>
+                                                        <div className="bg-white p-3 rounded-lg border border-gray-200">
+                                                            <div className="text-xs text-gray-500 mb-1">반응성</div>
+                                                            <div className="font-medium">{characterData.reactivity}</div>
+                                                        </div>
+                                                        <div className="bg-white p-3 rounded-lg border border-gray-200">
+                                                            <div className="text-xs text-gray-500 mb-1">톤</div>
+                                                            <div className="font-medium">{characterData.tone}</div>
+                                                        </div>
+                                                        <div className="bg-white p-3 rounded-lg border border-gray-200">
+                                                            <div className="text-xs text-gray-500 mb-1">선톡 기능</div>
+                                                            <div className="font-medium">{characterData.proactiveEnabled ? '켜짐' : '꺼짐'}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {activeTab === 'lore' && (
+                                                <div className="space-y-3">
+                                                    {characterData.lorebook && characterData.lorebook.length > 0 ? (
+                                                        characterData.lorebook.map((lore, idx) => (
+                                                            <div key={idx} className="bg-white p-3 rounded-lg border border-gray-200">
+                                                                <div className="flex items-center gap-2 mb-2">
+                                                                    <span className="font-bold text-sm text-gray-900">{lore.name || '이름 없음'}</span>
+                                                                    {lore.alwaysActive && (
+                                                                        <span className="px-1.5 py-0.5 bg-green-100 text-green-700 text-[10px] font-bold rounded">ALWAYS</span>
+                                                                    )}
+                                                                </div>
+                                                                <div className="flex flex-wrap gap-1 mb-2">
+                                                                    {lore.activationKeys?.map((key, kIdx) => (
+                                                                        <span key={kIdx} className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded">
+                                                                            {key}
+                                                                        </span>
+                                                                    ))}
+                                                                </div>
+                                                                <p className="text-xs text-gray-600 line-clamp-3">{lore.prompt}</p>
+                                                            </div>
+                                                        ))
+                                                    ) : (
+                                                        <div className="text-center text-gray-500 py-8">로어북 데이터가 없습니다.</div>
+                                                    )}
+                                                </div>
+                                            )}
+
+                                            {activeTab === 'stickers' && (
+                                                <div className="grid grid-cols-3 gap-3">
+                                                    {characterData.stickers && characterData.stickers.length > 0 ? (
+                                                        characterData.stickers.map((sticker, idx) => (
+                                                            <div key={idx} className="bg-white p-2 rounded-lg border border-gray-200 flex flex-col items-center">
+                                                                <div className="w-full aspect-square bg-gray-50 rounded-md mb-2 overflow-hidden flex items-center justify-center">
+                                                                    {sticker.data ? (
+                                                                        <img src={sticker.data} alt={sticker.name} className="w-full h-full object-contain" />
+                                                                    ) : (
+                                                                        <span className="text-xs text-gray-400">No Image</span>
+                                                                    )}
+                                                                </div>
+                                                                <span className="text-xs text-gray-600 truncate w-full text-center" title={sticker.name}>
+                                                                    {sticker.name}
+                                                                </span>
+                                                            </div>
+                                                        ))
+                                                    ) : (
+                                                        <div className="col-span-3 text-center text-gray-500 py-8">스티커 데이터가 없습니다.</div>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </>
+                                    ) : (
+                                        <div className="h-full flex items-center justify-center text-gray-500 italic">
+                                            이미지를 업로드하면 데이터가 표시됩니다
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    </form>
+                </div>
 
-                    <div className="pt-4">
-                        <button
-                            type="submit"
-                            className="w-full bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/20"
-                        >
-                            등록하기
-                        </button>
-                    </div>
-                </form>
+                <div className="p-6 border-t border-gray-100 bg-gray-50">
+                    <button
+                        onClick={handleSubmit}
+                        className="w-full bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/20"
+                    >
+                        등록하기
+                    </button>
+                </div>
             </div>
         </div>
     )
