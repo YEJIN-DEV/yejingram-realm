@@ -31,6 +31,39 @@ function SearchPage() {
     const [pageStack, setPageStack] = useState<(any | null)[]>([null])
     const [currentPageIndex, setCurrentPageIndex] = useState(0)
     const [loading, setLoading] = useState(false)
+    const [displayCount, setDisplayCount] = useState(0)
+
+    useEffect(() => {
+        if (totalCount === 0) return
+
+        let startTimestamp: number | null = null
+        const duration = 1500
+        const targetString = String(totalCount).padStart(3, '0')
+        const length = targetString.length
+
+        const step = (timestamp: number) => {
+            if (!startTimestamp) startTimestamp = timestamp
+            const progress = (timestamp - startTimestamp) / duration
+
+            if (progress < 1) {
+                let currentString = ''
+                for (let i = 0; i < length; i++) {
+                    const threshold = 0.5 + (i / length) * 0.4
+                    if (progress >= threshold) {
+                        currentString += targetString[i]
+                    } else {
+                        currentString += Math.floor(Math.random() * 10)
+                    }
+                }
+                setDisplayCount(parseInt(currentString, 10))
+                window.requestAnimationFrame(step)
+            } else {
+                setDisplayCount(totalCount)
+            }
+        }
+
+        window.requestAnimationFrame(step)
+    }, [totalCount])
 
     const fetchApplicants = async (key: any | null, searchQuery: string) => {
         setLoading(true)
@@ -95,10 +128,10 @@ function SearchPage() {
     return (
         <div className="w-full max-w-[90vw] mx-auto py-10 px-5 font-sans">
             <div className="text-center mb-10">
-                <h1 className="text-[32px] font-extrabold text-(--color-text-primary) mb-3 tracking-[-0.5px]">캐릭터 검색</h1>
-                <p className="text-base text-(--color-text-secondary) m-0">
-                    Yejingram Realm에서 함께할 캐릭터를 찾아보세요!
-                </p>
+                <h1 className="text-[32px] font-extrabold text-(--color-text-primary) mb-3 tracking-[-0.5px]">YejinRealm</h1>
+                <h2 className="text-lg text-(--color-text-primary) m-0">
+                    <span className="text-[#6366f1] font-bold">{String(displayCount).padStart(3, '0')}</span>명의 캐릭터가 Yejingram Realm에서 기다리고 있어요. 함께할 캐릭터를 찾아보세요!
+                </h2>
             </div>
 
             <div className="bg-white p-[30px] rounded-3xl shadow-[0_10px_25px_-5px_rgba(0,0,0,0.05),0_8px_10px_-6px_rgba(0,0,0,0.01)] mb-10 border border-(--color-border-secondary)">
@@ -142,12 +175,6 @@ function SearchPage() {
             </div>
 
             <div className="mt-10">
-                <div className="flex justify-between items-center mb-5 px-1">
-                    <h2 className="text-lg font-bold text-(--color-text-primary) m-0">
-                        렐름에 총 <span className="text-[#6366f1]">{totalCount}</span>명의 캐릭터가 등록되어 있습니다.
-                    </h2>
-                </div>
-
                 {loading ? (
                     <div className="flex justify-center items-center py-20">
                         <Loader2 className="w-10 h-10 text-[#6366f1] animate-spin" />
