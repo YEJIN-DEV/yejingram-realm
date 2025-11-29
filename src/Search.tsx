@@ -18,32 +18,46 @@ interface LastKey {
 
 interface ApiResponse {
     items: ApplicantData[]
-    totalCount: number
-    lastKey: LastKey | null
+    totalCount?: number
+    lastKey?: LastKey | null
+    lastEvaluatedKey?: any
 }
 
 function SearchPage() {
     const [query, setQuery] = useState('')
     const [applicants, setApplicants] = useState<ApplicantData[]>([])
     const [totalCount, setTotalCount] = useState(0)
-    const [lastKey, setLastKey] = useState<LastKey | null>(null)
-    const [pageStack, setPageStack] = useState<(LastKey | null)[]>([null])
+    const [lastKey, setLastKey] = useState<any | null>(null)
+    const [pageStack, setPageStack] = useState<(any | null)[]>([null])
     const [currentPageIndex, setCurrentPageIndex] = useState(0)
     const [loading, setLoading] = useState(false)
 
-    const fetchApplicants = async (key: LastKey | null) => {
+    const fetchApplicants = async (key: any | null, searchQuery: string) => {
         setLoading(true)
         try {
-            let url = 'https://d3rd8muqzoyvtk.cloudfront.net/realm/list'
-            if (key) {
-                url += `?lk_pop=${key.popularity}&lk_id=${key.id}`
+            let url = ''
+            const isSearch = !!searchQuery.trim()
+
+            if (isSearch) {
+                url = `https://d3rd8muqzoyvtk.cloudfront.net/realm/search?q=${encodeURIComponent(searchQuery.trim())}`
+            } else {
+                url = 'https://d3rd8muqzoyvtk.cloudfront.net/realm/list'
+                if (key) {
+                    url += `?lk_pop=${key.popularity}&lk_id=${key.id}`
+                }
             }
+
             const response = await fetch(url)
             const data: ApiResponse = await response.json()
 
-            setApplicants(data.items.slice(0, 9))
-            setTotalCount(data.totalCount || 0)
-            setLastKey(data.lastKey)
+            if (isSearch) {
+                setApplicants(data.items)
+                setLastKey(data.lastEvaluatedKey || null)
+            } else {
+                setApplicants(data.items.slice(0, 9))
+                setTotalCount((prev) => (prev === 0 ? data.totalCount || 0 : prev))
+                setLastKey(data.lastKey || null)
+            }
         } catch (error) {
             console.error('Failed to fetch applicants:', error)
         } finally {
@@ -52,15 +66,21 @@ function SearchPage() {
     }
 
     useEffect(() => {
-        fetchApplicants(null)
-    }, [])
+        const timer = setTimeout(() => {
+            setPageStack([null])
+            setCurrentPageIndex(0)
+            fetchApplicants(null, query)
+        }, 300)
+
+        return () => clearTimeout(timer)
+    }, [query])
 
     const handleNext = () => {
         if (lastKey) {
             const newStack = [...pageStack.slice(0, currentPageIndex + 1), lastKey]
             setPageStack(newStack)
             setCurrentPageIndex(currentPageIndex + 1)
-            fetchApplicants(lastKey)
+            fetchApplicants(lastKey, query)
         }
     }
 
@@ -68,19 +88,9 @@ function SearchPage() {
         if (currentPageIndex > 0) {
             const prevKey = pageStack[currentPageIndex - 1]
             setCurrentPageIndex(currentPageIndex - 1)
-            fetchApplicants(prevKey)
+            fetchApplicants(prevKey, query)
         }
     }
-
-    const filtered = applicants.filter((item) => {
-        const q = query.trim().toLowerCase()
-        if (!q) return true
-        return (
-            item.name.toLowerCase().includes(q) ||
-            (item.tags && item.tags.some((tag) => tag.toLowerCase().includes(q))) ||
-            (item.summary && item.summary.toLowerCase().includes(q))
-        )
-    })
 
     return (
         <div className="w-full max-w-[90vw] mx-auto py-10 px-5 font-sans">
@@ -134,7 +144,7 @@ function SearchPage() {
             <div className="mt-10">
                 <div className="flex justify-between items-center mb-5 px-1">
                     <h2 className="text-lg font-bold text-(--color-text-primary) m-0">
-                        총 <span className="text-[#6366f1]">{totalCount}</span>명의 캐릭터가 등록되어 있습니다.
+                        렐름에 총 <span className="text-[#6366f1]">{totalCount}</span>명의 캐릭터가 등록되어 있습니다.
                     </h2>
                 </div>
 
@@ -142,9 +152,9 @@ function SearchPage() {
                     <div className="flex justify-center items-center py-20">
                         <Loader2 className="w-10 h-10 text-[#6366f1] animate-spin" />
                     </div>
-                ) : filtered.length > 0 ? (
+                ) : applicants.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {filtered.map((applicant) => (
+                        {applicants.map((applicant) => (
                             <div
                                 key={applicant.id}
                                 className="bg-white rounded-2xl border border-(--color-border) p-6 cursor-pointer transition-all duration-200 flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0_12px_24px_-8px_rgba(0,0,0,0.1)] hover:border-[#c7d2fe]"
