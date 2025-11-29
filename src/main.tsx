@@ -64,6 +64,7 @@ function App() {
         {/* Footer (Copyright, Privacy Policy, Terms of Service) */}
         <footer className="w-full max-w-[1140px] mx-auto py-6 px-6 text-center text-xs text-(--color-text-secondary)">
           &copy; {new Date().getFullYear()} Yejingram Realm. All rights reserved.&nbsp;|&nbsp;
+          Email: <a href="mailto:support@yejingram.com" className="text-(--color-text-secondary) underline">support@yejingram.com</a>&nbsp;|&nbsp;
           <a href="/privacy" className="text-(--color-text-secondary) underline">Privacy Policy</a>&nbsp;|&nbsp;
           <a href="/terms" className="text-(--color-text-secondary) underline">Terms of Service</a>
         </footer>
