@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from 'react-oidc-context'
 import Privacy from './Privacy.tsx'
 import TOS from './TOS.tsx'
 import Dashboard from './Dashboard.tsx'
+import { Toaster } from 'react-hot-toast'
 
 const cognitoAuthConfig = {
   authority: "https://cognito-idp.ap-northeast-2.amazonaws.com/ap-northeast-2_qpXc0tRPJ",
@@ -21,6 +22,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      <Toaster />
       <div className="w-full">
         <nav className="w-full max-w-[1140px] mx-auto pt-3.5 px-6 flex items-center justify-between text-xs tracking-[0.16em]">
           <Link to="/" className="font-bold text-(--color-text-primary) no-underline">
