@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
-import Applicant from './Applicant.tsx'
+import Character from './Character.tsx'
 import SearchPage from './Search.tsx'
 import { AuthProvider, useAuth } from 'react-oidc-context'
 import Privacy from './Privacy.tsx'
@@ -58,7 +58,7 @@ function App() {
         </nav>
         <Routes>
           <Route path="/" element={<SearchPage />} />
-          <Route path="/applicant" element={<Applicant />} />
+          <Route path="/character" element={<Character />} />
           <Route path="/privacy" element={<Privacy />} />
           <Route path="/terms" element={<TOS />} />
           <Route path="/dashboard" element={<Dashboard />} />

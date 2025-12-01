@@ -1,7 +1,7 @@
 import { Flame, Loader2 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
-interface ApplicantData {
+interface CharacterData {
     summary: string
     gsi_global_pk: number
     id: string
@@ -17,7 +17,7 @@ interface LastKey {
 }
 
 interface ApiResponse {
-    items: ApplicantData[]
+    items: CharacterData[]
     totalCount?: number
     lastKey?: LastKey | null
     lastEvaluatedKey?: any
@@ -25,7 +25,7 @@ interface ApiResponse {
 
 function SearchPage() {
     const [query, setQuery] = useState('')
-    const [applicants, setApplicants] = useState<ApplicantData[]>([])
+    const [characters, setCharacters] = useState<CharacterData[]>([])
     const [totalCount, setTotalCount] = useState(0)
     const [lastKey, setLastKey] = useState<any | null>(null)
     const [pageStack, setPageStack] = useState<(any | null)[]>([null])
@@ -65,7 +65,7 @@ function SearchPage() {
         window.requestAnimationFrame(step)
     }, [totalCount])
 
-    const fetchApplicants = async (key: any | null, searchQuery: string) => {
+    const fetchCharacters = async (key: any | null, searchQuery: string) => {
         setLoading(true)
         try {
             let url = ''
@@ -84,15 +84,15 @@ function SearchPage() {
             const data: ApiResponse = await response.json()
 
             if (isSearch) {
-                setApplicants(data.items)
+                setCharacters(data.items)
                 setLastKey(data.lastEvaluatedKey || null)
             } else {
-                setApplicants(data.items.slice(0, 9))
+                setCharacters(data.items.slice(0, 9))
                 setTotalCount((prev) => (prev === 0 ? data.totalCount || 0 : prev))
                 setLastKey(data.lastKey || null)
             }
         } catch (error) {
-            console.error('Failed to fetch applicants:', error)
+            console.error('Failed to fetch characters:', error)
         } finally {
             setLoading(false)
         }
@@ -102,7 +102,7 @@ function SearchPage() {
         const timer = setTimeout(() => {
             setPageStack([null])
             setCurrentPageIndex(0)
-            fetchApplicants(null, query)
+            fetchCharacters(null, query)
         }, 300)
 
         return () => clearTimeout(timer)
@@ -113,7 +113,7 @@ function SearchPage() {
             const newStack = [...pageStack.slice(0, currentPageIndex + 1), lastKey]
             setPageStack(newStack)
             setCurrentPageIndex(currentPageIndex + 1)
-            fetchApplicants(lastKey, query)
+            fetchCharacters(lastKey, query)
         }
     }
 
@@ -121,7 +121,7 @@ function SearchPage() {
         if (currentPageIndex > 0) {
             const prevKey = pageStack[currentPageIndex - 1]
             setCurrentPageIndex(currentPageIndex - 1)
-            fetchApplicants(prevKey, query)
+            fetchCharacters(prevKey, query)
         }
     }
 
@@ -179,43 +179,43 @@ function SearchPage() {
                     <div className="flex justify-center items-center py-20">
                         <Loader2 className="w-10 h-10 text-[#6366f1] animate-spin" />
                     </div>
-                ) : applicants.length > 0 ? (
+                ) : characters.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {applicants.map((applicant) => (
+                        {characters.map((character) => (
                             <div
-                                key={applicant.id}
+                                key={character.id}
                                 className="bg-white rounded-2xl border border-(--color-border) p-6 cursor-pointer transition-all duration-200 flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0_12px_24px_-8px_rgba(0,0,0,0.1)] hover:border-[#c7d2fe]"
-                                onClick={() => window.location.href = `/applicant?id=${applicant.id}`}
+                                onClick={() => window.location.href = `/character?id=${character.id}`}
                             >
                                 <div className="flex gap-4 mb-4">
                                     <img
-                                        src={`https://dt3lfi1tp9am3.cloudfront.net/${applicant.id}/${applicant.id}_thumb.webp`}
-                                        alt={applicant.name}
+                                        src={`https://dt3lfi1tp9am3.cloudfront.net/${character.id}/${character.id}_thumb.webp`}
+                                        alt={character.name}
                                         className="w-[110px] h-[140px] rounded-2xl object-cover shrink-0 shadow-[0_4px_12px_rgba(99,102,241,0.2)] bg-gray-200"
                                     />
                                     <div className="flex-1 min-w-0">
                                         <h3 className="m-0 mb-1.5 text-xl font-bold text-(--color-text-primary) flex items-center gap-2 flex-wrap">
-                                            {applicant.name}
+                                            {character.name}
                                             <span className="flex text-xs font-medium bg-[#eff6ff] text-[#3b82f6] px-2 py-0.5 rounded-md border border-[#dbeafe]">
-                                                <Flame className='w-4 h-4' /> {applicant.popularity.toFixed(2)}
+                                                <Flame className='w-4 h-4' /> {character.popularity.toFixed(2)}
                                             </span>
                                         </h3>
                                         {/* Status Message (상태 메시지 quote 스타일 */}
-                                        {applicant.status_message && (
+                                        {character.status_message && (
                                             <blockquote className="m-0 mb-2 pl-4 border-l-4 border-(--color-border-secondary) italic text-(--color-text-secondary) text-sm leading-relaxed overflow-hidden line-clamp-2">
-                                                {applicant.status_message}
+                                                {character.status_message}
                                             </blockquote>
                                         )}
                                         {/* Summary */}
                                         <p className="m-0 text-sm text-(--color-text-secondary) leading-relaxed line-clamp-2 overflow-hidden">
-                                            {applicant.summary || '소개글이 없습니다.'}
+                                            {character.summary || '소개글이 없습니다.'}
                                         </p>
                                     </div>
                                 </div>
                                 <div className="pt-4 border-t border-(--color-border-secondary)">
                                     <div className="flex flex-wrap gap-1.5">
-                                        {applicant.tags && applicant.tags.length > 0 ? (
-                                            applicant.tags.map((tag, index) => (
+                                        {character.tags && character.tags.length > 0 ? (
+                                            character.tags.map((tag, index) => (
                                                 <span key={index} className="text-xs text-(--color-text-tertiary) bg-(--color-bg-input-primary) px-2.5 py-1 rounded-full">
                                                     #{tag}
                                                 </span>

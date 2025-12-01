@@ -1,4 +1,4 @@
-export type Applicant = {
+export type Character = {
     id: number
     name: string
     role: string
@@ -7,7 +7,7 @@ export type Applicant = {
     photoInitial: string
 }
 
-export const APPLICANTS: Applicant[] = [
+export const CHARACTERS: Character[] = [
     {
         id: 1,
         name: '하시모토 예링',

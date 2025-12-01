@@ -169,7 +169,7 @@ export default function Dashboard() {
                                             <div className="w-14 h-14 shrink-0 rounded-2xl bg-linear-to-br from-[#6366f1] to-[#a855f7] flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-indigo-500/20">
                                                 <img src={char.thumbnail} alt={char.name} className="w-full h-full object-cover rounded-2xl" />
                                             </div>
-                                            <div className="min-w-0 flex-1 cursor-pointer" onClick={() => window.open(`/applicant?id=${char.id}`, '_blank')}>
+                                            <div className="min-w-0 flex-1 cursor-pointer" onClick={() => window.open(`/character?id=${char.id}`, '_blank')}>
                                                 <h3 className="font-bold text-lg text-(--color-text-primary) leading-tight mb-1 truncate">{char.name}</h3>
                                                 <p className="text-sm text-(--color-text-secondary) font-medium leading-relaxed line-clamp-1 overflow-hidden">{char.summary}</p>
                                             </div>
