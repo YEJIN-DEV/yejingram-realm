@@ -22,7 +22,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <Toaster />
+      <Toaster toastOptions={{ duration: 5000 }} />
       <div className="w-full">
         <nav className="w-full max-w-[1140px] mx-auto pt-3.5 px-6 flex items-center justify-between text-xs tracking-[0.16em]">
           <Link to="/" className="font-bold text-(--color-text-primary) no-underline">

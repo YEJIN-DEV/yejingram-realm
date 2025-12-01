@@ -208,6 +208,21 @@ export default function CharacterManageModal({
             return
         }
 
+        if (!formData.name?.trim()) {
+            toast.error("이름을 입력해주세요.")
+            return
+        }
+
+        if (!formData.status_message?.trim()) {
+            toast.error("상태메시지를 입력해주세요.")
+            return
+        }
+
+        if (!formData.summary?.trim()) {
+            toast.error("캐릭터 소개를 입력해주세요.")
+            return
+        }
+
         const uploadPromise = async () => {
             try {
                 if (mode === 'create') {
@@ -245,6 +260,7 @@ export default function CharacterManageModal({
                     });
 
                     if (!uploadResponse.ok) throw new Error('S3 Upload Failed');
+                    toast.success("썸네일과 봇카드가 반영되는 데 까지 몇 초 정도 걸릴 수 있습니다.")
                 } else {
                     // Edit mode
                     if (!initialData?.id) throw new Error("Character ID is missing");
@@ -263,6 +279,11 @@ export default function CharacterManageModal({
                     const tagsChanged = JSON.stringify([...formData.tags].sort()) !== JSON.stringify([...initialData.tags].sort());
                     if (tagsChanged) updateData.tags = formData.tags;
 
+                    if (selectedFile) {
+                        updateData.file_name = selectedFile.name;
+                        updateData.file_type = selectedFile.type;
+                    }
+
                     if (Object.keys(updateData).length <= 1) {
                         throw new Error("수정된 사항이 없어 업데이트할 수 없습니다!");
                     }
@@ -277,6 +298,20 @@ export default function CharacterManageModal({
                     });
 
                     if (!response.ok) throw new Error('Failed to update character');
+
+                    const data = await response.json();
+                    if (data.upload_url && selectedFile) {
+                        const uploadResponse = await fetch(data.upload_url, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': selectedFile.type
+                            },
+                            body: selectedFile
+                        });
+
+                        if (!uploadResponse.ok) throw new Error('S3 Upload Failed');
+                        toast.success("변경된 썸네일과 봇카드가 반영되는 데 까지 몇 초 정도 걸릴 수 있습니다.")
+                    }
                 }
             } catch (error) {
                 console.error(error);
@@ -310,6 +345,60 @@ export default function CharacterManageModal({
                     }
                     return mode === 'create' ? '등록에 실패했습니다.' : '수정에 실패했습니다.'
                 },
+            }
+        )
+    }
+
+    const handleDelete = async () => {
+        if (mode !== 'edit') return // Safeguard
+        if (!initialData?.id) {
+            toast.error("삭제할 캐릭터 ID가 없습니다.")
+            return
+        }
+
+        if (!window.confirm("정말로 이 캐릭터를 삭제하시겠습니까? 삭제된 캐릭터는 복구할 수 없습니다.")) {
+            return
+        }
+
+        // 한 번 더 확인
+        if (!window.confirm("정말로, 정말로 이 캐릭터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) {
+            return
+        }
+
+        const deletePromise = async () => {
+            const response = await fetch('https://d3rd8muqzoyvtk.cloudfront.net/realm/delete', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${auth.user?.id_token}`
+                },
+                body: JSON.stringify({ id: initialData.id })
+            })
+
+            if (!response.ok) throw new Error('Failed to delete character')
+        }
+
+        toast.promise(
+            deletePromise(),
+            {
+                loading: '캐릭터를 삭제하는 중입니다...',
+                success: () => {
+                    onClose()
+                    if (onSuccess) onSuccess()
+                    setFormData({
+                        name: '',
+                        gender: null,
+                        summary: '',
+                        status_message: '',
+                        tags: [],
+                    })
+                    setTagInput('')
+                    setSelectedFile(null)
+                    setPreviewUrl(null)
+                    setCharacterData(null)
+                    return '성공적으로 삭제되었습니다!'
+                },
+                error: '삭제에 실패했습니다.',
             }
         )
     }
@@ -607,13 +696,21 @@ export default function CharacterManageModal({
                     </form>
                 </div>
 
-                <div className="p-6 border-t border-gray-100 bg-gray-50">
+                <div className="p-6 border-t border-gray-100 bg-gray-50 flex gap-3">
                     <button
                         onClick={handleSubmit}
-                        className="w-full bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/20"
+                        className={`${mode === 'edit' ? 'w-[90%]' : 'w-full'} bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/20`}
                     >
                         {mode === 'create' ? "등록하기" : "수정하기"}
                     </button>
+                    {mode === 'edit' && (
+                        <button
+                            onClick={handleDelete}
+                            className="w-[10%] bg-red-600 text-white py-3 rounded-xl font-semibold hover:bg-red-700 transition-colors shadow-lg shadow-red-500/20"
+                        >
+                            삭제하기
+                        </button>
+                    )}
                 </div>
             </div>
         </div>
