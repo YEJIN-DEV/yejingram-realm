@@ -222,7 +222,7 @@ function Applicant() {
               <div className="mt-0.5">Last Updated: {new Date(selectedApplicant.updated_at * 1000).toLocaleString()}</div>
               <div className="mt-2 flex gap-3 justify-end text-[#4b5563]">
                 <span className="flex items-center gap-1" title="Popularity">
-                  <Flame className='w-3 h-3' /> {selectedApplicant.popularity}
+                  <Flame className='w-3 h-3' /> {selectedApplicant.popularity.toFixed(2)}
                 </span>
                 <span className="flex items-center gap-1" title="Views">
                   <Eye className='w-3 h-3' /> {selectedApplicant.view_count}

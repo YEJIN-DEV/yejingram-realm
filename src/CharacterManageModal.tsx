@@ -25,7 +25,7 @@ export interface Lore {
 
 
 interface Character {
-    id: number
+    id: string | number
     name: string
     prompt: string
     avatar: string | null
@@ -40,17 +40,35 @@ interface Character {
     lorebook?: Lore[]
 }
 
-interface UploadModalProps {
+interface CharacterManageModalProps {
     isOpen: boolean
     onClose: () => void
+    onSuccess?: () => void
+    mode?: 'create' | 'edit'
     initialFile?: File | null
+    initialData?: {
+        id?: string | number
+        name: string
+        gender?: number | null
+        summary: string
+        status_message: string
+        tags: string[]
+        file_name?: string
+    }
 }
 
-export default function UploadModal({ isOpen, onClose, initialFile }: UploadModalProps) {
+export default function CharacterManageModal({
+    isOpen,
+    onClose,
+    onSuccess,
+    mode = 'create',
+    initialFile,
+    initialData
+}: CharacterManageModalProps) {
     const auth = useAuth()
     const [formData, setFormData] = useState({
         name: '',
-        gender: 0,
+        gender: null as number | null,
         summary: '',
         status_message: '',
         tags: [] as string[],
@@ -129,14 +147,7 @@ export default function UploadModal({ isOpen, onClose, initialFile }: UploadModa
 
         if (file) {
             processFile(file)
-            // If processing fails, we can't easily clear the input from here because processFile is async and doesn't return success/fail.
-            // But the original code cleared it on error.
-            // For now, let's leave the input clearing out or re-implement it if needed.
-            // Actually, if I want to keep the exact behavior, I should pass a callback or handle it differently.
-            // But for simplicity, let's assume the user will just try again if it fails.
-            // However, if they select the SAME invalid file again, onChange won't fire.
-            // So we should probably clear the value.
-            inputElement.value = '' 
+            inputElement.value = ''
         }
     }
 
@@ -177,7 +188,7 @@ export default function UploadModal({ isOpen, onClose, initialFile }: UploadModa
             onClose()
             setFormData({
                 name: '',
-                gender: 0,
+                gender: null,
                 summary: '',
                 status_message: '',
                 tags: [],
@@ -192,45 +203,81 @@ export default function UploadModal({ isOpen, onClose, initialFile }: UploadModa
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
 
-        if (!selectedFile) {
+        if (mode === 'create' && !selectedFile) {
             toast.error("캐릭터 파일을 업로드해주세요.")
             return
         }
 
         const uploadPromise = async () => {
-            const metadata = {
-                ...formData,
-                file_name: selectedFile.name,
-                file_type: selectedFile.type
-            };
-
             try {
-                // [Step 1] Lambda에 Presigned URL 요청 (아주 가벼운 JSON 요청)
-                const response = await fetch('https://d3rd8muqzoyvtk.cloudfront.net/realm/create', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${auth.user?.id_token}`
-                    },
-                    body: JSON.stringify(metadata) // WAF에 안 걸림!
-                });
+                if (mode === 'create') {
+                    if (!selectedFile) throw new Error("No file selected");
 
-                if (!response.ok) throw new Error('Failed to get upload URL');
+                    const metadata = {
+                        ...formData,
+                        file_name: selectedFile.name,
+                        file_type: selectedFile.type
+                    };
 
-                const data = await response.json();
-                const { upload_url, id } = data;
+                    // [Step 1] Lambda에 Presigned URL 요청 (아주 가벼운 JSON 요청)
+                    const response = await fetch('https://d3rd8muqzoyvtk.cloudfront.net/realm/create', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${auth.user?.id_token}`
+                        },
+                        body: JSON.stringify(metadata) // WAF에 안 걸림!
+                    });
 
-                // [Step 2] 받은 URL로 S3에 직접 업로드
-                // 인증 헤더(Bearer) 필요 없음! URL 자체에 인증 정보가 포함됨.
-                const uploadResponse = await fetch(upload_url, {
-                    method: 'PUT', // 반드시 PUT
-                    headers: {
-                        'Content-Type': selectedFile.type // Lambda에 보낸 타입과 정확히 일치해야 함
-                    },
-                    body: selectedFile // 파일 객체 그대로 전송 (Binary)
-                });
+                    if (!response.ok) throw new Error('Failed to get upload URL');
 
-                if (!uploadResponse.ok) throw new Error('S3 Upload Failed');
+                    const data = await response.json();
+                    const { upload_url, id } = data;
+
+                    // [Step 2] 받은 URL로 S3에 직접 업로드
+                    // 인증 헤더(Bearer) 필요 없음! URL 자체에 인증 정보가 포함됨.
+                    const uploadResponse = await fetch(upload_url, {
+                        method: 'PUT', // 반드시 PUT
+                        headers: {
+                            'Content-Type': selectedFile.type // Lambda에 보낸 타입과 정확히 일치해야 함
+                        },
+                        body: selectedFile // 파일 객체 그대로 전송 (Binary)
+                    });
+
+                    if (!uploadResponse.ok) throw new Error('S3 Upload Failed');
+                } else {
+                    // Edit mode
+                    if (!initialData?.id) throw new Error("Character ID is missing");
+
+                    const updateData: any = {
+                        id: initialData.id,
+                    };
+
+                    // Compare and add changed fields
+                    if (formData.name !== initialData.name) updateData.name = formData.name;
+                    if (formData.gender !== initialData.gender) updateData.gender = formData.gender;
+                    if (formData.summary !== initialData.summary) updateData.summary = formData.summary;
+                    if (formData.status_message !== initialData.status_message) updateData.status_message = formData.status_message;
+
+                    // Tags comparison
+                    const tagsChanged = JSON.stringify([...formData.tags].sort()) !== JSON.stringify([...initialData.tags].sort());
+                    if (tagsChanged) updateData.tags = formData.tags;
+
+                    if (Object.keys(updateData).length <= 1) {
+                        throw new Error("수정된 사항이 없어 업데이트할 수 없습니다!");
+                    }
+
+                    const response = await fetch('https://d3rd8muqzoyvtk.cloudfront.net/realm/update', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${auth.user?.id_token}`
+                        },
+                        body: JSON.stringify(updateData)
+                    });
+
+                    if (!response.ok) throw new Error('Failed to update character');
+                }
             } catch (error) {
                 console.error(error);
                 throw error;
@@ -240,15 +287,63 @@ export default function UploadModal({ isOpen, onClose, initialFile }: UploadModa
         toast.promise(
             uploadPromise(),
             {
-                loading: '캐릭터를 등록하는 중입니다...',
+                loading: mode === 'create' ? '캐릭터를 등록하는 중입니다...' : '캐릭터를 수정하는 중입니다...',
                 success: () => {
                     onClose()
-                    return '성공적으로 등록되었습니다!'
+                    if (onSuccess) onSuccess()
+                    setFormData({
+                        name: '',
+                        gender: null,
+                        summary: '',
+                        status_message: '',
+                        tags: [],
+                    })
+                    setTagInput('')
+                    setSelectedFile(null)
+                    setPreviewUrl(null)
+                    setCharacterData(null)
+                    return mode === 'create' ? '성공적으로 등록되었습니다!' : '성공적으로 수정되었습니다!'
                 },
-                error: '등록에 실패했습니다.',
+                error: (err) => {
+                    if (err instanceof Error && err.message === "수정된 사항이 없어 업데이트할 수 없습니다!") {
+                        return err.message
+                    }
+                    return mode === 'create' ? '등록에 실패했습니다.' : '수정에 실패했습니다.'
+                },
             }
         )
     }
+
+    useEffect(() => {
+        if (initialData && mode === 'edit') {
+            setFormData({
+                name: initialData.name,
+                gender: initialData.gender ?? null,
+                summary: initialData.summary,
+                status_message: initialData.status_message,
+                tags: initialData.tags,
+            })
+
+            if (initialData.id && initialData.file_name) {
+                const fileUrl = `https://dt3lfi1tp9am3.cloudfront.net/${initialData.id}/${encodeURIComponent(initialData.file_name)}`
+                // cache: 'no-cache'를 추가하여 브라우저 캐시나 Range Request로 인한 잠재적 CORS 이슈 방지
+                fetch(fileUrl, { cache: 'no-cache' })
+                    .then(res => {
+                        if (!res.ok) throw new Error(`Network response was not ok: ${res.statusText}`);
+                        return res.blob();
+                    })
+                    .then(blob => {
+                        console.log("Loaded initial file:", initialData.file_name, blob.type, blob.size);
+                        const file = new File([blob], initialData.file_name!, { type: 'image/png' })
+                        processFile(file)
+                    })
+                    .catch(err => {
+                        console.error("Failed to load initial file:", err);
+                        toast.error("이미지를 불러오는데 실패했습니다.");
+                    })
+            }
+        }
+    }, [initialData, mode])
 
     if (!isOpen) return null
 
@@ -256,7 +351,9 @@ export default function UploadModal({ isOpen, onClose, initialFile }: UploadModa
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
             <div className="bg-white rounded-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden flex flex-col relative shadow-2xl">
                 <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-                    <h2 className="text-2xl font-bold text-gray-900">새 캐릭터 등록</h2>
+                    <h2 className="text-2xl font-bold text-gray-900">
+                        {mode === 'create' ? "새 캐릭터 등록" : "캐릭터 수정"}
+                    </h2>
                     <button
                         onClick={handleCloseModal}
                         className="p-2 hover:bg-gray-100 rounded-full transition-colors"
@@ -271,7 +368,7 @@ export default function UploadModal({ isOpen, onClose, initialFile }: UploadModa
                         <div className="flex-1 space-y-6">
                             {/* Name */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">이름</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">이름 <small>(*필수)</small></label>
                                 <input
                                     type="text"
                                     value={formData.name}
@@ -334,7 +431,7 @@ export default function UploadModal({ isOpen, onClose, initialFile }: UploadModa
 
                             {/* Status Message */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">상태 메시지</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">상태 메시지 <small>(*필수)</small></label>
                                 <input
                                     type="text"
                                     value={formData.status_message}
@@ -347,7 +444,7 @@ export default function UploadModal({ isOpen, onClose, initialFile }: UploadModa
 
                             {/* Summary */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">상태 메시지</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">캐릭터 소개 <small>(*필수)</small></label>
                                 <textarea
                                     value={formData.summary}
                                     onChange={e => setFormData({ ...formData, summary: e.target.value })}
@@ -515,7 +612,7 @@ export default function UploadModal({ isOpen, onClose, initialFile }: UploadModa
                         onClick={handleSubmit}
                         className="w-full bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/20"
                     >
-                        등록하기
+                        {mode === 'create' ? "등록하기" : "수정하기"}
                     </button>
                 </div>
             </div>

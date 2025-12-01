@@ -144,7 +144,7 @@ function SearchPage() {
                     <input
                         type="text"
                         className="flex-1 border-none bg-transparent text-base py-3 outline-none text-(--color-text-primary) w-full placeholder-(--color-text-informative-secondary)"
-                        placeholder="이름, 기술 스택, 또는 소개글 검색..."
+                        placeholder="이름, 상태 메시지, 설명, 태그로 캐릭터를 검색해보세요..."
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                     />
@@ -194,10 +194,10 @@ function SearchPage() {
                                         className="w-[110px] h-[140px] rounded-2xl object-cover shrink-0 shadow-[0_4px_12px_rgba(99,102,241,0.2)] bg-gray-200"
                                     />
                                     <div className="flex-1 min-w-0">
-                                        <h3 className="m-0 mb-1.5 text-lg font-bold text-(--color-text-primary) flex items-center gap-2 flex-wrap">
+                                        <h3 className="m-0 mb-1.5 text-xl font-bold text-(--color-text-primary) flex items-center gap-2 flex-wrap">
                                             {applicant.name}
                                             <span className="flex text-xs font-medium bg-[#eff6ff] text-[#3b82f6] px-2 py-0.5 rounded-md border border-[#dbeafe]">
-                                                <Flame className='w-4 h-4' /> {applicant.popularity}
+                                                <Flame className='w-4 h-4' /> {applicant.popularity.toFixed(2)}
                                             </span>
                                         </h3>
                                         {/* Status Message (상태 메시지 quote 스타일 */}

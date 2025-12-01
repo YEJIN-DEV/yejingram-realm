@@ -3,7 +3,7 @@ import { useAuth } from 'react-oidc-context'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { Eye, Download, Plus, Flame, Loader2 } from 'lucide-react'
-import UploadModal from './UploadModal'
+import CharacterManageModal from './CharacterManageModal'
 
 interface ApiCharacterItem {
     summary: string
@@ -13,7 +13,7 @@ interface ApiCharacterItem {
     download_count: number
     uploader_nickname: string
     name: string
-    gender: number
+    gender?: number
     status_message: string
     popularity: number
     updated_at: number
@@ -26,11 +26,15 @@ interface ApiCharacterItem {
 interface DashboardCharacter {
     id: string
     name: string
-    role: string
+    summary: string
     thumbnail: string
     popularity: number
     views: number
     downloads: number
+    gender?: number
+    status_message: string
+    tags: string[]
+    file_name: string
 }
 
 export default function Dashboard() {
@@ -41,6 +45,8 @@ export default function Dashboard() {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [droppedFile, setDroppedFile] = useState<File | null>(null)
+    const [editMode, setEditMode] = useState<'create' | 'edit'>('create')
+    const [selectedCharacter, setSelectedCharacter] = useState<DashboardCharacter | null>(null)
 
     useEffect(() => {
         if (!auth.isLoading) {
@@ -64,11 +70,13 @@ export default function Dashboard() {
         const file = e.dataTransfer.files?.[0]
         if (file) {
             setDroppedFile(file)
+            setEditMode('create')
+            setSelectedCharacter(null)
             setIsModalOpen(true)
         }
     }
 
-    useEffect(() => {
+    const fetchMyCharacters = () => {
         if (auth.user?.profile.sub) {
             setIsLoading(true)
             fetch('https://d3rd8muqzoyvtk.cloudfront.net/realm/search/uid', {
@@ -84,11 +92,15 @@ export default function Dashboard() {
                         const mappedCharacters = data.items.map((item: ApiCharacterItem) => ({
                             id: item.id,
                             name: item.name,
-                            role: item.summary,
+                            summary: item.summary,
                             thumbnail: `https://dt3lfi1tp9am3.cloudfront.net/${item.id}/${item.id}_thumb.webp`,
                             popularity: item.popularity,
                             views: item.view_count,
                             downloads: item.download_count,
+                            gender: item.gender,
+                            status_message: item.status_message,
+                            tags: item.tags,
+                            file_name: item.file_name,
                         }))
                         setMyCharacters(mappedCharacters)
                         setCharCount(data.count || mappedCharacters.length)
@@ -97,6 +109,10 @@ export default function Dashboard() {
                 .catch((err) => console.error('Failed to fetch characters:', err))
                 .finally(() => setIsLoading(false))
         }
+    }
+
+    useEffect(() => {
+        fetchMyCharacters()
     }, [auth.user?.profile.sub])
 
     return (
@@ -114,7 +130,11 @@ export default function Dashboard() {
                     <h2 className="text-2xl font-bold text-(--color-text-primary)">캐릭터 업로드</h2>
                 </div>
                 <div
-                    onClick={() => setIsModalOpen(true)}
+                    onClick={() => {
+                        setEditMode('create')
+                        setSelectedCharacter(null)
+                        setIsModalOpen(true)
+                    }}
                     onDragOver={handleDragOver}
                     onDrop={handleDrop}
                     className="bg-white border-2 border-dashed border-(--color-border-secondary) rounded-3xl p-10 flex flex-col items-center justify-center text-center hover:border-[#6366f1] hover:bg-[#6366f1]/5 transition-all cursor-pointer group"
@@ -145,13 +165,13 @@ export default function Dashboard() {
                             {myCharacters.map((char) => (
                                 <div key={char.id} className="bg-white rounded-3xl p-6 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.05),0_8px_10px_-6px_rgba(0,0,0,0.01)] border border-(--color-border-secondary) hover:-translate-y-1 transition-transform duration-300">
                                     <div className="flex items-start justify-between mb-6">
-                                        <div className="flex items-center gap-4">
-                                            <div className="w-14 h-14 rounded-2xl bg-linear-to-br from-[#6366f1] to-[#a855f7] flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-indigo-500/20">
+                                        <div className="flex items-center gap-4 w-full">
+                                            <div className="w-14 h-14 shrink-0 rounded-2xl bg-linear-to-br from-[#6366f1] to-[#a855f7] flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-indigo-500/20">
                                                 <img src={char.thumbnail} alt={char.name} className="w-full h-full object-cover rounded-2xl" />
                                             </div>
-                                            <div>
-                                                <h3 className="font-bold text-lg text-(--color-text-primary) leading-tight mb-1">{char.name}</h3>
-                                                <p className="text-sm text-(--color-text-secondary) font-medium">{char.role}</p>
+                                            <div className="min-w-0 flex-1 cursor-pointer" onClick={() => window.open(`/applicant?id=${char.id}`, '_blank')}>
+                                                <h3 className="font-bold text-lg text-(--color-text-primary) leading-tight mb-1 truncate">{char.name}</h3>
+                                                <p className="text-sm text-(--color-text-secondary) font-medium leading-relaxed line-clamp-1 overflow-hidden">{char.summary}</p>
                                             </div>
                                         </div>
                                     </div>
@@ -161,7 +181,7 @@ export default function Dashboard() {
                                             <div className="flex items-center justify-center gap-1 text-xs text-gray-500 mb-1">
                                                 <Flame className="w-3 h-3" /> 인기도
                                             </div>
-                                            <div className="font-bold text-gray-900">{char.popularity}</div>
+                                            <div className="font-bold text-gray-900">{char.popularity.toFixed(2)}</div>
                                         </div>
                                         <div className="text-center border-l border-gray-200">
                                             <div className="flex items-center justify-center gap-1 text-xs text-gray-500 mb-1">
@@ -178,7 +198,14 @@ export default function Dashboard() {
                                     </div>
 
                                     <div className="flex">
-                                        <button className="flex-1 bg-[#6366f1] text-white py-3 rounded-xl font-semibold hover:bg-[#4f46e5] transition-colors shadow-lg shadow-indigo-500/20">
+                                        <button
+                                            onClick={() => {
+                                                setEditMode('edit')
+                                                setSelectedCharacter(char)
+                                                setIsModalOpen(true)
+                                            }}
+                                            className="flex-1 bg-[#6366f1] text-white py-3 rounded-xl font-semibold hover:bg-[#4f46e5] transition-colors shadow-lg shadow-indigo-500/20"
+                                        >
                                             관리
                                         </button>
                                     </div>
@@ -190,13 +217,25 @@ export default function Dashboard() {
             </div>
 
             {/* Modal */}
-            <UploadModal 
-                isOpen={isModalOpen} 
+            <CharacterManageModal
+                isOpen={isModalOpen}
                 onClose={() => {
                     setIsModalOpen(false)
                     setDroppedFile(null)
-                }} 
+                    setSelectedCharacter(null)
+                }}
+                onSuccess={fetchMyCharacters}
+                mode={editMode}
                 initialFile={droppedFile}
+                initialData={selectedCharacter ? {
+                    id: selectedCharacter.id,
+                    name: selectedCharacter.name,
+                    gender: selectedCharacter.gender,
+                    summary: selectedCharacter.summary,
+                    status_message: selectedCharacter.status_message,
+                    tags: selectedCharacter.tags,
+                    file_name: selectedCharacter.file_name
+                } : undefined}
             />
         </div >
     )
