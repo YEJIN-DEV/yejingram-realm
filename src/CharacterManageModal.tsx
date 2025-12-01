@@ -54,6 +54,8 @@ interface CharacterManageModalProps {
         status_message: string
         tags: string[]
         file_name?: string
+        is_nsfw: boolean
+        copyright?: string | null
     }
 }
 
@@ -72,6 +74,8 @@ export default function CharacterManageModal({
         summary: '',
         status_message: '',
         tags: [] as string[],
+        is_nsfw: null as boolean | null,
+        copyright: '',
     })
     const [tagInput, setTagInput] = useState('')
     const [selectedFile, setSelectedFile] = useState<File | null>(null)
@@ -192,6 +196,8 @@ export default function CharacterManageModal({
                 summary: '',
                 status_message: '',
                 tags: [],
+                is_nsfw: null,
+                copyright: '',
             })
             setTagInput('')
             setSelectedFile(null)
@@ -223,6 +229,11 @@ export default function CharacterManageModal({
             return
         }
 
+        if (formData.is_nsfw === null) {
+            toast.error("NSFW 여부를 선택해주세요.")
+            return
+        }
+
         const uploadPromise = async () => {
             try {
                 if (mode === 'create') {
@@ -231,7 +242,9 @@ export default function CharacterManageModal({
                     const metadata = {
                         ...formData,
                         file_name: selectedFile.name,
-                        file_type: selectedFile.type
+                        file_type: selectedFile.type,
+                        has_lore: !!(characterData?.lorebook && characterData.lorebook.length > 0),
+                        has_sticker: !!(characterData?.stickers && characterData.stickers.length > 0)
                     };
 
                     // [Step 1] Lambda에 Presigned URL 요청 (아주 가벼운 JSON 요청)
@@ -274,6 +287,8 @@ export default function CharacterManageModal({
                     if (formData.gender !== initialData.gender) updateData.gender = formData.gender;
                     if (formData.summary !== initialData.summary) updateData.summary = formData.summary;
                     if (formData.status_message !== initialData.status_message) updateData.status_message = formData.status_message;
+                    if (formData.is_nsfw !== initialData.is_nsfw) updateData.is_nsfw = formData.is_nsfw;
+                    if (formData.copyright !== initialData.copyright) updateData.copyright = formData.copyright;
 
                     // Tags comparison
                     const tagsChanged = JSON.stringify([...formData.tags].sort()) !== JSON.stringify([...initialData.tags].sort());
@@ -282,6 +297,8 @@ export default function CharacterManageModal({
                     if (selectedFile) {
                         updateData.file_name = selectedFile.name;
                         updateData.file_type = selectedFile.type;
+                        updateData.has_lore = !!(characterData?.lorebook && characterData.lorebook.length > 0);
+                        updateData.has_sticker = !!(characterData?.stickers && characterData.stickers.length > 0);
                     }
 
                     if (Object.keys(updateData).length <= 1) {
@@ -332,6 +349,8 @@ export default function CharacterManageModal({
                         summary: '',
                         status_message: '',
                         tags: [],
+                        is_nsfw: null,
+                        copyright: '',
                     })
                     setTagInput('')
                     setSelectedFile(null)
@@ -391,6 +410,8 @@ export default function CharacterManageModal({
                         summary: '',
                         status_message: '',
                         tags: [],
+                        is_nsfw: null,
+                        copyright: '',
                     })
                     setTagInput('')
                     setSelectedFile(null)
@@ -411,6 +432,8 @@ export default function CharacterManageModal({
                 summary: initialData.summary,
                 status_message: initialData.status_message,
                 tags: initialData.tags,
+                is_nsfw: initialData.is_nsfw ?? null,
+                copyright: initialData.copyright ?? '',
             })
 
             if (initialData.id && initialData.file_name) {
@@ -457,7 +480,7 @@ export default function CharacterManageModal({
                         <div className="flex-1 space-y-6">
                             {/* Name */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">이름 <small>(*필수)</small></label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">이름  <span className="text-red-500">*</span></label>
                                 <input
                                     type="text"
                                     value={formData.name}
@@ -470,7 +493,18 @@ export default function CharacterManageModal({
 
                             {/* Gender */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">성별</label>
+                                <div className="flex justify-between items-center mb-2">
+                                    <label className="block text-sm font-medium text-gray-700">성별</label>
+                                    {formData.gender !== null && (
+                                        <button
+                                            type="button"
+                                            onClick={() => setFormData({ ...formData, gender: null })}
+                                            className="text-xs text-gray-500 hover:text-red-500 transition-colors cursor-pointer"
+                                        >
+                                            선택 취소
+                                        </button>
+                                    )}
+                                </div>
                                 <div className="flex gap-4">
                                     {[
                                         { label: '여성', value: 0 },
@@ -518,9 +552,148 @@ export default function CharacterManageModal({
                                 </div>
                             </div>
 
+                            {/* NSFW */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    NSFW 여부 (명시적인 성인 묘사 포함) <span className="text-red-500">*</span>
+                                </label>
+                                <div className="flex gap-4">
+                                    <label className={`flex items-center gap-2 cursor-pointer px-4 py-2 rounded-lg border transition-all ${formData.is_nsfw === true ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-gray-200 hover:bg-gray-50'}`}>
+                                        <input
+                                            type="radio"
+                                            name="is_nsfw"
+                                            checked={formData.is_nsfw === true}
+                                            onChange={() => setFormData({ ...formData, is_nsfw: true })}
+                                            className="w-4 h-4 text-indigo-600 focus:ring-indigo-500"
+                                        />
+                                        <span>예</span>
+                                    </label>
+                                    <label className={`flex items-center gap-2 cursor-pointer px-4 py-2 rounded-lg border transition-all ${formData.is_nsfw === false ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-gray-200 hover:bg-gray-50'}`}>
+                                        <input
+                                            type="radio"
+                                            name="is_nsfw"
+                                            checked={formData.is_nsfw === false}
+                                            onChange={() => setFormData({ ...formData, is_nsfw: false })}
+                                            className="w-4 h-4 text-indigo-600 focus:ring-indigo-500"
+                                        />
+                                        <span>아니오</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            {/* Copyright */}
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">저작권 설정</label>
+                                <div className="space-y-3">
+                                    <select
+                                        value={
+                                            formData.copyright === 'WTFPL' ? 'WTFPL' :
+                                                formData.copyright.startsWith('CC') ? 'CC' :
+                                                    ''
+                                        }
+                                        onChange={(e) => {
+                                            const val = e.target.value;
+                                            if (val === '') setFormData({ ...formData, copyright: '' });
+                                            else if (val === 'WTFPL') setFormData({ ...formData, copyright: 'WTFPL' });
+                                            else setFormData({ ...formData, copyright: 'CC BY-NC-SA 4.0' });
+                                        }}
+                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                                    >
+                                        <option value="">미설정</option>
+                                        <option value="CC">Creative Commons (CC)</option>
+                                        <option value="WTFPL">WTFPL</option>
+                                    </select>
+
+                                    {formData.copyright.startsWith('CC') && (
+                                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-3 text-sm">
+                                            <div className="flex items-center gap-2">
+                                                <input
+                                                    type="checkbox"
+                                                    id="cc_nc"
+                                                    checked={formData.copyright.includes('NC')}
+                                                    onChange={(e) => {
+                                                        const isNC = e.target.checked;
+                                                        const isND = formData.copyright.includes('ND');
+                                                        const isSA = formData.copyright.includes('SA');
+
+                                                        let newParts = ['BY'];
+                                                        if (isNC) newParts.push('NC');
+                                                        if (isND) newParts.push('ND');
+                                                        else if (isSA) newParts.push('SA');
+
+                                                        setFormData({ ...formData, copyright: 'CC ' + newParts.join('-') + ' 4.0' });
+                                                    }}
+                                                    className="w-4 h-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                                                />
+                                                <label htmlFor="cc_nc" className="text-gray-700 select-none cursor-pointer">
+                                                    비영리 (NonCommercial)
+                                                </label>
+                                            </div>
+
+                                            <div className="space-y-2">
+                                                <div className="text-gray-700 font-medium">변경 허락 (Modifications)</div>
+                                                <div className="space-y-1 pl-1">
+                                                    <label className="flex items-center gap-2 cursor-pointer">
+                                                        <input
+                                                            type="radio"
+                                                            name="cc_mod"
+                                                            checked={!formData.copyright.includes('ND') && !formData.copyright.includes('SA')}
+                                                            onChange={() => {
+                                                                const isNC = formData.copyright.includes('NC');
+                                                                let newParts = ['BY'];
+                                                                if (isNC) newParts.push('NC');
+                                                                setFormData({ ...formData, copyright: 'CC ' + newParts.join('-') + ' 4.0' });
+                                                            }}
+                                                            className="w-4 h-4 text-indigo-600 focus:ring-indigo-500"
+                                                        />
+                                                        <span>허용</span>
+                                                    </label>
+                                                    <label className="flex items-center gap-2 cursor-pointer">
+                                                        <input
+                                                            type="radio"
+                                                            name="cc_mod"
+                                                            checked={formData.copyright.includes('SA')}
+                                                            onChange={() => {
+                                                                const isNC = formData.copyright.includes('NC');
+                                                                let newParts = ['BY'];
+                                                                if (isNC) newParts.push('NC');
+                                                                newParts.push('SA');
+                                                                setFormData({ ...formData, copyright: 'CC ' + newParts.join('-') + ' 4.0' });
+                                                            }}
+                                                            className="w-4 h-4 text-indigo-600 focus:ring-indigo-500"
+                                                        />
+                                                        <span>동일조건변경허락 (ShareAlike)</span>
+                                                    </label>
+                                                    <label className="flex items-center gap-2 cursor-pointer">
+                                                        <input
+                                                            type="radio"
+                                                            name="cc_mod"
+                                                            checked={formData.copyright.includes('ND')}
+                                                            onChange={() => {
+                                                                const isNC = formData.copyright.includes('NC');
+                                                                let newParts = ['BY'];
+                                                                if (isNC) newParts.push('NC');
+                                                                newParts.push('ND');
+                                                                setFormData({ ...formData, copyright: 'CC ' + newParts.join('-') + ' 4.0' });
+                                                            }}
+                                                            className="w-4 h-4 text-indigo-600 focus:ring-indigo-500"
+                                                        />
+                                                        <span>변경금지 (NoDerivatives)</span>
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                            <div className="pt-2 border-t border-gray-200 text-xs text-gray-500">
+                                                선택된 라이선스: <span className="font-mono font-bold text-indigo-600">{formData.copyright}</span>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
                             {/* Status Message */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">상태 메시지 <small>(*필수)</small></label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">상태 메시지  <span className="text-red-500">*</span></label>
                                 <input
                                     type="text"
                                     value={formData.status_message}
@@ -533,7 +706,7 @@ export default function CharacterManageModal({
 
                             {/* Summary */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">캐릭터 소개 <small>(*필수)</small></label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">캐릭터 소개  <span className="text-red-500">*</span></label>
                                 <textarea
                                     value={formData.summary}
                                     onChange={e => setFormData({ ...formData, summary: e.target.value })}

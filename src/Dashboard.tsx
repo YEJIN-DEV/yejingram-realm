@@ -21,6 +21,8 @@ interface ApiCharacterItem {
     file_name: string
     id: string
     tags: string[]
+    is_nsfw?: boolean
+    copyright?: string | null
 }
 
 interface DashboardCharacter {
@@ -36,7 +38,9 @@ interface DashboardCharacter {
     tags: string[]
     file_name: string
     created_at: number
-    updated_at: number
+    updated_at: number,
+    is_nsfw: boolean,
+    copyright?: string | null
 }
 
 export default function Dashboard() {
@@ -107,6 +111,8 @@ export default function Dashboard() {
                             file_name: item.file_name,
                             created_at: item.created_at,
                             updated_at: item.updated_at,
+                            is_nsfw: item.is_nsfw ?? false,
+                            copyright: item.copyright ?? null,
                         }))
                         setMyCharacters(mappedCharacters)
                         setCharCount(data.count || mappedCharacters.length)
@@ -149,7 +155,7 @@ export default function Dashboard() {
     return (
         <div className="w-full max-w-[1200px] mx-auto py-10 px-5 font-sans">
             <div className="mb-10">
-                <h1 className="text-[32px] font-extrabold text-(--color-text-primary) mb-3 tracking-[-0.5px]">대시보드</h1>
+                <h1 className="text-[32px] font-extrabold text-(--color-text-primary) mb-3 tracking-[-0.5px]">{auth.user?.profile.nickname}님의 대시보드</h1>
                 <p className="text-base text-(--color-text-secondary) m-0">
                     내 캐릭터를 관리하고 통계를 확인하세요.
                 </p>
@@ -195,7 +201,7 @@ export default function Dashboard() {
                             <option value="name">이름순</option>
                             <option value="popularity">인기도순</option>
                             <option value="views">조회수순</option>
-                            <option value="downloads">다운로드수순</option>
+                            <option value="downloads">다운로드순</option>
                             <option value="created_at">업로드 날짜순</option>
                             <option value="updated_at">업데이트 날짜순</option>
                         </select>
@@ -288,7 +294,9 @@ export default function Dashboard() {
                     summary: selectedCharacter.summary,
                     status_message: selectedCharacter.status_message,
                     tags: selectedCharacter.tags,
-                    file_name: selectedCharacter.file_name
+                    file_name: selectedCharacter.file_name,
+                    is_nsfw: selectedCharacter.is_nsfw,
+                    copyright: selectedCharacter.copyright ?? null
                 } : undefined}
             />
         </div >

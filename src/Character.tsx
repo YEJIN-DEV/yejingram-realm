@@ -1,4 +1,4 @@
-import { Download, Eye, Flame, Heart } from 'lucide-react'
+import { Download, Eye, Flame, Book, Smile } from 'lucide-react'
 import { useEffect, useState, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
@@ -18,6 +18,10 @@ interface CharacterData {
   created_at: number
   updated_at: number
   file_name: string
+  copyright?: string
+  is_nsfw?: boolean
+  has_lore?: boolean
+  has_sticker?: boolean
 }
 interface LastKey {
   id: string
@@ -89,6 +93,45 @@ function Character() {
     }
   }, [characters, searchParams, setSearchParams])
 
+  const getLicenseInfo = (copyright: string) => {
+    if (copyright === 'WTFPL') {
+      return {
+        url: 'http://www.wtfpl.net/',
+        image: 'http://www.wtfpl.net/wp-content/uploads/2012/12/wtfpl-badge-4.png',
+        summary: '제약 없이 자유롭게 이용 가능합니다.',
+        isCC: false
+      }
+    }
+
+    if (copyright.startsWith('CC')) {
+      const parts = copyright.split(' ')
+      const code = parts[1]?.toLowerCase()
+      const version = parts[2] || '4.0'
+
+      if (!code) return null
+
+      const url = `https://creativecommons.org/licenses/${code}/${version}/`
+      const image = `https://licensebuttons.net/l/${code}/${version}/88x31.png`
+
+      const summaryParts = []
+      if (code.includes('by')) summaryParts.push('저작자 표시')
+      if (code.includes('nc')) summaryParts.push('비영리')
+      if (code.includes('nd')) summaryParts.push('변경 금지')
+      if (code.includes('sa')) summaryParts.push('동일조건변경허락')
+
+      const summary = `${summaryParts.join(', ')} 조건 하에 이용 가능합니다.`
+
+      return {
+        url,
+        image,
+        summary,
+        isCC: true
+      }
+    }
+
+    return null
+  }
+
   const handleNext = () => {
     if (lastKey) {
       fetchList(lastKey)
@@ -117,7 +160,7 @@ function Character() {
   }
 
   return (
-    <div className={`p-5 md:p-20 grid gap-4 items-stretch transition-[grid-template-columns] duration-180 ease-out max-md:block ${!sidebarOpen ? 'grid-cols-[64px_minmax(0,1fr)]' : 'grid-cols-[260px_minmax(0,1fr)]'} ${sidebarOpen ? 'sidebar-open' : ''}`}>
+    <div className={`p-5 md:p-20 md:pt-5 grid gap-4 items-stretch transition-[grid-template-columns] duration-180 ease-out max-md:block ${!sidebarOpen ? 'grid-cols-[64px_minmax(0,1fr)]' : 'grid-cols-[260px_minmax(0,1fr)]'} ${sidebarOpen ? 'sidebar-open' : ''}`}>
       {/* Mobile Sidebar Trigger */}
       <button
         className="hidden max-md:flex flex-col gap-1 items-center justify-center fixed bottom-6 right-6 w-14 h-14 rounded-full bg-[#111827] text-white border-none shadow-[0_4px_12px_rgba(0,0,0,0.3)] z-2000 cursor-pointer transition-transform duration-200 active:scale-95"
@@ -243,15 +286,34 @@ function Character() {
                     <th className="p-2 border border-[#e5e7eb] text-left bg-[#f9fafb] font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-[#f9fafb] max-md:text-[#6b7280] max-md:pb-1 max-md:border-none">Name</th>
                     <td className="p-2 border border-[#e5e7eb] text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-[#f3f4f6]">{selectedCharacter.name || 'Unknown'}</td>
                     <th className="p-2 border border-[#e5e7eb] text-left bg-[#f9fafb] font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-[#f9fafb] max-md:text-[#6b7280] max-md:pb-1 max-md:border-none">Uploader</th>
-                    <td className="p-2 border border-[#e5e7eb] text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-[#f3f4f6]">{selectedCharacter.uploader_nickname || 'Unknown'}</td>
+                    <td className="p-2 border border-[#e5e7eb] text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-[#f3f4f6]">{selectedCharacter.uploader_nickname || 'Anonymous'}</td>
+                  </tr>
+                  <tr className="max-md:flex max-md:flex-col max-md:border-b max-md:border-[#e5e7eb]">
+                    <th className="p-2 border border-[#e5e7eb] text-left bg-[#f9fafb] font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-[#f9fafb] max-md:text-[#6b7280] max-md:pb-1 max-md:border-none">Gender</th>
+                    <td className="p-2 border border-[#e5e7eb] text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-[#f3f4f6]">{selectedCharacter.gender === 0 ? 'Female' : selectedCharacter.gender === 1 ? 'Male' : selectedCharacter.gender === 2 ? 'Other' : 'Not Specified'}</td>
+                    <th className="p-2 border border-[#e5e7eb] text-left bg-[#f9fafb] font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-[#f9fafb] max-md:text-[#6b7280] max-md:pb-1 max-md:border-none">NSFW</th>
+                    <td className="p-2 border border-[#e5e7eb] text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-[#f3f4f6]">{selectedCharacter.is_nsfw ? 'Yes' : 'No'}</td>
                   </tr>
                   <tr className="max-md:flex max-md:flex-col max-md:border-b max-md:border-[#e5e7eb]">
                     <th className="p-2 border border-[#e5e7eb] text-left bg-[#f9fafb] font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-[#f9fafb] max-md:text-[#6b7280] max-md:pb-1 max-md:border-none">Phone</th>
                     <td className="p-2 border border-[#e5e7eb] text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-[#f3f4f6]">{selectedCharacter.id.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3')}</td>
-                  </tr>
-                  <tr className="max-md:flex max-md:flex-col max-md:border-b max-md:border-[#e5e7eb]">
-                    <th className="p-2 border border-[#e5e7eb] text-left bg-[#f9fafb] font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-[#f9fafb] max-md:text-[#6b7280] max-md:pb-1 max-md:border-none">Gender</th>
-                    <td className="p-2 border border-[#e5e7eb] text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-[#f3f4f6]">{selectedCharacter.gender === 0 ? 'Female' : selectedCharacter.gender === 1 ? 'Male' : 'Other'}</td>
+                    <td colSpan={2} className="p-2 border border-[#e5e7eb] text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-[#f3f4f6]">
+                      <div className="flex gap-3 items-center">
+                        {selectedCharacter.has_lore && (
+                          <div className="flex items-center gap-1">
+                            <Book className="w-4 h-4 text-blue-500" />
+                            <span>로어북 포함됨</span>
+                          </div>
+                        )}
+                        {selectedCharacter.has_sticker && (
+                          <div className="flex items-center gap-1">
+                            <Smile className="w-4 h-4 text-yellow-500" />
+                            <span>스티커 포함됨</span>
+                          </div>
+                        )}
+                        {!selectedCharacter.has_lore && !selectedCharacter.has_sticker && '-'}
+                      </div>
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -297,6 +359,24 @@ function Character() {
               <p>Developed and maintained multiple client-facing web applications.</p>
             </div>
           </section>
+
+          {selectedCharacter.copyright && (() => {
+            const license = getLicenseInfo(selectedCharacter.copyright)
+            if (!license) return null
+            return (
+              <div className="mt-8 flex flex-col items-end gap-2">
+                <a
+                  href={license.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:opacity-80 transition-opacity"
+                >
+                  <img src={license.image} alt={selectedCharacter.copyright} />
+                </a>
+                <span className="text-[11px] text-[#6b7280]">{license.summary}</span>
+              </div>
+            )
+          })()}
         </div>
 
         <div className="absolute top-1/2 -right-16 -translate-y-1/2 flex flex-col gap-2.5 max-md:static max-md:transform-none max-md:flex-row max-md:mt-8 max-md:gap-2 max-md:overflow-x-auto max-md:pb-2 max-md:justify-start max-md:w-full [&::-webkit-scrollbar]:hidden">
@@ -312,8 +392,8 @@ function Character() {
             CONTACT
           </div>
         </div>
-      </main>
-    </div>
+      </main >
+    </div >
   )
 }
 

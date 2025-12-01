@@ -26,7 +26,7 @@ function App() {
       <div className="w-full">
         <nav className="w-full max-w-[1140px] mx-auto pt-3.5 px-6 flex items-center justify-between text-xs tracking-[0.16em]">
           <Link to="/" className="font-bold text-(--color-text-primary) no-underline">
-            YEJINGRAM REALM
+            YEJINGRAM<br />REALM
           </Link>
           <div className="flex gap-3">
             <Link to="/" className="no-underline text-(--color-text-secondary) uppercase">
@@ -36,7 +36,7 @@ function App() {
               <>
                 <span className="text-(--color-text-secondary)">|</span>
                 <Link to="/dashboard" className="no-underline text-(--color-text-secondary) uppercase">
-                  마이페이지({auth.user?.profile.nickname})
+                  마이페이지
                 </Link>
                 <span className="text-(--color-text-secondary)">|</span>
                 <button
