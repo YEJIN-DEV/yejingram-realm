@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useAuth } from 'react-oidc-context'
 import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
-import { Eye, Download, Plus, Flame, Loader2 } from 'lucide-react'
+import { Eye, Download, Plus, Flame, Loader2, ArrowUpDown } from 'lucide-react'
 import CharacterManageModal from './CharacterManageModal'
 
 interface ApiCharacterItem {
@@ -35,6 +35,8 @@ interface DashboardCharacter {
     status_message: string
     tags: string[]
     file_name: string
+    created_at: number
+    updated_at: number
 }
 
 export default function Dashboard() {
@@ -47,6 +49,8 @@ export default function Dashboard() {
     const [droppedFile, setDroppedFile] = useState<File | null>(null)
     const [editMode, setEditMode] = useState<'create' | 'edit'>('create')
     const [selectedCharacter, setSelectedCharacter] = useState<DashboardCharacter | null>(null)
+    const [sortOption, setSortOption] = useState<'name' | 'popularity' | 'views' | 'downloads' | 'created_at' | 'updated_at'>('popularity')
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc')
 
     useEffect(() => {
         if (!auth.isLoading) {
@@ -101,6 +105,8 @@ export default function Dashboard() {
                             status_message: item.status_message,
                             tags: item.tags,
                             file_name: item.file_name,
+                            created_at: item.created_at,
+                            updated_at: item.updated_at,
                         }))
                         setMyCharacters(mappedCharacters)
                         setCharCount(data.count || mappedCharacters.length)
@@ -114,6 +120,31 @@ export default function Dashboard() {
     useEffect(() => {
         fetchMyCharacters()
     }, [auth.user?.profile.sub])
+
+    const sortedCharacters = [...myCharacters].sort((a, b) => {
+        let comparison = 0
+        switch (sortOption) {
+            case 'name':
+                comparison = a.name.localeCompare(b.name)
+                break
+            case 'popularity':
+                comparison = a.popularity - b.popularity
+                break
+            case 'views':
+                comparison = a.views - b.views
+                break
+            case 'downloads':
+                comparison = a.downloads - b.downloads
+                break
+            case 'created_at':
+                comparison = a.created_at - b.created_at
+                break
+            case 'updated_at':
+                comparison = a.updated_at - b.updated_at
+                break
+        }
+        return sortOrder === 'asc' ? comparison : -comparison
+    })
 
     return (
         <div className="w-full max-w-[1200px] mx-auto py-10 px-5 font-sans">
@@ -152,8 +183,31 @@ export default function Dashboard() {
 
             {/* My Characters List */}
             <div>
-                <div className="flex justify-between items-center mb-6">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
                     <h2 className="text-2xl font-bold text-(--color-text-primary)">내 캐릭터 목록 ({charCount})</h2>
+
+                    <div className="flex items-center gap-2">
+                        <select
+                            value={sortOption}
+                            onChange={(e) => setSortOption(e.target.value as any)}
+                            className="px-3 py-2 rounded-lg border border-(--color-border-secondary) bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6366f1]"
+                        >
+                            <option value="name">이름순</option>
+                            <option value="popularity">인기도순</option>
+                            <option value="views">조회수순</option>
+                            <option value="downloads">다운로드수순</option>
+                            <option value="created_at">업로드 날짜순</option>
+                            <option value="updated_at">업데이트 날짜순</option>
+                        </select>
+
+                        <button
+                            onClick={() => setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}
+                            className="p-2 rounded-lg border border-(--color-border-secondary) bg-white hover:bg-gray-50 transition-colors flex items-center gap-1 text-sm font-medium text-gray-600"
+                        >
+                            <ArrowUpDown className="w-4 h-4" />
+                            {sortOrder === 'asc' ? '오름차순' : '내림차순'}
+                        </button>
+                    </div>
                 </div>
                 <div>
                     {isLoading ? (
@@ -162,7 +216,7 @@ export default function Dashboard() {
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {myCharacters.map((char) => (
+                            {sortedCharacters.map((char) => (
                                 <div key={char.id} className="bg-white rounded-3xl p-6 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.05),0_8px_10px_-6px_rgba(0,0,0,0.01)] border border-(--color-border-secondary) hover:-translate-y-1 transition-transform duration-300">
                                     <div className="flex items-start justify-between mb-6">
                                         <div className="flex items-center gap-4 w-full">
