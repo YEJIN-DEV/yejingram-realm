@@ -193,53 +193,32 @@ function Character() {
             <span className="text-[11px] text-[#6b7280]">{characters.length}</span>
           </div>
 
-          <ul className="m-0 p-0 flex flex-col gap-1.5 overflow-y-auto flex-1 pr-1 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[rgba(156,163,175,0.3)] [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-[rgba(156,163,175,0.5)]">
-            {!isSelectedInList && (
-              <>
+          <ul className="m-0 p-0 flex flex-col gap-1.5 overflow-y-auto flex-1 pr-1">
+            {(() => {
+              const displayCharacters = isSelectedInList ? characters : [selectedCharacter, ...characters]
+              return displayCharacters.map((character) => (
                 <button
-                  key={selectedCharacter.id}
-                  data-character-id={selectedCharacter.id}
-                  className={`group border-none bg-transparent rounded-[10px] p-2 flex items-center justify-between gap-2 cursor-pointer transition-all duration-120 text-[#9ca3af] hover:bg-[rgba(255,255,255,0.05)] hover:-translate-y-px hover:text-[#e5e7eb] w-full bg-[#111827]! shadow-[0_0_0_1px_rgba(248,250,252,0.14),0_10px_24px_rgba(15,23,42,0.6)] text-[#e5e7eb]!`}
+                  key={character.id}
+                  data-character-id={character.id}
+                  className={`group border-none bg-transparent rounded-[10px] p-2 flex items-center justify-between gap-2 cursor-pointer transition-all duration-120 text-[#9ca3af] hover:bg-[rgba(255,255,255,0.05)] hover:-translate-y-px hover:text-[#e5e7eb] w-full ${selectedCharacter.id === character.id ? 'bg-[#111827]! shadow-[0_0_0_1px_rgba(248,250,252,0.14),0_10px_24px_rgba(15,23,42,0.6)] text-[#e5e7eb]!' : ''
+                    }`}
                   onClick={() => {
-                    setSearchParams({ id: selectedCharacter.id })
+                    setSearchParams({ id: character.id })
                     if (window.innerWidth <= 768) setSidebarOpen(false)
                   }}
                 >
                   <div className="flex flex-col items-start">
-                    <span className="text-[13px] font-semibold text-inherit">{selectedCharacter.name}</span>
-                    <span className="text-[11px] text-[#6b7280] group-hover:text-[#9ca3af]">Developer</span>
+                    <span className="text-[13px] font-semibold text-inherit">{character.name}</span>
+                    <span className="text-[11px] text-[#6b7280] group-hover:text-[#9ca3af]">{character.status_message}</span>
                   </div>
-                  {selectedCharacter.tags && selectedCharacter.tags.length > 0 && (
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full bg-[rgba(255,255,255,0.03)] border border-[#4b5563] text-[#9ca3af] whitespace-nowrap transition-all duration-200 group-hover:border-[#9ca3af] group-hover:text-[#e5e7eb] bg-[#fef3c7] border-[#facc15] text-[#92400e]`}>
-                      {selectedCharacter.tags[0]}
+                  {character.tags && character.tags.length > 0 && (
+                    <span className={`text-[10px] px-2 py-0.5 rounded-full bg-[rgba(255,255,255,0.03)] border border-[#4b5563] text-[#9ca3af] whitespace-nowrap transition-all duration-200 group-hover:border-[#9ca3af] group-hover:text-[#e5e7eb] ${selectedCharacter.id === character.id ? 'bg-[#fef3c7] border-[#facc15] text-[#92400e]' : ''}`}>
+                      {character.tags[0]}
                     </span>
                   )}
                 </button>
-                <div className="h-px bg-[#374151] my-2 mx-2" />
-              </>
-            )}
-            {characters.map((character) => (
-              <button
-                key={character.id}
-                data-character-id={character.id}
-                className={`group border-none bg-transparent rounded-[10px] p-2 flex items-center justify-between gap-2 cursor-pointer transition-all duration-120 text-[#9ca3af] hover:bg-[rgba(255,255,255,0.05)] hover:-translate-y-px hover:text-[#e5e7eb] w-full ${selectedCharacter.id === character.id ? 'bg-[#111827]! shadow-[0_0_0_1px_rgba(248,250,252,0.14),0_10px_24px_rgba(15,23,42,0.6)] text-[#e5e7eb]!' : ''
-                  }`}
-                onClick={() => {
-                  setSearchParams({ id: character.id })
-                  if (window.innerWidth <= 768) setSidebarOpen(false)
-                }}
-              >
-                <div className="flex flex-col items-start">
-                  <span className="text-[13px] font-semibold text-inherit">{character.name}</span>
-                  <span className="text-[11px] text-[#6b7280] group-hover:text-[#9ca3af]">Developer</span>
-                </div>
-                {character.tags && character.tags.length > 0 && (
-                  <span className={`text-[10px] px-2 py-0.5 rounded-full bg-[rgba(255,255,255,0.03)] border border-[#4b5563] text-[#9ca3af] whitespace-nowrap transition-all duration-200 group-hover:border-[#9ca3af] group-hover:text-[#e5e7eb] ${selectedCharacter.id === character.id ? 'bg-[#fef3c7] border-[#facc15] text-[#92400e]' : ''}`}>
-                    {character.tags[0]}
-                  </span>
-                )}
-              </button>
-            ))}
+              ))
+            })()}
             {lastKey && (
               <button
                 className="w-full py-2 text-xs text-[#6b7280] hover:text-[#e5e7eb] bg-transparent border border-[#374151] rounded-lg mt-2 cursor-pointer transition-colors"
@@ -253,7 +232,7 @@ function Character() {
       </aside>
 
       <main className="relative bg-white rounded-[18px] p-8 shadow-[0_22px_45px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.04)] overflow-visible  flex flex-col max-md:p-5 max-md: max-md:rounded-none max-md:overflow-y-auto max-md:overflow-x-hidden">
-        <div className="pr-23 overflow-y-auto pb-5 max-md:pr-0 max-md:overflow-y-visible max-md:h-auto [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[rgba(156,163,175,0.3)] [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-[rgba(156,163,175,0.5)]">
+        <div className="pr-23 overflow-y-auto pb-5 max-md:pr-0 max-md:overflow-y-visible max-md:h-auto">
           <header className="flex justify-between items-end mb-6 pb-3 border-b-2 border-[#e5e7eb]">
             <div className="resume-title">
               <h1 className="m-0 text-[26px]">{selectedCharacter.name}</h1>
@@ -369,16 +348,16 @@ function Character() {
           })()}
         </div>
 
-        <div className="absolute top-1/2 -right-16 -translate-y-1/2 flex flex-col gap-2.5 max-md:static max-md:transform-none max-md:flex-row max-md:mt-8 max-md:gap-2 max-md:overflow-x-auto max-md:pb-2 max-md:justify-start max-md:w-full [&::-webkit-scrollbar]:hidden">
-          <div className="relative min-w-[120px] px-[18px] py-2.5 rounded-l-[10px] text-[#111827] text-[13px] font-semibold tracking-[0.08em] text-center bg-gradient-to-br from-[#fef3c7] to-[#fde68a] shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-150 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-0 max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap max-md:hover:translate-x-0 max-md:shadow-none max-md:hover:shadow-none" onClick={() => {
+        <div className="absolute top-1/2 -right-16 -translate-y-1/2 flex flex-col gap-2.5 max-md:static max-md:transform-none max-md:flex-row max-md:mt-8 max-md:gap-2 max-md:overflow-x-auto max-md:pb-2 max-md:justify-start max-md:w-full">
+          <div className="relative min-w-[120px] px-[18px] py-2.5 rounded-l-[10px] text-[#111827] text-[13px] font-semibold tracking-[0.08em] text-center bg-linear-to-br from-[#fef3c7] to-[#fde68a] shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-150 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-0 max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap max-md:hover:translate-x-0 max-md:shadow-none max-md:hover:shadow-none" onClick={() => {
             window.open(`https://d3rd8muqzoyvtk.cloudfront.net/realm/${selectedCharacter.id}/download`, '_blank')
           }}>
             DOWNLOAD
           </div>
-          <div className="relative min-w-[120px] px-[18px] py-2.5 rounded-l-[10px] text-[#111827] text-[13px] font-semibold tracking-[0.08em] text-center bg-gradient-to-br from-[#e0f2fe] to-[#bfdbfe] shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-150 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-0 max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap max-md:hover:translate-x-0 max-md:shadow-none max-md:hover:shadow-none">
+          <div className="relative min-w-[120px] px-[18px] py-2.5 rounded-l-[10px] text-[#111827] text-[13px] font-semibold tracking-[0.08em] text-center bg-linear-to-br from-[#e0f2fe] to-[#bfdbfe] shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-150 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-0 max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap max-md:hover:translate-x-0 max-md:shadow-none max-md:hover:shadow-none">
             PORTFOLIO
           </div>
-          <div className="relative min-w-[120px] px-[18px] py-2.5 rounded-l-[10px] text-[#111827] text-[13px] font-semibold tracking-[0.08em] text-center bg-gradient-to-br from-[#fee2e2] to-[#fecaca] shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-150 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-0 max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap max-md:hover:translate-x-0 max-md:shadow-none max-md:hover:shadow-none">
+          <div className="relative min-w-[120px] px-[18px] py-2.5 rounded-l-[10px] text-[#111827] text-[13px] font-semibold tracking-[0.08em] text-center bg-linear-to-br from-[#fee2e2] to-[#fecaca] shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-150 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-0 max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap max-md:hover:translate-x-0 max-md:shadow-none max-md:hover:shadow-none">
             CONTACT
           </div>
         </div>
