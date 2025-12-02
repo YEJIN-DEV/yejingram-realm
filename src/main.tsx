@@ -9,6 +9,16 @@ import TOS from './TOS.tsx'
 import Dashboard from './Dashboard.tsx'
 import { Toaster } from 'react-hot-toast'
 
+window.addEventListener('message', (event) => {
+  if (event.data.type === 'CSS_VARIABLES') {
+    const variables = event.data.variables;
+    // :root에 변수 적용
+    for (const [key, value] of Object.entries(variables)) {
+      document.documentElement.style.setProperty(key, value as string);
+    }
+  }
+});
+
 const cognitoAuthConfig = {
   authority: "https://cognito-idp.ap-northeast-2.amazonaws.com/ap-northeast-2_qpXc0tRPJ",
   client_id: "3mjaiv26pdraeb0erjj5am92ve",
