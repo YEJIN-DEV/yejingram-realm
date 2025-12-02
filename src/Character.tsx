@@ -177,7 +177,7 @@ function Character() {
         onClick={() => setSidebarOpen(false)}
       ></div>
 
-      <aside className={`sticky top-6 h-[92vh] bg-[#020617] text-[#e5e7eb] rounded-2xl p-4 shadow-[0_22px_45px_rgba(15,23,42,0.4),0_0_0_1px_rgba(15,23,42,0.6)] flex flex-col overflow-hidden max-md:fixed max-md:top-0 max-md:left-0 max-md:bottom-0 max-md:w-[50vw] max-md:h-screen max-md:z-3000 max-md:transition-transform max-md:duration-300 max-md:ease-in-out max-md:rounded-r-2xl max-md:shadow-[0_0_24px_rgba(0,0,0,0.2)] ${!sidebarOpen ? 'max-md:-translate-x-full' : 'max-md:translate-x-0'}`}>
+      <aside className={`sticky top-6 bg-[#020617] text-[#e5e7eb] rounded-2xl p-4 shadow-[0_22px_45px_rgba(15,23,42,0.4),0_0_0_1px_rgba(15,23,42,0.6)] flex flex-col overflow-hidden max-md:fixed max-md:top-0 max-md:left-0 max-md:bottom-0 max-md:w-[50vw] max-md:h-screen max-md:z-3000 max-md:transition-transform max-md:duration-300 max-md:ease-in-out max-md:rounded-r-2xl max-md:shadow-[0_0_24px_rgba(0,0,0,0.2)] ${!sidebarOpen ? 'max-md:-translate-x-full' : 'max-md:translate-x-0'}`}>
         <button
           className="absolute top-3 left-3 w-8 h-8 rounded-full border-none bg-[#020617] inline-flex flex-col items-center justify-center gap-1 cursor-pointer shadow-[0_8px_18px_rgba(15,23,42,0.9)] z-10"
           onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -252,8 +252,8 @@ function Character() {
         </div>
       </aside>
 
-      <main className="relative bg-white rounded-[18px] p-8 shadow-[0_22px_45px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.04)] overflow-visible h-[92vh] flex flex-col max-md:p-5 max-md:h-[92vh] max-md:rounded-none max-md:overflow-y-auto max-md:overflow-x-hidden">
-        <div className="pr-[120px] overflow-y-auto flex-1 pb-5 max-md:pr-0 max-md:overflow-y-visible max-md:h-auto max-md:pb-20 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[rgba(156,163,175,0.3)] [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-[rgba(156,163,175,0.5)]">
+      <main className="relative bg-white rounded-[18px] p-8 shadow-[0_22px_45px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.04)] overflow-visible  flex flex-col max-md:p-5 max-md: max-md:rounded-none max-md:overflow-y-auto max-md:overflow-x-hidden">
+        <div className="pr-23 overflow-y-auto pb-5 max-md:pr-0 max-md:overflow-y-visible max-md:h-auto [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-[rgba(156,163,175,0.3)] [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-[rgba(156,163,175,0.5)]">
           <header className="flex justify-between items-end mb-6 pb-3 border-b-2 border-[#e5e7eb]">
             <div className="resume-title">
               <h1 className="m-0 text-[26px]">{selectedCharacter.name}</h1>
@@ -350,16 +350,6 @@ function Character() {
             </div>
           </section>
 
-          <section className="mt-[18px]">
-            <h2 className="m-0 mb-1.5 text-[15px] tracking-[0.08em] uppercase text-[#4b5563]">Experience</h2>
-            <div className="m-1.5 text-[#4b5563] leading-relaxed">
-              <p><strong>Senior Developer at Tech Corp</strong> (2020 - Present)</p>
-              <p>Led the frontend team in rebuilding the core product using React and TypeScript.</p>
-              <p><strong>Frontend Developer at StartUp Inc</strong> (2018 - 2020)</p>
-              <p>Developed and maintained multiple client-facing web applications.</p>
-            </div>
-          </section>
-
           {selectedCharacter.copyright && (() => {
             const license = getLicenseInfo(selectedCharacter.copyright)
             if (!license) return null
@@ -380,15 +370,15 @@ function Character() {
         </div>
 
         <div className="absolute top-1/2 -right-16 -translate-y-1/2 flex flex-col gap-2.5 max-md:static max-md:transform-none max-md:flex-row max-md:mt-8 max-md:gap-2 max-md:overflow-x-auto max-md:pb-2 max-md:justify-start max-md:w-full [&::-webkit-scrollbar]:hidden">
-          <div className="relative min-w-[120px] px-[18px] py-2.5 rounded-l-[10px] text-[#111827] text-[13px] font-semibold tracking-[0.08em] text-center bg-linear-to-br from-[#fef3c7] to-[#fde68a] shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-160 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-auto max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap before:content-[''] before:absolute before:inset-0 before:rounded-[inherit] before:bg-[radial-gradient(circle_at_0_50%,rgba(0,0,0,0.12),transparent_60%)] before:opacity-40 before:mix-blend-multiply before:pointer-events-none" onClick={() => {
+          <div className="relative min-w-[120px] px-[18px] py-2.5 rounded-l-[10px] text-[#111827] text-[13px] font-semibold tracking-[0.08em] text-center bg-gradient-to-br from-[#fef3c7] to-[#fde68a] shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-150 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-0 max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap max-md:hover:translate-x-0 max-md:shadow-none max-md:hover:shadow-none" onClick={() => {
             window.open(`https://d3rd8muqzoyvtk.cloudfront.net/realm/${selectedCharacter.id}/download`, '_blank')
           }}>
             DOWNLOAD
           </div>
-          <div className="relative min-w-[120px] px-[18px] py-2.5 rounded-l-[10px] text-[#111827] text-[13px] font-semibold tracking-[0.08em] text-center bg-linear-to-br from-[#e0f2fe] to-[#bfdbfe] shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-160 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-auto max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap before:content-[''] before:absolute before:inset-0 before:rounded-[inherit] before:bg-[radial-gradient(circle_at_0_50%,rgba(0,0,0,0.12),transparent_60%)] before:opacity-40 before:mix-blend-multiply before:pointer-events-none">
+          <div className="relative min-w-[120px] px-[18px] py-2.5 rounded-l-[10px] text-[#111827] text-[13px] font-semibold tracking-[0.08em] text-center bg-gradient-to-br from-[#e0f2fe] to-[#bfdbfe] shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-150 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-0 max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap max-md:hover:translate-x-0 max-md:shadow-none max-md:hover:shadow-none">
             PORTFOLIO
           </div>
-          <div className="relative min-w-[120px] px-[18px] py-2.5 rounded-l-[10px] text-[#111827] text-[13px] font-semibold tracking-[0.08em] text-center bg-linear-to-br from-[#fee2e2] to-[#fecaca] shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-160 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-auto max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap before:content-[''] before:absolute before:inset-0 before:rounded-[inherit] before:bg-[radial-gradient(circle_at_0_50%,rgba(0,0,0,0.12),transparent_60%)] before:opacity-40 before:mix-blend-multiply before:pointer-events-none">
+          <div className="relative min-w-[120px] px-[18px] py-2.5 rounded-l-[10px] text-[#111827] text-[13px] font-semibold tracking-[0.08em] text-center bg-gradient-to-br from-[#fee2e2] to-[#fecaca] shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-150 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-0 max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap max-md:hover:translate-x-0 max-md:shadow-none max-md:hover:shadow-none">
             CONTACT
           </div>
         </div>
