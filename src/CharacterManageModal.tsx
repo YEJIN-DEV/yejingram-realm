@@ -1,44 +1,16 @@
 import { useState, useEffect } from 'react'
-import { X, Upload } from 'lucide-react'
+import { X } from 'lucide-react'
 import { decodeText } from './util/imageStego'
 import toast from 'react-hot-toast'
 import { useAuth } from 'react-oidc-context';
+import type { Character } from './types/character'
 
-interface Sticker {
-    id: string;
-    name: string;
-    data: string;
-    type: string;
-}
-
-export interface Lore {
-    id: string;
-    name: string;
-    activationKeys: string[]; // 1 or 2 keys
-    order: number;
-    prompt: string;
-    alwaysActive: boolean;
-    multiKey: boolean; // when true, require all activationKeys to match
-    characterId?: number;
-    roomId?: string;
-}
-
-
-interface Character {
-    id: string | number
-    name: string
-    prompt: string
-    avatar: string | null
-    responseTime: number
-    thinkingTime: number
-    reactivity: number
-    tone: number
-    proactiveEnabled: boolean
-    messageCountSinceLastSummary: number
-    media: string[]
-    stickers: Sticker[]
-    lorebook?: Lore[]
-}
+import TagInput from './components/TagInput'
+import FileUpload from './components/FileUpload'
+import GenderSelector from './components/GenderSelector'
+import NsfwSelector from './components/NsfwSelector'
+import CopyrightSelector from './components/CopyrightSelector'
+import DataPreview from './components/DataPreview'
 
 interface CharacterManageModalProps {
     isOpen: boolean
@@ -492,205 +464,19 @@ export default function CharacterManageModal({
                             </div>
 
                             {/* Gender */}
-                            <div>
-                                <div className="flex justify-between items-center mb-2">
-                                    <label className="block text-sm font-medium text-gray-700">성별</label>
-                                    {formData.gender !== null && (
-                                        <button
-                                            type="button"
-                                            onClick={() => setFormData({ ...formData, gender: null })}
-                                            className="text-xs text-gray-500 hover:text-red-500 transition-colors cursor-pointer"
-                                        >
-                                            선택 취소
-                                        </button>
-                                    )}
-                                </div>
-                                <div className="flex gap-4">
-                                    {[
-                                        { label: '여성', value: 0 },
-                                        { label: '남성', value: 1 },
-                                        { label: '기타', value: 2 }
-                                    ].map((option) => (
-                                        <label key={option.value} className={`flex items-center gap-2 cursor-pointer px-4 py-2 rounded-lg border transition-all ${formData.gender === option.value ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-gray-200 hover:bg-gray-50'}`}>
-                                            <input
-                                                type="radio"
-                                                name="gender"
-                                                checked={formData.gender === option.value}
-                                                onChange={() => setFormData({ ...formData, gender: option.value })}
-                                                className="w-4 h-4 text-indigo-600 focus:ring-indigo-500"
-                                            />
-                                            <span>{option.label}</span>
-                                        </label>
-                                    ))}
-                                </div>
-                            </div>
-
+                            <GenderSelector gender={formData.gender} setGender={(g) => setFormData({ ...formData, gender: g })} />
                             {/* Tags */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">태그 (쉼표로 구분)</label>
-                                <div className="flex flex-wrap gap-2">
-                                    {formData.tags.map((tag, index) => (
-                                        <span key={index} className="bg-indigo-100 text-indigo-700 rounded-full px-3 py-1 text-sm font-medium flex items-center gap-1 hover:bg-indigo-200 transition-colors">
-                                            {tag}
-                                            <button
-                                                type="button"
-                                                onClick={() => removeTag(tag)}
-                                                className="text-indigo-500 hover:text-indigo-700 transition-colors"
-                                            >
-                                                <X className="w-4 h-4 cursor-pointer" />
-                                            </button>
-                                        </span>
-                                    ))}
-                                    <input
-                                        type="text"
-                                        value={tagInput}
-                                        onKeyDown={handleTagKeyDown}
-                                        onChange={handleTagChange}
-                                        className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-                                        placeholder="태그를 입력하고 쉼표로 구분하세요"
-                                    />
-                                </div>
-                            </div>
-
+                            <TagInput
+                                tags={formData.tags}
+                                tagInput={tagInput}
+                                onTagChange={handleTagChange}
+                                onTagKeyDown={handleTagKeyDown}
+                                removeTag={removeTag}
+                            />
                             {/* NSFW */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    NSFW 여부 (명시적인 성인 묘사 포함) <span className="text-red-500">*</span>
-                                </label>
-                                <div className="flex gap-4">
-                                    <label className={`flex items-center gap-2 cursor-pointer px-4 py-2 rounded-lg border transition-all ${formData.is_nsfw === true ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-gray-200 hover:bg-gray-50'}`}>
-                                        <input
-                                            type="radio"
-                                            name="is_nsfw"
-                                            checked={formData.is_nsfw === true}
-                                            onChange={() => setFormData({ ...formData, is_nsfw: true })}
-                                            className="w-4 h-4 text-indigo-600 focus:ring-indigo-500"
-                                        />
-                                        <span>예</span>
-                                    </label>
-                                    <label className={`flex items-center gap-2 cursor-pointer px-4 py-2 rounded-lg border transition-all ${formData.is_nsfw === false ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-gray-200 hover:bg-gray-50'}`}>
-                                        <input
-                                            type="radio"
-                                            name="is_nsfw"
-                                            checked={formData.is_nsfw === false}
-                                            onChange={() => setFormData({ ...formData, is_nsfw: false })}
-                                            className="w-4 h-4 text-indigo-600 focus:ring-indigo-500"
-                                        />
-                                        <span>아니오</span>
-                                    </label>
-                                </div>
-                            </div>
-
+                            <NsfwSelector is_nsfw={formData.is_nsfw} setIsNsfw={(v) => setFormData({ ...formData, is_nsfw: v })} />
                             {/* Copyright */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">저작권 설정</label>
-                                <div className="space-y-3">
-                                    <select
-                                        value={
-                                            formData.copyright === 'WTFPL' ? 'WTFPL' :
-                                                formData.copyright.startsWith('CC') ? 'CC' :
-                                                    ''
-                                        }
-                                        onChange={(e) => {
-                                            const val = e.target.value;
-                                            if (val === '') setFormData({ ...formData, copyright: '' });
-                                            else if (val === 'WTFPL') setFormData({ ...formData, copyright: 'WTFPL' });
-                                            else setFormData({ ...formData, copyright: 'CC BY-NC-SA 4.0' });
-                                        }}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-                                    >
-                                        <option value="">미설정</option>
-                                        <option value="CC">Creative Commons (CC)</option>
-                                        <option value="WTFPL">WTFPL</option>
-                                    </select>
-
-                                    {formData.copyright.startsWith('CC') && (
-                                        <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 space-y-3 text-sm">
-                                            <div className="flex items-center gap-2">
-                                                <input
-                                                    type="checkbox"
-                                                    id="cc_nc"
-                                                    checked={formData.copyright.includes('NC')}
-                                                    onChange={(e) => {
-                                                        const isNC = e.target.checked;
-                                                        const isND = formData.copyright.includes('ND');
-                                                        const isSA = formData.copyright.includes('SA');
-
-                                                        let newParts = ['BY'];
-                                                        if (isNC) newParts.push('NC');
-                                                        if (isND) newParts.push('ND');
-                                                        else if (isSA) newParts.push('SA');
-
-                                                        setFormData({ ...formData, copyright: 'CC ' + newParts.join('-') + ' 4.0' });
-                                                    }}
-                                                    className="w-4 h-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                                                />
-                                                <label htmlFor="cc_nc" className="text-gray-700 select-none cursor-pointer">
-                                                    비영리 (NonCommercial)
-                                                </label>
-                                            </div>
-
-                                            <div className="space-y-2">
-                                                <div className="text-gray-700 font-medium">변경 허락 (Modifications)</div>
-                                                <div className="space-y-1 pl-1">
-                                                    <label className="flex items-center gap-2 cursor-pointer">
-                                                        <input
-                                                            type="radio"
-                                                            name="cc_mod"
-                                                            checked={!formData.copyright.includes('ND') && !formData.copyright.includes('SA')}
-                                                            onChange={() => {
-                                                                const isNC = formData.copyright.includes('NC');
-                                                                let newParts = ['BY'];
-                                                                if (isNC) newParts.push('NC');
-                                                                setFormData({ ...formData, copyright: 'CC ' + newParts.join('-') + ' 4.0' });
-                                                            }}
-                                                            className="w-4 h-4 text-indigo-600 focus:ring-indigo-500"
-                                                        />
-                                                        <span>허용</span>
-                                                    </label>
-                                                    <label className="flex items-center gap-2 cursor-pointer">
-                                                        <input
-                                                            type="radio"
-                                                            name="cc_mod"
-                                                            checked={formData.copyright.includes('SA')}
-                                                            onChange={() => {
-                                                                const isNC = formData.copyright.includes('NC');
-                                                                let newParts = ['BY'];
-                                                                if (isNC) newParts.push('NC');
-                                                                newParts.push('SA');
-                                                                setFormData({ ...formData, copyright: 'CC ' + newParts.join('-') + ' 4.0' });
-                                                            }}
-                                                            className="w-4 h-4 text-indigo-600 focus:ring-indigo-500"
-                                                        />
-                                                        <span>동일조건변경허락 (ShareAlike)</span>
-                                                    </label>
-                                                    <label className="flex items-center gap-2 cursor-pointer">
-                                                        <input
-                                                            type="radio"
-                                                            name="cc_mod"
-                                                            checked={formData.copyright.includes('ND')}
-                                                            onChange={() => {
-                                                                const isNC = formData.copyright.includes('NC');
-                                                                let newParts = ['BY'];
-                                                                if (isNC) newParts.push('NC');
-                                                                newParts.push('ND');
-                                                                setFormData({ ...formData, copyright: 'CC ' + newParts.join('-') + ' 4.0' });
-                                                            }}
-                                                            className="w-4 h-4 text-indigo-600 focus:ring-indigo-500"
-                                                        />
-                                                        <span>변경금지 (NoDerivatives)</span>
-                                                    </label>
-                                                </div>
-                                            </div>
-
-                                            <div className="pt-2 border-t border-gray-200 text-xs text-gray-500">
-                                                선택된 라이선스: <span className="font-mono font-bold text-indigo-600">{formData.copyright}</span>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-
+                            <CopyrightSelector copyright={formData.copyright} setCopyright={(s) => setFormData({ ...formData, copyright: s })} />
                             {/* Status Message */}
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">상태 메시지  <span className="text-red-500">*</span></label>
@@ -719,152 +505,10 @@ export default function CharacterManageModal({
                         {/* Right Column: File Upload & Data Preview */}
                         <div className="flex-1 flex flex-col gap-6 border-l border-gray-100 pl-8">
                             {/* Image Upload */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">캐릭터 파일</label>
-                                <div className="w-full h-64 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center overflow-hidden relative bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer group">
-                                    {previewUrl ? (
-                                        <img src={previewUrl} alt="Preview" className="w-full h-full object-contain" />
-                                    ) : (
-                                        <div className="flex flex-col items-center text-gray-400 group-hover:text-indigo-500 transition-colors">
-                                            <Upload className="w-12 h-12 mb-2" />
-                                            <span className="text-sm font-medium">PNG 파일 업로드</span>
-                                            <span className="text-xs text-gray-400 mt-1">클릭하거나 드래그하여 업로드</span>
-                                        </div>
-                                    )}
-                                    <input
-                                        type="file"
-                                        accept=".png"
-                                        onChange={handleFileChange}
-                                        className="absolute inset-0 opacity-0 cursor-pointer"
-                                        required
-                                    />
-                                </div>
-                            </div>
+                            <FileUpload previewUrl={previewUrl} onFileChange={handleFileChange} required={mode === 'create'} />
 
                             {/* Data Preview */}
-                            <div className="flex-1 flex flex-col min-h-0">
-                                <div className="flex items-center justify-between mb-2">
-                                    <label className="block text-sm font-medium text-gray-700">데이터 미리보기</label>
-                                    {characterData && (
-                                        <div className="flex bg-gray-100 rounded-lg p-1">
-                                            <button
-                                                type="button"
-                                                onClick={() => setActiveTab('info')}
-                                                className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${activeTab === 'info' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
-                                            >
-                                                정보
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => setActiveTab('lore')}
-                                                className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${activeTab === 'lore' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
-                                            >
-                                                로어북 ({characterData.lorebook?.length || 0})
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => setActiveTab('stickers')}
-                                                className={`px-3 py-1 text-xs font-medium rounded-md transition-all ${activeTab === 'stickers' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
-                                            >
-                                                스티커 ({characterData.stickers?.length || 0})
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div className="flex-1 bg-gray-50 rounded-xl p-4 overflow-auto border border-gray-200">
-                                    {characterData ? (
-                                        <>
-                                            {activeTab === 'info' && (
-                                                <div className="space-y-4">
-                                                    <div>
-                                                        <h4 className="text-xs font-bold text-gray-500 uppercase mb-1">프롬프트</h4>
-                                                        <div className="text-sm text-gray-800 whitespace-pre-wrap bg-white p-3 rounded-lg border border-gray-200 max-h-60 overflow-y-auto">
-                                                            {characterData.prompt}
-                                                        </div>
-                                                    </div>
-                                                    <div className="grid grid-cols-2 gap-4">
-                                                        <div className="bg-white p-3 rounded-lg border border-gray-200">
-                                                            <div className="text-xs text-gray-500 mb-1">반응 속도</div>
-                                                            <div className="font-medium">{characterData.responseTime}</div>
-                                                        </div>
-                                                        <div className="bg-white p-3 rounded-lg border border-gray-200">
-                                                            <div className="text-xs text-gray-500 mb-1">생각하는 시간</div>
-                                                            <div className="font-medium">{characterData.thinkingTime}</div>
-                                                        </div>
-                                                        <div className="bg-white p-3 rounded-lg border border-gray-200">
-                                                            <div className="text-xs text-gray-500 mb-1">반응성</div>
-                                                            <div className="font-medium">{characterData.reactivity}</div>
-                                                        </div>
-                                                        <div className="bg-white p-3 rounded-lg border border-gray-200">
-                                                            <div className="text-xs text-gray-500 mb-1">톤</div>
-                                                            <div className="font-medium">{characterData.tone}</div>
-                                                        </div>
-                                                        <div className="bg-white p-3 rounded-lg border border-gray-200">
-                                                            <div className="text-xs text-gray-500 mb-1">선톡 기능</div>
-                                                            <div className="font-medium">{characterData.proactiveEnabled ? '켜짐' : '꺼짐'}</div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-
-                                            {activeTab === 'lore' && (
-                                                <div className="space-y-3">
-                                                    {characterData.lorebook && characterData.lorebook.length > 0 ? (
-                                                        characterData.lorebook.map((lore, idx) => (
-                                                            <div key={idx} className="bg-white p-3 rounded-lg border border-gray-200">
-                                                                <div className="flex items-center gap-2 mb-2">
-                                                                    <span className="font-bold text-sm text-gray-900">{lore.name || '이름 없음'}</span>
-                                                                    {lore.alwaysActive && (
-                                                                        <span className="px-1.5 py-0.5 bg-green-100 text-green-700 text-[10px] font-bold rounded">ALWAYS</span>
-                                                                    )}
-                                                                </div>
-                                                                <div className="flex flex-wrap gap-1 mb-2">
-                                                                    {lore.activationKeys?.map((key, kIdx) => (
-                                                                        <span key={kIdx} className="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded">
-                                                                            {key}
-                                                                        </span>
-                                                                    ))}
-                                                                </div>
-                                                                <p className="text-xs text-gray-600 line-clamp-3">{lore.prompt}</p>
-                                                            </div>
-                                                        ))
-                                                    ) : (
-                                                        <div className="text-center text-gray-500 py-8">로어북 데이터가 없습니다.</div>
-                                                    )}
-                                                </div>
-                                            )}
-
-                                            {activeTab === 'stickers' && (
-                                                <div className="grid grid-cols-3 gap-3">
-                                                    {characterData.stickers && characterData.stickers.length > 0 ? (
-                                                        characterData.stickers.map((sticker, idx) => (
-                                                            <div key={idx} className="bg-white p-2 rounded-lg border border-gray-200 flex flex-col items-center">
-                                                                <div className="w-full aspect-square bg-gray-50 rounded-md mb-2 overflow-hidden flex items-center justify-center">
-                                                                    {sticker.data ? (
-                                                                        <img src={sticker.data} alt={sticker.name} className="w-full h-full object-contain" />
-                                                                    ) : (
-                                                                        <span className="text-xs text-gray-400">No Image</span>
-                                                                    )}
-                                                                </div>
-                                                                <span className="text-xs text-gray-600 truncate w-full text-center" title={sticker.name}>
-                                                                    {sticker.name}
-                                                                </span>
-                                                            </div>
-                                                        ))
-                                                    ) : (
-                                                        <div className="col-span-3 text-center text-gray-500 py-8">스티커 데이터가 없습니다.</div>
-                                                    )}
-                                                </div>
-                                            )}
-                                        </>
-                                    ) : (
-                                        <div className="h-full flex items-center justify-center text-gray-500 italic">
-                                            이미지를 업로드하면 데이터가 표시됩니다
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
+                            <DataPreview characterData={characterData} activeTab={activeTab} setActiveTab={setActiveTab} />
                         </div>
                     </form>
                 </div>
