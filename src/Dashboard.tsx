@@ -153,9 +153,9 @@ export default function Dashboard() {
     })
 
     return (
-        <div className="w-full max-w-[1200px] mx-auto py-10 px-5 font-sans">
+        <div className="w-full max-w-7xl mx-auto py-10 px-5 font-sans">
             <div className="mb-10">
-                <h1 className="text-[32px] font-extrabold text-(--color-text-primary) mb-3 tracking-[-0.5px]">{auth.user?.profile.nickname}님의 대시보드</h1>
+                <h1 className="text-3xl font-extrabold text-(--color-text-primary) mb-3 tracking-tight">{auth.user?.profile.nickname}님의 대시보드</h1>
                 <p className="text-base text-(--color-text-secondary) m-0">
                     내 캐릭터를 관리하고 통계를 확인하세요.
                 </p>

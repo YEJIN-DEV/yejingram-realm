@@ -151,7 +151,7 @@ function Character() {
 
   if (!selectedCharacter) {
     return (
-      <div className="w-full max-w-[1140px] p-6">
+      <div className="w-full max-w-7xl p-6">
         <div className="flex justify-center items-center h-screen">
           Loading...
         </div>
@@ -177,9 +177,9 @@ function Character() {
         onClick={() => setSidebarOpen(false)}
       ></div>
 
-      <aside className={`sticky top-6 bg-[#020617] text-[#e5e7eb] rounded-2xl p-4 shadow-[0_22px_45px_rgba(15,23,42,0.4),0_0_0_1px_rgba(15,23,42,0.6)] flex flex-col overflow-hidden max-md:fixed max-md:top-0 max-md:left-0 max-md:bottom-0 max-md:w-[50vw] max-md:h-screen max-md:z-3000 max-md:transition-transform max-md:duration-300 max-md:ease-in-out max-md:rounded-r-2xl max-md:shadow-[0_0_24px_rgba(0,0,0,0.2)] ${!sidebarOpen ? 'max-md:-translate-x-full' : 'max-md:translate-x-0'}`}>
+      <aside className={`sticky top-6 h-[60dvh] bg-[#020617] text-[#e5e7eb] rounded-2xl p-4 shadow-[0_22px_45px_rgba(15,23,42,0.4),0_0_0_1px_rgba(15,23,42,0.6)] flex flex-col overflow-hidden max-md:fixed max-md:top-0 max-md:left-0 max-md:bottom-0 max-md:w-[50vw] max-md:h-screen max-md:z-3000 max-md:transition-transform max-md:duration-300 max-md:ease-in-out max-md:rounded-r-2xl max-md:shadow-[0_0_24px_rgba(0,0,0,0.2)] ${!sidebarOpen ? 'max-md:-translate-x-full' : 'max-md:translate-x-0'}`}>
         <button
-          className="absolute top-3 left-3 w-8 h-8 rounded-full border-none bg-[#020617] inline-flex flex-col items-center justify-center gap-1 cursor-pointer shadow-[0_8px_18px_rgba(15,23,42,0.9)] z-10"
+          className="top-3 left-3 w-8 h-8 rounded-full border-none bg-[#020617] inline-flex flex-col items-center justify-center gap-1 cursor-pointer shadow-[0_8px_18px_rgba(15,23,42,0.9)] z-10"
           onClick={() => setSidebarOpen(!sidebarOpen)}
         >
           <div className="w-4 h-0.5 rounded-full bg-[#e5e7eb]"></div>
@@ -189,8 +189,8 @@ function Character() {
 
         <div className={`flex flex-col gap-3 mt-6 flex-1 min-h-0 transition-opacity duration-200 ${!sidebarOpen ? 'md:opacity-0 md:pointer-events-none' : ''}`}>
           <div className="flex justify-between items-baseline shrink-0">
-            <h2 className="m-0 text-[13px] tracking-[0.14em] uppercase text-[#9ca3af]">CHARACTERS</h2>
-            <span className="text-[11px] text-[#6b7280]">{characters.length}</span>
+            <h2 className="m-0 text-xs tracking-widest uppercase text-[#9ca3af]">CHARACTERS</h2>
+            <span className="text-xs text-[#6b7280]">{characters.length}</span>
           </div>
 
           <ul className="m-0 p-0 flex flex-col gap-1.5 overflow-y-auto flex-1 pr-1">
@@ -200,7 +200,7 @@ function Character() {
                 <button
                   key={character.id}
                   data-character-id={character.id}
-                  className={`group border-none bg-transparent rounded-[10px] p-2 flex items-center justify-between gap-2 cursor-pointer transition-all duration-120 text-[#9ca3af] hover:bg-[rgba(255,255,255,0.05)] hover:-translate-y-px hover:text-[#e5e7eb] w-full ${selectedCharacter.id === character.id ? 'bg-[#111827]! shadow-[0_0_0_1px_rgba(248,250,252,0.14),0_10px_24px_rgba(15,23,42,0.6)] text-[#e5e7eb]!' : ''
+                  className={`group border-none bg-transparent rounded-xl p-2 flex items-center justify-between gap-2 cursor-pointer transition-all duration-120 text-[#9ca3af] hover:bg-[rgba(255,255,255,0.05)] hover:-translate-y-px hover:text-[#e5e7eb] w-full ${selectedCharacter.id === character.id ? 'bg-[#111827]! shadow-[0_0_0_1px_rgba(248,250,252,0.14),0_10px_24px_rgba(15,23,42,0.6)] text-[#e5e7eb]!' : ''
                     }`}
                   onClick={() => {
                     setSearchParams({ id: character.id })
@@ -208,11 +208,11 @@ function Character() {
                   }}
                 >
                   <div className="flex flex-col items-start">
-                    <span className="text-[13px] font-semibold text-inherit">{character.name}</span>
-                    <span className="text-[11px] text-[#6b7280] group-hover:text-[#9ca3af]">{character.status_message}</span>
+                    <span className="text-xs font-semibold text-inherit">{character.name}</span>
+                    <span className="text-xs text-[#6b7280] group-hover:text-[#9ca3af]">{character.status_message}</span>
                   </div>
                   {character.tags && character.tags.length > 0 && (
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full bg-[rgba(255,255,255,0.03)] border border-[#4b5563] text-[#9ca3af] whitespace-nowrap transition-all duration-200 group-hover:border-[#9ca3af] group-hover:text-[#e5e7eb] ${selectedCharacter.id === character.id ? 'bg-[#fef3c7] border-[#facc15] text-[#92400e]' : ''}`}>
+                    <span className={`text-xs px-2 py-0.5 rounded-full bg-[rgba(255,255,255,0.03)] border border-[#4b5563] text-[#9ca3af] whitespace-nowrap transition-all duration-200 group-hover:border-[#9ca3af] group-hover:text-[#e5e7eb] ${selectedCharacter.id === character.id ? 'bg-[#fef3c7] border-[#facc15] text-[#92400e]' : ''}`}>
                       {character.tags[0]}
                     </span>
                   )}
@@ -231,11 +231,11 @@ function Character() {
         </div>
       </aside>
 
-      <main className="relative bg-white rounded-[18px] p-8 shadow-[0_22px_45px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.04)] overflow-visible  flex flex-col max-md:p-5 max-md: max-md:rounded-none max-md:overflow-y-auto max-md:overflow-x-hidden">
+      <main className="relative bg-white rounded-2xl p-8 shadow-[0_22px_45px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.04)] overflow-visible  flex flex-col max-md:p-5 max-md: max-md:rounded-none max-md:overflow-y-auto max-md:overflow-x-hidden">
         <div className="pr-23 overflow-y-auto pb-5 max-md:pr-0 max-md:overflow-y-visible max-md:h-auto">
           <header className="flex justify-between items-end mb-6 pb-3 border-b-2 border-[#e5e7eb]">
             <div className="resume-title">
-              <h1 className="m-0 text-[26px]">{selectedCharacter.name}</h1>
+              <h1 className="m-0 text-2xl">{selectedCharacter.name}</h1>
               <p className="mt-1 text-sm text-[#6b7280]">{selectedCharacter.status_message || 'No status message'}</p>
             </div>
             <div className="text-right text-xs text-[#6b7280]">
@@ -256,10 +256,10 @@ function Character() {
             </div>
           </header>
 
-          <section className="mt-[18px]">
-            <h2 className="m-0 mb-1.5 text-[15px] tracking-[0.08em] uppercase text-[#4b5563]">Basic Info</h2>
+          <section className="mt-4.5">
+            <h2 className="m-0 mb-1.5 text-sm tracking-wide uppercase text-[#4b5563]">Basic Info</h2>
             <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 items-stretch max-md:flex max-md:flex-col-reverse max-md:gap-6 max-md:items-center">
-              <table className="w-full border-collapse border border-[#e5e7eb] text-[13px] m-0 max-md:border max-md:border-[#e5e7eb] max-md:rounded-lg max-md:overflow-hidden">
+              <table className="w-full border-collapse border border-[#e5e7eb] text-xs m-0 max-md:border max-md:border-[#e5e7eb] max-md:rounded-lg max-md:overflow-hidden">
                 <tbody>
                   <tr className="max-md:flex max-md:flex-col max-md:border-b max-md:border-[#e5e7eb]">
                     <th className="p-2 border border-[#e5e7eb] text-left bg-[#f9fafb] font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-[#f9fafb] max-md:text-[#6b7280] max-md:pb-1 max-md:border-none">Name</th>
@@ -297,7 +297,7 @@ function Character() {
                 </tbody>
               </table>
               <div className="flex items-center max-md:w-full max-md:justify-center max-md:mb-2">
-                <div className="w-[110px] h-[140px] border border-[#9ca3af] rounded-md flex flex-col items-center justify-center text-[11px] text-[#6b7280] bg-[repeating-linear-gradient(-45deg,#f9fafb,#f9fafb_6px,#f3f4f6_6px,#f3f4f6_12px)] overflow-hidden">
+                <div className="w-28 h-35 border border-[#9ca3af] rounded-md flex flex-col items-center justify-center text-xs text-[#6b7280] bg-[repeating-linear-gradient(-45deg,#f9fafb,#f9fafb_6px,#f3f4f6_6px,#f3f4f6_12px)] overflow-hidden">
                   <img
                     src={`https://dt3lfi1tp9am3.cloudfront.net/${selectedCharacter.id}/${selectedCharacter.id}_thumb.webp`}
                     alt={selectedCharacter.name}
@@ -311,18 +311,18 @@ function Character() {
             </div>
           </section>
 
-          <section className="mt-[18px]">
-            <h2 className="m-0 mb-1.5 text-[15px] tracking-[0.08em] uppercase text-[#4b5563]">Summary</h2>
+          <section className="mt-4.5">
+            <h2 className="m-0 mb-1.5 text-sm tracking-wide uppercase text-[#4b5563]">Summary</h2>
             <p className="m-1.5 text-[#4b5563] leading-relaxed">
               {selectedCharacter.summary || selectedCharacter.status_message || 'No summary available.'}
             </p>
           </section>
 
-          <section className="mt-[18px]">
-            <h2 className="m-0 mb-1.5 text-[15px] tracking-[0.08em] uppercase text-[#4b5563]">Tags</h2>
+          <section className="mt-4.5">
+            <h2 className="m-0 mb-1.5 text-sm tracking-wide uppercase text-[#4b5563]">Tags</h2>
             <div className="flex flex-wrap gap-2 mt-2">
               {selectedCharacter.tags && selectedCharacter.tags.map((tag, i) => (
-                <span key={i} className="inline-flex items-center px-2.5 py-1 rounded-full bg-[#1d4ed8] text-[#eff6ff] text-[11px] tracking-[0.04em] lowercase cursor-default shadow-[0_6px_14px_rgba(37,99,235,0.35)]">
+                <span key={i} className="inline-flex items-center px-2.5 py-1 rounded-full bg-[#1d4ed8] text-[#eff6ff] text-xs tracking-tight lowercase cursor-default shadow-[0_6px_14px_rgba(37,99,235,0.35)]">
                   {tag}
                 </span>
               ))}
@@ -342,22 +342,22 @@ function Character() {
                 >
                   <img src={license.image} alt={selectedCharacter.copyright} />
                 </a>
-                <span className="text-[11px] text-[#6b7280]">{license.summary}</span>
+                <span className="text-xs text-[#6b7280]">{license.summary}</span>
               </div>
             )
           })()}
         </div>
 
         <div className="absolute top-1/2 -right-16 -translate-y-1/2 flex flex-col gap-2.5 max-md:static max-md:transform-none max-md:flex-row max-md:mt-8 max-md:gap-2 max-md:overflow-x-auto max-md:pb-2 max-md:justify-start max-md:w-full">
-          <div className="relative min-w-[120px] px-[18px] py-2.5 rounded-l-[10px] text-[#111827] text-[13px] font-semibold tracking-[0.08em] text-center bg-linear-to-br from-[#fef3c7] to-[#fde68a] shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-150 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-0 max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap max-md:hover:translate-x-0 max-md:shadow-none max-md:hover:shadow-none" onClick={() => {
+          <div className="relative min-w-30 px-4.5 py-2.5 rounded-l-xl text-[#111827] text-xs font-semibold tracking-wide text-center bg-linear-to-br from-[#fef3c7] to-[#fde68a] shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-150 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-0 max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap max-md:hover:translate-x-0 max-md:shadow-none max-md:hover:shadow-none" onClick={() => {
             window.open(`https://d3rd8muqzoyvtk.cloudfront.net/realm/${selectedCharacter.id}/download`, '_blank')
           }}>
             DOWNLOAD
           </div>
-          <div className="relative min-w-[120px] px-[18px] py-2.5 rounded-l-[10px] text-[#111827] text-[13px] font-semibold tracking-[0.08em] text-center bg-linear-to-br from-[#e0f2fe] to-[#bfdbfe] shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-150 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-0 max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap max-md:hover:translate-x-0 max-md:shadow-none max-md:hover:shadow-none">
+          <div className="relative min-w-30 px-4.5 py-2.5 rounded-l-xl text-[#111827] text-xs font-semibold tracking-wide text-center bg-linear-to-br from-[#e0f2fe] to-[#bfdbfe] shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-150 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-0 max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap max-md:hover:translate-x-0 max-md:shadow-none max-md:hover:shadow-none">
             PORTFOLIO
           </div>
-          <div className="relative min-w-[120px] px-[18px] py-2.5 rounded-l-[10px] text-[#111827] text-[13px] font-semibold tracking-[0.08em] text-center bg-linear-to-br from-[#fee2e2] to-[#fecaca] shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-150 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-0 max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap max-md:hover:translate-x-0 max-md:shadow-none max-md:hover:shadow-none">
+          <div className="relative min-w-30 px-4.5 py-2.5 rounded-l-xl text-[#111827] text-xs font-semibold tracking-wide text-center bg-linear-to-br from-[#fee2e2] to-[#fecaca] shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-150 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-0 max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap max-md:hover:translate-x-0 max-md:shadow-none max-md:hover:shadow-none">
             CONTACT
           </div>
         </div>

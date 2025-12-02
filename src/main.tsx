@@ -36,7 +36,7 @@ function App() {
       <Toaster toastOptions={{ duration: 5000 }} />
       <div className="w-full">
         {!isInIframe && (
-          <nav className="w-full max-w-[1140px] mx-auto pt-3.5 px-6 flex items-center justify-between text-xs tracking-[0.16em]">
+          <nav className="w-full max-w-7xl mx-auto pt-3.5 px-6 flex items-center justify-between text-xs tracking-wider">
             <Link to="/" className="font-bold text-(--color-text-primary) no-underline">
               YEJINGRAM<br />REALM
             </Link>
@@ -77,7 +77,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
         {/* Footer (Copyright, Privacy Policy, Terms of Service) */}
-        <footer className="w-full max-w-[1140px] mx-auto py-6 px-6 text-center text-xs text-(--color-text-secondary)">
+        <footer className="w-full max-w-7xl mx-auto py-6 px-6 text-center text-xs text-(--color-text-secondary)">
           &copy; {new Date().getFullYear()} Yejingram Realm. All rights reserved.&nbsp;|&nbsp;
           Email: <a href="mailto:support@yejingram.com" className="text-(--color-text-secondary) underline">support@yejingram.com</a>&nbsp;|&nbsp;
           <a href="/privacy" className="text-(--color-text-secondary) underline">Privacy Policy</a>&nbsp;|&nbsp;

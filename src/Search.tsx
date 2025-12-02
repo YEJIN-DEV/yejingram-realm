@@ -128,13 +128,13 @@ function SearchPage() {
     return (
         <div className="w-full max-w-[90vw] mx-auto py-10 px-5 font-sans">
             <div className="text-center mb-10">
-                <h1 className="text-[32px] font-extrabold text-(--color-text-primary) mb-3 tracking-[-0.5px]">YejinRealm</h1>
+                <h1 className="text-3xl font-extrabold text-(--color-text-primary) mb-3 tracking-tight">YejinRealm</h1>
                 <h2 className="text-lg text-(--color-text-primary) m-0">
                     <span className="text-[#6366f1] font-bold">{String(displayCount).padStart(3, '0')}</span>명의 캐릭터가 Yejingram Realm에서 기다리고 있어요. 함께할 캐릭터를 찾아보세요!
                 </h2>
             </div>
 
-            <div className="bg-white p-[30px] rounded-3xl shadow-[0_10px_25px_-5px_rgba(0,0,0,0.05),0_8px_10px_-6px_rgba(0,0,0,0.01)] mb-10 border border-(--color-border-secondary)">
+            <div className="bg-white p-7.5 rounded-3xl shadow-[0_10px_25px_-5px_rgba(0,0,0,0.05),0_8px_10px_-6px_rgba(0,0,0,0.01)] mb-10 border border-(--color-border-secondary)">
                 <div className="relative flex items-center bg-(--color-bg-input-secondary) border-2 border-(--color-border) rounded-2xl px-4 py-2 transition-all duration-200 focus-within:border-[#6366f1] focus-within:bg-white focus-within:shadow-[0_0_0_4px_rgba(99,102,241,0.1)]">
                     <div className="text-(--color-icon-secondary) flex items-center mr-3">
                         <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -161,11 +161,11 @@ function SearchPage() {
                 </div>
 
                 <div className="mt-5 flex flex-wrap gap-2 items-center">
-                    <span className="text-[13px] font-semibold text-(--color-text-secondary) mr-1">추천 키워드:</span>
+                    <span className="text-xs font-semibold text-(--color-text-secondary) mr-1">추천 키워드:</span>
                     {['React', 'Node.js', 'TypeScript', 'Frontend', 'Backend', 'Full Stack'].map((keyword) => (
                         <button
                             key={keyword}
-                            className="bg-(--color-bg-input-primary) border border-(--color-border) px-3 py-1.5 rounded-[20px] text-[13px] text-(--color-text-tertiary) cursor-pointer transition-all duration-200 hover:bg-[#e0e7ff] hover:text-[#4f46e5] hover:border-[#c7d2fe]"
+                            className="bg-(--color-bg-input-primary) border border-(--color-border) px-3 py-1.5 rounded-full text-xs text-(--color-text-tertiary) cursor-pointer transition-all duration-200 hover:bg-[#e0e7ff] hover:text-[#4f46e5] hover:border-[#c7d2fe]"
                             onClick={() => setQuery(keyword)}
                         >
                             {keyword}
@@ -191,7 +191,7 @@ function SearchPage() {
                                     <img
                                         src={`https://dt3lfi1tp9am3.cloudfront.net/${character.id}/${character.id}_thumb.webp`}
                                         alt={character.name}
-                                        className="w-[110px] h-[140px] rounded-2xl object-cover shrink-0 shadow-[0_4px_12px_rgba(99,102,241,0.2)] bg-gray-200"
+                                        className="w-28 h-35 rounded-2xl object-cover shrink-0 shadow-[0_4px_12px_rgba(99,102,241,0.2)] bg-gray-200"
                                     />
                                     <div className="flex-1 min-w-0">
                                         <h3 className="m-0 mb-1.5 text-xl font-bold text-(--color-text-primary) flex items-center gap-2 flex-wrap">
@@ -229,7 +229,7 @@ function SearchPage() {
                         ))}
                     </div>
                 ) : (
-                    <div className="text-center py-[60px] text-(--color-text-secondary)">
+                    <div className="text-center py-15 text-(--color-text-secondary)">
                         <p className="text-lg font-semibold mb-2">검색 결과가 없습니다</p>
                         <span>다른 키워드로 검색해보세요.</span>
                     </div>
