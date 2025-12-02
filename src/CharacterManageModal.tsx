@@ -12,6 +12,17 @@ import NsfwSelector from './components/NsfwSelector'
 import CopyrightSelector from './components/CopyrightSelector'
 import DataPreview from './components/DataPreview'
 
+import {
+    requestCreateCharacter,
+    uploadFileToS3,
+    updateCharacter,
+    deleteCharacter,
+    loadCharacterFile,
+    buildCreateMetadata,
+    buildUpdateData,
+    hasChanges
+} from './api/character'
+
 interface CharacterManageModalProps {
     isOpen: boolean
     onClose: () => void
@@ -208,103 +219,37 @@ export default function CharacterManageModal({
 
         const uploadPromise = async () => {
             try {
+                const idToken = auth.user?.id_token
+                if (!idToken) throw new Error("Authentication required")
+
                 if (mode === 'create') {
-                    if (!selectedFile) throw new Error("No file selected");
+                    if (!selectedFile) throw new Error("No file selected")
 
-                    const metadata = {
-                        ...formData,
-                        file_name: selectedFile.name,
-                        file_type: selectedFile.type,
-                        has_lore: !!(characterData?.lorebook && characterData.lorebook.length > 0),
-                        has_sticker: !!(characterData?.stickers && characterData.stickers.length > 0)
-                    };
+                    const metadata = buildCreateMetadata(formData, selectedFile, characterData)
+                    const { upload_url } = await requestCreateCharacter(metadata, idToken)
+                    await uploadFileToS3(upload_url, selectedFile)
 
-                    // [Step 1] Lambda에 Presigned URL 요청 (아주 가벼운 JSON 요청)
-                    const response = await fetch('https://d3rd8muqzoyvtk.cloudfront.net/realm/create', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${auth.user?.id_token}`
-                        },
-                        body: JSON.stringify(metadata) // WAF에 안 걸림!
-                    });
-
-                    if (!response.ok) throw new Error('Failed to get upload URL');
-
-                    const data = await response.json();
-                    const { upload_url } = data;
-
-                    // [Step 2] 받은 URL로 S3에 직접 업로드
-                    // 인증 헤더(Bearer) 필요 없음! URL 자체에 인증 정보가 포함됨.
-                    const uploadResponse = await fetch(upload_url, {
-                        method: 'PUT', // 반드시 PUT
-                        headers: {
-                            'Content-Type': selectedFile.type // Lambda에 보낸 타입과 정확히 일치해야 함
-                        },
-                        body: selectedFile // 파일 객체 그대로 전송 (Binary)
-                    });
-
-                    if (!uploadResponse.ok) throw new Error('S3 Upload Failed');
                     toast.success("썸네일과 봇카드가 반영되는 데 까지 몇 초 정도 걸릴 수 있습니다.")
                 } else {
                     // Edit mode
-                    if (!initialData?.id) throw new Error("Character ID is missing");
+                    if (!initialData?.id) throw new Error("Character ID is missing")
 
-                    const updateData: any = {
-                        id: initialData.id,
-                    };
+                    const updateData = buildUpdateData(formData, initialData, selectedFile, characterData)
 
-                    // Compare and add changed fields
-                    if (formData.name !== initialData.name) updateData.name = formData.name;
-                    if (formData.gender !== initialData.gender) updateData.gender = formData.gender;
-                    if (formData.summary !== initialData.summary) updateData.summary = formData.summary;
-                    if (formData.status_message !== initialData.status_message) updateData.status_message = formData.status_message;
-                    if (formData.is_nsfw !== initialData.is_nsfw) updateData.is_nsfw = formData.is_nsfw;
-                    if (formData.copyright !== initialData.copyright) updateData.copyright = formData.copyright;
-
-                    // Tags comparison
-                    const tagsChanged = JSON.stringify([...formData.tags].sort()) !== JSON.stringify([...initialData.tags].sort());
-                    if (tagsChanged) updateData.tags = formData.tags;
-
-                    if (selectedFile) {
-                        updateData.file_name = selectedFile.name;
-                        updateData.file_type = selectedFile.type;
-                        updateData.has_lore = !!(characterData?.lorebook && characterData.lorebook.length > 0);
-                        updateData.has_sticker = !!(characterData?.stickers && characterData.stickers.length > 0);
+                    if (!hasChanges(updateData)) {
+                        throw new Error("수정된 사항이 없어 업데이트할 수 없습니다!")
                     }
 
-                    if (Object.keys(updateData).length <= 1) {
-                        throw new Error("수정된 사항이 없어 업데이트할 수 없습니다!");
-                    }
+                    const data = await updateCharacter(updateData, idToken)
 
-                    const response = await fetch('https://d3rd8muqzoyvtk.cloudfront.net/realm/update', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${auth.user?.id_token}`
-                        },
-                        body: JSON.stringify(updateData)
-                    });
-
-                    if (!response.ok) throw new Error('Failed to update character');
-
-                    const data = await response.json();
                     if (data.upload_url && selectedFile) {
-                        const uploadResponse = await fetch(data.upload_url, {
-                            method: 'PUT',
-                            headers: {
-                                'Content-Type': selectedFile.type
-                            },
-                            body: selectedFile
-                        });
-
-                        if (!uploadResponse.ok) throw new Error('S3 Upload Failed');
+                        await uploadFileToS3(data.upload_url, selectedFile)
                         toast.success("변경된 썸네일과 봇카드가 반영되는 데 까지 몇 초 정도 걸릴 수 있습니다.")
                     }
                 }
             } catch (error) {
-                console.error(error);
-                throw error;
+                console.error(error)
+                throw error
             }
         }
 
@@ -356,21 +301,14 @@ export default function CharacterManageModal({
             return
         }
 
-        const deletePromise = async () => {
-            const response = await fetch('https://d3rd8muqzoyvtk.cloudfront.net/realm/delete', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${auth.user?.id_token}`
-                },
-                body: JSON.stringify({ id: initialData.id })
-            })
-
-            if (!response.ok) throw new Error('Failed to delete character')
+        const idToken = auth.user?.id_token
+        if (!idToken) {
+            toast.error("인증이 필요합니다.")
+            return
         }
 
         toast.promise(
-            deletePromise(),
+            deleteCharacter(initialData.id, idToken),
             {
                 loading: '캐릭터를 삭제하는 중입니다...',
                 success: () => {
@@ -409,21 +347,14 @@ export default function CharacterManageModal({
             })
 
             if (initialData.id && initialData.file_name) {
-                const fileUrl = `https://dt3lfi1tp9am3.cloudfront.net/${initialData.id}/${encodeURIComponent(initialData.file_name)}`
-                // cache: 'no-cache'를 추가하여 브라우저 캐시나 Range Request로 인한 잠재적 CORS 이슈 방지
-                fetch(fileUrl, { cache: 'no-cache' })
-                    .then(res => {
-                        if (!res.ok) throw new Error(`Network response was not ok: ${res.statusText}`);
-                        return res.blob();
-                    })
-                    .then(blob => {
-                        console.log("Loaded initial file:", initialData.file_name, blob.type, blob.size);
-                        const file = new File([blob], initialData.file_name!, { type: 'image/png' })
+                loadCharacterFile(initialData.id, initialData.file_name)
+                    .then(file => {
+                        console.log("Loaded initial file:", file.name, file.type, file.size)
                         processFile(file)
                     })
                     .catch(err => {
-                        console.error("Failed to load initial file:", err);
-                        toast.error("이미지를 불러오는데 실패했습니다.");
+                        console.error("Failed to load initial file:", err)
+                        toast.error("이미지를 불러오는데 실패했습니다.")
                     })
             }
         }
