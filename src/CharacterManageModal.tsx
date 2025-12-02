@@ -260,7 +260,7 @@ export default function CharacterManageModal({
                     if (!response.ok) throw new Error('Failed to get upload URL');
 
                     const data = await response.json();
-                    const { upload_url, id } = data;
+                    const { upload_url } = data;
 
                     // [Step 2] 받은 URL로 S3에 직접 업로드
                     // 인증 헤더(Bearer) 필요 없음! URL 자체에 인증 정보가 포함됨.
