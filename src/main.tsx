@@ -19,43 +19,46 @@ const cognitoAuthConfig = {
 
 function App() {
   const auth = useAuth();
+  const isInIframe = window.self !== window.top;
 
   return (
     <BrowserRouter>
       <Toaster toastOptions={{ duration: 5000 }} />
       <div className="w-full">
-        <nav className="w-full max-w-[1140px] mx-auto pt-3.5 px-6 flex items-center justify-between text-xs tracking-[0.16em]">
-          <Link to="/" className="font-bold text-(--color-text-primary) no-underline">
-            YEJINGRAM<br />REALM
-          </Link>
-          <div className="flex gap-3">
-            <Link to="/" className="no-underline text-(--color-text-secondary) uppercase">
-              검색
+        {!isInIframe && (
+          <nav className="w-full max-w-[1140px] mx-auto pt-3.5 px-6 flex items-center justify-between text-xs tracking-[0.16em]">
+            <Link to="/" className="font-bold text-(--color-text-primary) no-underline">
+              YEJINGRAM<br />REALM
             </Link>
-            {auth.isAuthenticated ? (
-              <>
-                <span className="text-(--color-text-secondary)">|</span>
-                <Link to="/dashboard" className="no-underline text-(--color-text-secondary) uppercase">
-                  마이페이지
-                </Link>
-                <span className="text-(--color-text-secondary)">|</span>
+            <div className="flex gap-3">
+              <Link to="/" className="no-underline text-(--color-text-secondary) uppercase">
+                검색
+              </Link>
+              {auth.isAuthenticated ? (
+                <>
+                  <span className="text-(--color-text-secondary)">|</span>
+                  <Link to="/dashboard" className="no-underline text-(--color-text-secondary) uppercase">
+                    마이페이지
+                  </Link>
+                  <span className="text-(--color-text-secondary)">|</span>
+                  <button
+                    className="no-underline text-(--color-text-secondary) uppercase bg-transparent border-none cursor-pointer p-0 font-inherit"
+                    onClick={() => auth.removeUser()}
+                  >
+                    로그아웃
+                  </button>
+                </>
+              ) : (
                 <button
                   className="no-underline text-(--color-text-secondary) uppercase bg-transparent border-none cursor-pointer p-0 font-inherit"
-                  onClick={() => auth.removeUser()}
+                  onClick={() => auth.signinRedirect()}
                 >
-                  로그아웃
+                  로그인
                 </button>
-              </>
-            ) : (
-              <button
-                className="no-underline text-(--color-text-secondary) uppercase bg-transparent border-none cursor-pointer p-0 font-inherit"
-                onClick={() => auth.signinRedirect()}
-              >
-                로그인
-              </button>
-            )}
-          </div>
-        </nav>
+              )}
+            </div>
+          </nav>
+        )}
         <Routes>
           <Route path="/" element={<SearchPage />} />
           <Route path="/character" element={<Character />} />
