@@ -163,7 +163,7 @@ function Character() {
     <div className={`p-5 md:p-20 md:pt-5 grid gap-4 items-stretch transition-[grid-template-columns] duration-180 ease-out max-md:block ${!sidebarOpen ? 'grid-cols-[64px_minmax(0,1fr)]' : 'grid-cols-[260px_minmax(0,1fr)]'} ${sidebarOpen ? 'sidebar-open' : ''}`}>
       {/* Mobile Sidebar Trigger */}
       <button
-        className="hidden max-md:flex flex-col gap-1 items-center justify-center fixed bottom-6 right-6 w-14 h-14 rounded-full bg-[#111827] text-white border-none shadow-[0_4px_12px_rgba(0,0,0,0.3)] z-2000 cursor-pointer transition-transform duration-200 active:scale-95"
+        className="hidden max-md:flex flex-col gap-1 items-center justify-center fixed bottom-6 right-6 w-14 h-14 rounded-full bg-(--color-sidebar-item-bg) text-white border-none shadow-[0_4px_12px_rgba(0,0,0,0.3)] z-2000 cursor-pointer transition-transform duration-200 active:scale-95"
         onClick={() => setSidebarOpen(!sidebarOpen)}
       >
         <div className="w-5 h-0.5 rounded-full bg-white"></div>
@@ -177,20 +177,20 @@ function Character() {
         onClick={() => setSidebarOpen(false)}
       ></div>
 
-      <aside className={`sticky top-6 h-[60dvh] bg-[#020617] text-[#e5e7eb] rounded-2xl p-4 shadow-[0_22px_45px_rgba(15,23,42,0.4),0_0_0_1px_rgba(15,23,42,0.6)] flex flex-col overflow-hidden max-md:fixed max-md:top-0 max-md:left-0 max-md:bottom-0 max-md:w-[50vw] max-md:h-screen max-md:z-3000 max-md:transition-transform max-md:duration-300 max-md:ease-in-out max-md:rounded-r-2xl max-md:shadow-[0_0_24px_rgba(0,0,0,0.2)] ${!sidebarOpen ? 'max-md:-translate-x-full' : 'max-md:translate-x-0'}`}>
+      <aside className={`sticky top-6 h-[60dvh] bg-(--color-sidebar-bg) text-(--color-sidebar-text) rounded-2xl p-4 shadow-[0_22px_45px_rgba(15,23,42,0.4),0_0_0_1px_rgba(15,23,42,0.6)] flex flex-col overflow-hidden max-md:fixed max-md:top-0 max-md:left-0 max-md:bottom-0 max-md:w-[50vw] max-md:h-screen max-md:z-3000 max-md:transition-transform max-md:duration-300 max-md:ease-in-out max-md:rounded-r-2xl max-md:shadow-[0_0_24px_rgba(0,0,0,0.2)] ${!sidebarOpen ? 'max-md:-translate-x-full' : 'max-md:translate-x-0'}`}>
         <button
-          className="top-3 left-3 w-8 h-8 rounded-full border-none bg-[#020617] inline-flex flex-col items-center justify-center gap-1 cursor-pointer shadow-[0_8px_18px_rgba(15,23,42,0.9)] z-10"
+          className="top-3 left-3 w-8 h-8 rounded-full border-none bg-(--color-sidebar-bg) inline-flex flex-col items-center justify-center gap-1 cursor-pointer shadow-[0_8px_18px_rgba(15,23,42,0.9)] z-10"
           onClick={() => setSidebarOpen(!sidebarOpen)}
         >
-          <div className="w-4 h-0.5 rounded-full bg-[#e5e7eb]"></div>
-          <div className="w-4 h-0.5 rounded-full bg-[#e5e7eb]"></div>
-          <div className="w-4 h-0.5 rounded-full bg-[#e5e7eb]"></div>
+          <div className="w-4 h-0.5 rounded-full bg-(--color-sidebar-text)"></div>
+          <div className="w-4 h-0.5 rounded-full bg-(--color-sidebar-text)"></div>
+          <div className="w-4 h-0.5 rounded-full bg-(--color-sidebar-text)"></div>
         </button>
 
         <div className={`flex flex-col gap-3 mt-6 flex-1 min-h-0 transition-opacity duration-200 ${!sidebarOpen ? 'md:opacity-0 md:pointer-events-none' : ''}`}>
           <div className="flex justify-between items-baseline shrink-0">
-            <h2 className="m-0 text-xs tracking-widest uppercase text-[#9ca3af]">CHARACTERS</h2>
-            <span className="text-xs text-[#6b7280]">{characters.length}</span>
+            <h2 className="m-0 text-xs tracking-widest uppercase text-(--color-sidebar-text-muted)">CHARACTERS</h2>
+            <span className="text-xs text-(--color-sidebar-text-dim)">{characters.length}</span>
           </div>
 
           <ul className="m-0 p-0 flex flex-col gap-1.5 overflow-y-auto flex-1 pr-1">
@@ -200,7 +200,7 @@ function Character() {
                 <button
                   key={character.id}
                   data-character-id={character.id}
-                  className={`group border-none bg-transparent rounded-xl p-2 flex items-center justify-between gap-2 cursor-pointer transition-all duration-120 text-[#9ca3af] hover:bg-[rgba(255,255,255,0.05)] hover:-translate-y-px hover:text-[#e5e7eb] w-full ${selectedCharacter.id === character.id ? 'bg-[#111827]! shadow-[0_0_0_1px_rgba(248,250,252,0.14),0_10px_24px_rgba(15,23,42,0.6)] text-[#e5e7eb]!' : ''
+                  className={`group border-none bg-transparent rounded-xl p-2 flex items-center justify-between gap-2 cursor-pointer transition-all duration-120 text-(--color-sidebar-text-muted) hover:bg-[rgba(255,255,255,0.05)] hover:-translate-y-px hover:text-(--color-sidebar-text) w-full ${selectedCharacter.id === character.id ? 'bg-(--color-sidebar-item-bg)! shadow-[0_0_0_1px_rgba(248,250,252,0.14),0_10px_24px_rgba(15,23,42,0.6)] text-(--color-sidebar-text)!' : ''
                     }`}
                   onClick={() => {
                     setSearchParams({ id: character.id })
@@ -209,10 +209,10 @@ function Character() {
                 >
                   <div className="flex flex-col items-start">
                     <span className="text-xs font-semibold text-inherit">{character.name}</span>
-                    <span className="text-xs text-[#6b7280] group-hover:text-[#9ca3af]">{character.status_message}</span>
+                    <span className="text-xs text-(--color-sidebar-text-dim) group-hover:text-(--color-sidebar-text-muted)">{character.status_message}</span>
                   </div>
                   {character.tags && character.tags.length > 0 && (
-                    <span className={`text-xs px-2 py-0.5 rounded-full bg-[rgba(255,255,255,0.03)] border border-[#4b5563] text-[#9ca3af] whitespace-nowrap transition-all duration-200 group-hover:border-[#9ca3af] group-hover:text-[#e5e7eb] ${selectedCharacter.id === character.id ? 'bg-[#fef3c7] border-[#facc15] text-[#92400e]' : ''}`}>
+                    <span className={`text-xs px-2 py-0.5 rounded-full bg-[rgba(255,255,255,0.03)] border border-(--color-sidebar-border) text-(--color-sidebar-text-muted) whitespace-nowrap transition-all duration-200 group-hover:border-(--color-sidebar-text-muted) group-hover:text-(--color-sidebar-text) ${selectedCharacter.id === character.id ? 'bg-(--color-tag-highlight-bg) border-(--color-tag-highlight-border) text-(--color-tag-highlight-text)' : ''}`}>
                       {character.tags[0]}
                     </span>
                   )}
@@ -221,7 +221,7 @@ function Character() {
             })()}
             {lastKey && (
               <button
-                className="w-full py-2 text-xs text-[#6b7280] hover:text-[#e5e7eb] bg-transparent border border-[#374151] rounded-lg mt-2 cursor-pointer transition-colors"
+                className="w-full py-2 text-xs text-(--color-sidebar-text-dim) hover:text-(--color-sidebar-text) bg-transparent border border-(--color-sidebar-border) rounded-lg mt-2 cursor-pointer transition-colors"
                 onClick={handleNext}
               >
                 Load More
@@ -231,18 +231,18 @@ function Character() {
         </div>
       </aside>
 
-      <main className="relative bg-white rounded-2xl p-8 shadow-[0_22px_45px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.04)] overflow-visible  flex flex-col max-md:p-5 max-md: max-md:rounded-none max-md:overflow-y-auto max-md:overflow-x-hidden">
+      <main className="relative bg-(--color-bg-primary) rounded-2xl p-8 shadow-[0_22px_45px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.04)] overflow-visible  flex flex-col max-md:p-5 max-md: max-md:rounded-none max-md:overflow-y-auto max-md:overflow-x-hidden">
         <div className="pr-23 overflow-y-auto pb-5 max-md:pr-0 max-md:overflow-y-visible max-md:h-auto">
-          <header className="flex justify-between items-end mb-6 pb-3 border-b-2 border-[#e5e7eb]">
+          <header className="flex justify-between items-end mb-6 pb-3 border-b-2 border-(--color-border)">
             <div className="resume-title">
               <h1 className="m-0 text-2xl">{selectedCharacter.name}</h1>
-              <p className="mt-1 text-sm text-[#6b7280]">{selectedCharacter.status_message || 'No status message'}</p>
+              <p className="mt-1 text-sm text-(--color-text-secondary)">{selectedCharacter.status_message || 'No status message'}</p>
             </div>
-            <div className="text-right text-xs text-[#6b7280]">
+            <div className="text-right text-xs text-(--color-text-secondary)">
               {/* <div>ID: {selectedCharacter.id}</div> */}
               <div className="mt-0.5">Uploaded: {new Date(selectedCharacter.created_at * 1000).toLocaleString()}</div>
               <div className="mt-0.5">Last Updated: {new Date(selectedCharacter.updated_at * 1000).toLocaleString()}</div>
-              <div className="mt-2 flex gap-3 justify-end text-[#4b5563]">
+              <div className="mt-2 flex gap-3 justify-end text-(--color-text-tertiary)">
                 <span className="flex items-center gap-1" title="Popularity">
                   <Flame className='w-3 h-3' /> {selectedCharacter.popularity.toFixed(2)}
                 </span>
@@ -257,26 +257,26 @@ function Character() {
           </header>
 
           <section className="mt-4.5">
-            <h2 className="m-0 mb-1.5 text-sm tracking-wide uppercase text-[#4b5563]">Basic Info</h2>
+            <h2 className="m-0 mb-1.5 text-sm tracking-wide uppercase text-(--color-text-tertiary)">Basic Info</h2>
             <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 items-stretch max-md:flex max-md:flex-col-reverse max-md:gap-6 max-md:items-center">
-              <table className="w-full border-collapse border border-[#e5e7eb] text-xs m-0 max-md:border max-md:border-[#e5e7eb] max-md:rounded-lg max-md:overflow-hidden">
+              <table className="w-full border-collapse border border-(--color-border) text-xs m-0 max-md:border max-md:border-(--color-border) max-md:rounded-lg max-md:overflow-hidden">
                 <tbody>
-                  <tr className="max-md:flex max-md:flex-col max-md:border-b max-md:border-[#e5e7eb]">
-                    <th className="p-2 border border-[#e5e7eb] text-left bg-[#f9fafb] font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-[#f9fafb] max-md:text-[#6b7280] max-md:pb-1 max-md:border-none">Name</th>
-                    <td className="p-2 border border-[#e5e7eb] text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-[#f3f4f6]">{selectedCharacter.name || 'Unknown'}</td>
-                    <th className="p-2 border border-[#e5e7eb] text-left bg-[#f9fafb] font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-[#f9fafb] max-md:text-[#6b7280] max-md:pb-1 max-md:border-none">Uploader</th>
-                    <td className="p-2 border border-[#e5e7eb] text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-[#f3f4f6]">{selectedCharacter.uploader_nickname || 'Anonymous'}</td>
+                  <tr className="max-md:flex max-md:flex-col max-md:border-b max-md:border-(--color-border)">
+                    <th className="p-2 border border-(--color-border) text-left bg-(--color-bg-secondary) font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-(--color-bg-secondary) max-md:text-(--color-text-secondary) max-md:pb-1 max-md:border-none">Name</th>
+                    <td className="p-2 border border-(--color-border) text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-(--color-border-secondary)">{selectedCharacter.name || 'Unknown'}</td>
+                    <th className="p-2 border border-(--color-border) text-left bg-(--color-bg-secondary) font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-(--color-bg-secondary) max-md:text-(--color-text-secondary) max-md:pb-1 max-md:border-none">Uploader</th>
+                    <td className="p-2 border border-(--color-border) text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-(--color-border-secondary)">{selectedCharacter.uploader_nickname || 'Anonymous'}</td>
                   </tr>
-                  <tr className="max-md:flex max-md:flex-col max-md:border-b max-md:border-[#e5e7eb]">
-                    <th className="p-2 border border-[#e5e7eb] text-left bg-[#f9fafb] font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-[#f9fafb] max-md:text-[#6b7280] max-md:pb-1 max-md:border-none">Gender</th>
-                    <td className="p-2 border border-[#e5e7eb] text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-[#f3f4f6]">{selectedCharacter.gender === 0 ? 'Female' : selectedCharacter.gender === 1 ? 'Male' : selectedCharacter.gender === 2 ? 'Other' : 'Not Specified'}</td>
-                    <th className="p-2 border border-[#e5e7eb] text-left bg-[#f9fafb] font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-[#f9fafb] max-md:text-[#6b7280] max-md:pb-1 max-md:border-none">NSFW</th>
-                    <td className="p-2 border border-[#e5e7eb] text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-[#f3f4f6]">{selectedCharacter.is_nsfw ? 'Yes' : 'No'}</td>
+                  <tr className="max-md:flex max-md:flex-col max-md:border-b max-md:border-(--color-border)">
+                    <th className="p-2 border border-(--color-border) text-left bg-(--color-bg-secondary) font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-(--color-bg-secondary) max-md:text-(--color-text-secondary) max-md:pb-1 max-md:border-none">Gender</th>
+                    <td className="p-2 border border-(--color-border) text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-(--color-border-secondary)">{selectedCharacter.gender === 0 ? 'Female' : selectedCharacter.gender === 1 ? 'Male' : selectedCharacter.gender === 2 ? 'Other' : 'Not Specified'}</td>
+                    <th className="p-2 border border-(--color-border) text-left bg-(--color-bg-secondary) font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-(--color-bg-secondary) max-md:text-(--color-text-secondary) max-md:pb-1 max-md:border-none">NSFW</th>
+                    <td className="p-2 border border-(--color-border) text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-(--color-border-secondary)">{selectedCharacter.is_nsfw ? 'Yes' : 'No'}</td>
                   </tr>
-                  <tr className="max-md:flex max-md:flex-col max-md:border-b max-md:border-[#e5e7eb]">
-                    <th className="p-2 border border-[#e5e7eb] text-left bg-[#f9fafb] font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-[#f9fafb] max-md:text-[#6b7280] max-md:pb-1 max-md:border-none">Phone</th>
-                    <td className="p-2 border border-[#e5e7eb] text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-[#f3f4f6]">{selectedCharacter.id.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3')}</td>
-                    <td colSpan={2} className="p-2 border border-[#e5e7eb] text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-[#f3f4f6]">
+                  <tr className="max-md:flex max-md:flex-col max-md:border-b max-md:border-(--color-border)">
+                    <th className="p-2 border border-(--color-border) text-left bg-(--color-bg-secondary) font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-(--color-bg-secondary) max-md:text-(--color-text-secondary) max-md:pb-1 max-md:border-none">Phone</th>
+                    <td className="p-2 border border-(--color-border) text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-(--color-border-secondary)">{selectedCharacter.id.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3')}</td>
+                    <td colSpan={2} className="p-2 border border-(--color-border) text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-(--color-border-secondary)">
                       <div className="flex gap-3 items-center">
                         {selectedCharacter.has_lore && (
                           <div className="flex items-center gap-1">
@@ -297,7 +297,7 @@ function Character() {
                 </tbody>
               </table>
               <div className="flex items-center max-md:w-full max-md:justify-center max-md:mb-2">
-                <div className="w-28 h-35 border border-[#9ca3af] rounded-md flex flex-col items-center justify-center text-xs text-[#6b7280] bg-[repeating-linear-gradient(-45deg,#f9fafb,#f9fafb_6px,#f3f4f6_6px,#f3f4f6_12px)] overflow-hidden">
+                <div className="w-28 h-35 border border-(--color-icon-secondary) rounded-md flex flex-col items-center justify-center text-xs text-(--color-text-secondary) bg-[repeating-linear-gradient(-45deg,var(--color-bg-secondary),var(--color-bg-secondary)_6px,var(--color-bg-input-primary)_6px,var(--color-bg-input-primary)_12px)] overflow-hidden">
                   <img
                     src={`https://dt3lfi1tp9am3.cloudfront.net/${selectedCharacter.id}/${selectedCharacter.id}_thumb.webp`}
                     alt={selectedCharacter.name}
@@ -312,17 +312,17 @@ function Character() {
           </section>
 
           <section className="mt-4.5">
-            <h2 className="m-0 mb-1.5 text-sm tracking-wide uppercase text-[#4b5563]">Summary</h2>
-            <p className="m-1.5 text-[#4b5563] leading-relaxed">
+            <h2 className="m-0 mb-1.5 text-sm tracking-wide uppercase text-(--color-text-tertiary)">Summary</h2>
+            <p className="m-1.5 text-(--color-text-tertiary) leading-relaxed">
               {selectedCharacter.summary || selectedCharacter.status_message || 'No summary available.'}
             </p>
           </section>
 
           <section className="mt-4.5">
-            <h2 className="m-0 mb-1.5 text-sm tracking-wide uppercase text-[#4b5563]">Tags</h2>
+            <h2 className="m-0 mb-1.5 text-sm tracking-wide uppercase text-(--color-text-tertiary)">Tags</h2>
             <div className="flex flex-wrap gap-2 mt-2">
               {selectedCharacter.tags && selectedCharacter.tags.map((tag, i) => (
-                <span key={i} className="inline-flex items-center px-2.5 py-1 rounded-full bg-[#1d4ed8] text-[#eff6ff] text-xs tracking-tight lowercase cursor-default shadow-[0_6px_14px_rgba(37,99,235,0.35)]">
+                <span key={i} className="inline-flex items-center px-2.5 py-1 rounded-full bg-(--color-brand-secondary) text-(--color-text-accent) text-xs tracking-tight lowercase cursor-default shadow-[0_6px_14px_var(--color-brand-shadow)]">
                   {tag}
                 </span>
               ))}
@@ -342,22 +342,22 @@ function Character() {
                 >
                   <img src={license.image} alt={selectedCharacter.copyright} />
                 </a>
-                <span className="text-xs text-[#6b7280]">{license.summary}</span>
+                <span className="text-xs text-(--color-text-secondary)">{license.summary}</span>
               </div>
             )
           })()}
         </div>
 
         <div className="absolute top-1/2 -right-16 -translate-y-1/2 flex flex-col gap-2.5 max-md:static max-md:transform-none max-md:flex-row max-md:mt-8 max-md:gap-2 max-md:overflow-x-auto max-md:pb-2 max-md:justify-start max-md:w-full">
-          <div className="relative min-w-30 px-4.5 py-2.5 rounded-l-xl text-[#111827] text-xs font-semibold tracking-wide text-center bg-linear-to-br from-[#fef3c7] to-[#fde68a] shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-150 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-0 max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap max-md:hover:translate-x-0 max-md:shadow-none max-md:hover:shadow-none" onClick={() => {
+          <div className="relative min-w-30 px-4.5 py-2.5 rounded-l-xl text-(--color-text-primary) text-xs font-semibold tracking-wide text-center bg-linear-to-br from-(--color-btn-amber-from) to-(--color-btn-amber-to) shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-150 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-0 max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap max-md:hover:translate-x-0 max-md:shadow-none max-md:hover:shadow-none" onClick={() => {
             window.open(`https://d3rd8muqzoyvtk.cloudfront.net/realm/${selectedCharacter.id}/download`, '_blank')
           }}>
             DOWNLOAD
           </div>
-          <div className="relative min-w-30 px-4.5 py-2.5 rounded-l-xl text-[#111827] text-xs font-semibold tracking-wide text-center bg-linear-to-br from-[#e0f2fe] to-[#bfdbfe] shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-150 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-0 max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap max-md:hover:translate-x-0 max-md:shadow-none max-md:hover:shadow-none">
+          <div className="relative min-w-30 px-4.5 py-2.5 rounded-l-xl text-(--color-text-primary) text-xs font-semibold tracking-wide text-center bg-linear-to-br from-(--color-btn-sky-from) to-(--color-btn-sky-to) shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-150 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-0 max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap max-md:hover:translate-x-0 max-md:shadow-none max-md:hover:shadow-none">
             PORTFOLIO
           </div>
-          <div className="relative min-w-30 px-4.5 py-2.5 rounded-l-xl text-[#111827] text-xs font-semibold tracking-wide text-center bg-linear-to-br from-[#fee2e2] to-[#fecaca] shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-150 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-0 max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap max-md:hover:translate-x-0 max-md:shadow-none max-md:hover:shadow-none">
+          <div className="relative min-w-30 px-4.5 py-2.5 rounded-l-xl text-(--color-text-primary) text-xs font-semibold tracking-wide text-center bg-linear-to-br from-(--color-btn-red-from) to-(--color-btn-red-to) shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-150 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-0 max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap max-md:hover:translate-x-0 max-md:shadow-none max-md:hover:shadow-none">
             CONTACT
           </div>
         </div>

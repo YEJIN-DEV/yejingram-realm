@@ -2,7 +2,7 @@
 const Privacy = () => {
     return (
         <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto', fontFamily: 'Arial, sans-serif', lineHeight: '1.6' }}>
-            <h1 style={{ borderBottom: '1px solid #ccc', paddingBottom: '10px' }}>Privacy Policy for Yejingram Realm</h1>
+            <h1 style={{ borderBottom: '1px solid var(--color-border-strong)', paddingBottom: '10px' }}>Privacy Policy for Yejingram Realm</h1>
             <p><strong>Last updated:</strong> {new Date().toLocaleDateString()}</p>
 
             <section style={{ marginBottom: '20px' }}>

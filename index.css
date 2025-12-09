@@ -2,16 +2,13 @@
 
 :root {
     /* Background Colors */
-    /* bg-white */
-    --color-bg-main: #ffffff;
     /* bg-gray-50 */
     --color-bg-secondary: #f9fafb;
     /* bg-gray-200 */
     --color-bg-secondary-accent: #e5e7eb;
-    /* bg-black */
-    --color-bg-shadow: #000000;
-    /* hover:bg-gray-100 */
-    --color-bg-hover: #f3f4f6;
+
+    /* Primary Background (Cards, Content) */
+    --color-bg-primary: #ffffff;
 
     /* Input Background Colors */
     /* bg-gray-100 */
@@ -19,53 +16,9 @@
     /* bg-gray-50 */
     --color-bg-input-secondary: #f9fafb;
 
-    /* Message Background Colors */
-    /* blue-500 */
-    --color-message-self: oklch(62.3% 0.214 259.815);
-    /* gray-200 */
-    --color-message-other: #e5e7eb;
-    /* blue-200 */
-    --color-message-url-self: oklch(88.2% 0.059 254.128);
-    /* blue-100 */
-    --color-message-url-self-hover: #dbeafe;
-    /* blue-600 */
-    --color-message-url-other: #155dfc;
-    /* blue-800 */
-    --color-message-url-other-hover: #193cb8;
-
     /* Button Colors */
-    /* bg-blue-500 */
-    --color-button-primary: oklch(62.3% 0.214 259.815);
-    /* bg-blue-600 */
-    --color-button-primary-accent: #155dfc;
-    /* bg-gray-100 */
-    --color-button-secondary: #f3f4f6;
-    /* bg-gray-200 */
-    --color-button-secondary-accent: #e5e7eb;
     /* bg-gray-300 */
     --color-button-disabled: #d1d5dc;
-    /* bg-gray-800 */
-    --color-button-tertiary: #1e2939;
-    /* bg-gray-700 */
-    --color-button-neutral: #364153;
-    /* bg-gray-600 */
-    --color-button-neutral-hover: #4a5565;
-    /* text-green-600 */
-    --color-button-positive: oklch(62.7% 0.194 149.214);
-    /* text-green-700 */
-    --color-button-positive-accent: oklch(52.7% 0.154 150.069);
-    /* bg-red-500 */
-    --color-button-negative: #fb2c36;
-    /* bg-red-600 */
-    --color-button-negative-accent: oklch(57.7% 0.245 27.325);
-    /* text-red-600 */
-    --color-textual-button-negative: oklch(57.7% 0.245 27.325);
-    /* text-red-700 */
-    --color-textual-button-negative-accent: oklch(50.5% 0.213 27.518);
-    /* gray-300 */
-    --color-toggle-off: #d1d5dc;
-    /* blue-500 */
-    --color-toggle-on: oklch(62.3% 0.214 259.815);
 
     /* Border Colors */
     /* border-gray-200 */
@@ -74,16 +27,10 @@
     --color-border-secondary: #f3f4f6;
     /* gray-300 */
     --color-border-strong: #d1d5dc;
-    /* blue-500 */
-    --color-focus-border: oklch(62.3% 0.214 259.815);
 
     /* Icon Colors */
-    /* text-gray-600 */
-    --color-icon-primary: #4a5565;
     /* text-gray-400 */
     --color-icon-secondary: #99a1af;
-    /* text-gray-500 */
-    --color-icon-tertiary: #6a7282;
 
     /* Text Colors */
     /* text-gray-700 */
@@ -101,68 +48,41 @@
     /* text-white */
     --color-text-accent: #ffffff;
 
-    /* Toaster Colors */
-    --color-toaster-bg: #1f2937;
-    --color-toaster-text: #f3f4f6;
-    --color-toaster-border: #374151;
-    --color-toaster-icon-primary: #10b981;
-    --color-toaster-icon-secondary: #1f2937;
+    /* Brand Colors (Indigo) */
+    --color-brand-primary: #6366f1;
+    --color-brand-secondary: #4f46e5;
+    --color-brand-light: #e0e7ff;
+    --color-brand-border: #c7d2fe;
+    --color-brand-shadow: rgba(99, 102, 241, 0.1);
+    --color-brand-faint: rgba(99, 102, 241, 0.05);
+    --color-brand-muted: rgba(99, 102, 241, 0.1);
+    --color-brand-accent: #a855f7;
 
-    /* Sidebar Room List Colors */
-    /* blue-50 */
-    --color-bg-roomlist: #eff6ff;
-    --color-bg-roomactions-positive: #dbeafe;
-    --color-bg-roomactions-positive-hover: oklch(88.2% 0.059 254.128);
-    --color-bg-roomactions-negative: #ffe2e2;
-    --color-bg-roomactions-negative-hover: oklch(88.5% 0.062 18.334);
-    --color-text-roomlist-title: #1c398e;
+    /* Tag Colors (Blue) */
+    --color-tag-bg: #eff6ff;
+    --color-tag-text: #3b82f6;
+    --color-tag-border: #dbeafe;
 
-    /* Live Indicator Colors */
-    /* green-500 [Indicator - Online] */
-    --color-indicator-online: oklch(72.3% 0.219 149.579);
-    /* gray-500 [Indicator - Offline] */
-    --color-indicator-offline: #6a7282;
+    /* Sidebar Colors */
+    --color-sidebar-bg: #020617;
+    --color-sidebar-item-bg: #111827;
+    --color-sidebar-text: #e5e7eb;
+    --color-sidebar-text-muted: #9ca3af;
+    --color-sidebar-text-dim: #6b7280;
+    --color-sidebar-border: #4b5563;
 
-    /* Alert Colors */
-    /* amber-200 */
-    --color-alert-border: #fee685;
-    /* amber-100 */
-    --color-alert-bg: #fef3c6;
-    /* amber-900 */
-    --color-alert-text: #7b3306;
+    /* Tag Highlight Colors (Amber) */
+    --color-tag-highlight-bg: #fef3c7;
+    --color-tag-highlight-border: #facc15;
+    --color-tag-highlight-text: #92400e;
 
-    /* Avatar Background Colors */
-    /* gray-600 */
-    --color-avatar-from: #4a5565;
-    /* gray-700 */
-    --color-avatar-to: #364153;
-    /* blue-500 */
-    --color-group-from: oklch(62.3% 0.214 259.815);
-    /* indigo-600 */
-    --color-group-to: #4f39f6;
-
-    /* Specific Use Cases */
-    /* blue-700 [For PersonaModal] */
-    --color-persona-selected: #1447e6;
-    /* blue-600 [For PromptModal] */
-    --color-mainprompt: #155dfc;
-    /* green-600 [For PromptModal] */
-    --color-image-response: oklch(62.7% 0.194 149.214);
-
-    /* Additional */
-    /* purple-50 */
-    --color-preview-from: #faf5ff;
-    /* blue-50 */
-    --color-preview-to: #eff6ff;
-    /* purple-200 */
-    --color-preview-border: oklch(90.2% 0.063 306.703);
-    /* purple-500 */
-    --color-preview-accent-from: oklch(62.7% 0.265 303.9);
-    /* blue-500 */
-    --color-preview-accent-to: oklch(62.3% 0.214 259.815);
-
-    /* Invert When Darkmode */
-    --invert-filter: invert(0);
+    /* Action Button Gradients */
+    --color-btn-amber-from: #fef3c7;
+    --color-btn-amber-to: #fde68a;
+    --color-btn-sky-from: #e0f2fe;
+    --color-btn-sky-to: #bfdbfe;
+    --color-btn-red-from: #fee2e2;
+    --color-btn-red-to: #fecaca;
 }
 
 .dark {
@@ -170,16 +90,13 @@
     color-scheme: dark;
 
     /* Background Colors */
-    /* near-black, deep navy */
-    --color-bg-main: #0b0f17;
     /* darker surface */
     --color-bg-secondary: #0f1623;
     /* raised surface */
     --color-bg-secondary-accent: #172033;
-    /* true black shadow */
-    --color-bg-shadow: #000000;
-    /* gray-900 */
-    --color-bg-hover: #111827;
+
+    /* Primary Background (Cards, Content) */
+    --color-bg-primary: #1e293b;
 
     /* Input Background Colors */
     --color-bg-input-primary: #111827;
@@ -187,71 +104,21 @@
     --color-bg-input-secondary: #0f1623;
     /* subtle inputs */
 
-    /* Message Background Colors */
-    /* blue-purple accent bubble */
-    --color-message-self: oklch(58% 0.22 268);
-    /* gray-800 bubble */
-    --color-message-other: #1f2937;
-    /* blue-200 */
-    --color-message-url-self: oklch(88.2% 0.059 254.128);
-    /* blue-100 */
-    --color-message-url-self-hover: #dbeafe;
-    /* blue-600 */
-    --color-message-url-other: #155dfc;
-    /* blue-800 */
-    --color-message-url-other-hover: #193cb8;
-
     /* Button Colors */
-    /* blue→violet accent */
-    --color-button-primary: oklch(60% 0.23 267);
-    /* hover/active */
-    --color-button-primary-accent: oklch(55% 0.23 267);
-    /* subtle dark button */
-    --color-button-secondary: #111827;
-    /* hover */
-    --color-button-secondary-accent: #1f2937;
     /* gray-700 */
     --color-button-disabled: #374151;
-    /* bg-gray-700 */
-    --color-button-tertiary: #0b1324;
-    /* bg-gray-600 */
-    --color-button-neutral: #364153;
-    /* ghost/dim */
-    --color-button-neutral-hover: #6b7280;
-    /* green */
-    --color-button-positive: oklch(62.7% 0.194 149.214);
-    /* deeper green */
-    --color-button-positive-accent: oklch(52.7% 0.154 150.069);
-    /* red-500 */
-    --color-button-negative: #ef4444;
-    /* red-600 */
-    --color-button-negative-accent: #dc2626;
-    /* red-400 text */
-    --color-textual-button-negative: #f87171;
-    /* red-500 text */
-    --color-textual-button-negative-accent: #ef4444;
-    /* gray-700 */
-    --color-toggle-off: #374151;
-    /* blue */
-    --color-toggle-on: oklch(62.3% 0.214 259.815);
 
     /* Border Colors */
-    /* gray-800 */
-    --color-border: #1f2937;
+    /* gray-700 */
+    --color-border: #374151;
     /* gray-900 */
     --color-border-secondary: #111827;
-    /* gray-700 */
-    --color-border-strong: #374151;
-    /* blue focus */
-    --color-focus-border: oklch(62.3% 0.214 259.815);
+    /* gray-600 */
+    --color-border-strong: #4b5563;
 
     /* Icon Colors */
-    /* slate-300 */
-    --color-icon-primary: #cbd5e1;
     /* slate-400 */
     --color-icon-secondary: #94a3b8;
-    /* slate-500 */
-    --color-icon-tertiary: #8d96a8;
 
     /* Text Colors */
     /* slate-300 */
@@ -269,76 +136,48 @@
     /* white */
     --color-text-accent: #ffffff;
 
-    /* Toaster Colors */
-    /* deep panel */
-    --color-toaster-bg: #111a2c;
-    /* readable */
-    --color-toaster-text: #e5e7eb;
-    /* subtle border */
-    --color-toaster-border: #1f2937;
-    /* green accent */
-    --color-toaster-icon-primary: #10b981;
-    /* match bg */
-    --color-toaster-icon-secondary: #0b1220;
+    /* Brand Colors (Indigo) - Dark Mode Adjustments if needed, keeping same for now or slightly adjusted */
+    --color-brand-primary: #818cf8;
+    /* Indigo 400 */
+    --color-brand-secondary: #6366f1;
+    /* Indigo 500 */
+    --color-brand-light: #312e81;
+    /* Indigo 900 */
+    --color-brand-border: #4338ca;
+    /* Indigo 700 */
+    --color-brand-shadow: rgba(129, 140, 248, 0.1);
 
-    /* Sidebar Room List Colors */
-    /* slate-900 */
-    --color-bg-roomlist: #0f172a;
-    /* deep blue */
-    --color-bg-roomactions-positive: #0b1f3a;
-    --color-bg-roomactions-positive-hover: oklch(36% 0.08 254.128);
-    /* deep red */
-    --color-bg-roomactions-negative: #3a0f0f;
-    --color-bg-roomactions-negative-hover: oklch(38% 0.09 18.334);
-    /* blue-300 */
-    --color-text-roomlist-title: #93c5fd;
+    /* Tag Colors (Blue) - Dark Mode */
+    --color-tag-bg: #172554;
+    /* Blue 950 */
+    --color-tag-text: #60a5fa;
+    /* Blue 400 */
+    --color-tag-border: #1e3a8a;
+    /* Blue 900 */
 
-    /* Live Indicator Colors */
-    /* green */
-    --color-indicator-online: oklch(72.3% 0.219 149.579);
-    /* gray-500 */
-    --color-indicator-offline: #6b7280;
+    /* Sidebar Colors - Dark Mode (Sidebar is already dark, so maybe keep same or adjust slightly) */
+    --color-sidebar-bg: #020617;
+    --color-sidebar-item-bg: #111827;
+    --color-sidebar-text: #e5e7eb;
+    --color-sidebar-text-muted: #9ca3af;
+    --color-sidebar-text-dim: #6b7280;
+    --color-sidebar-border: #4b5563;
 
-    /* Alert Colors */
-    /* amber-600 */
-    --color-alert-border: #a16207;
-    /* amber-950 */
-    --color-alert-bg: #422006;
-    /* amber-300 */
-    --color-alert-text: #fde68a;
+    /* Tag Highlight Colors (Amber) - Dark Mode */
+    --color-tag-highlight-bg: #451a03;
+    /* Amber 950 */
+    --color-tag-highlight-border: #b45309;
+    /* Amber 700 */
+    --color-tag-highlight-text: #fcd34d;
+    /* Amber 300 */
 
-    /* Avatar Background Colors */
-    /* gray-600 */
-    --color-avatar-from: #4a5565;
-    /* gray-700 */
-    --color-avatar-to: #364153;
-    /* blue-500 */
-    --color-group-from: oklch(62.3% 0.214 259.815);
-    /* indigo-600 */
-    --color-group-to: #4f39f6;
-
-    /* Specific Use Cases */
-    /* indigo-600 */
-    --color-persona-selected: #4f46e5;
-    /* blue-500 */
-    --color-mainprompt: #3b82f6;
-    /* green */
-    --color-image-response: oklch(62.7% 0.194 149.214);
-
-    /* Additional Preview */
-    /* purple-950 */
-    --color-preview-from: #2e1065;
-    /* deep blue */
-    --color-preview-to: #0b1220;
-    /* purple border */
-    --color-preview-border: oklch(45% 0.12 306.703);
-    /* purple-500 */
-    --color-preview-accent-from: #8b5cf6;
-    /* blue-500 */
-    --color-preview-accent-to: #3b82f6;
-
-    /* Invert When Darkmode */
-    --invert-filter: invert(1);
+    /* Action Button Gradients - Dark Mode */
+    --color-btn-amber-from: #451a03;
+    --color-btn-amber-to: #78350f;
+    --color-btn-sky-from: #172554;
+    --color-btn-sky-to: #1e3a8a;
+    --color-btn-red-from: #450a0a;
+    --color-btn-red-to: #7f1d1d;
 }
 
 /* Instagram 스타일 Inter 폰트 설정 */

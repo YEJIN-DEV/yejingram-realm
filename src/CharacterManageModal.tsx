@@ -364,16 +364,16 @@ export default function CharacterManageModal({
 
     return (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-            <div className="bg-white rounded-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden flex flex-col relative shadow-2xl">
-                <div className="p-6 border-b border-gray-100 flex justify-between items-center">
-                    <h2 className="text-2xl font-bold text-gray-900">
+            <div className="bg-(--color-bg-primary) rounded-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden flex flex-col relative shadow-2xl">
+                <div className="p-6 border-b border-(--color-border-secondary) flex justify-between items-center">
+                    <h2 className="text-2xl font-bold text-(--color-text-primary)">
                         {mode === 'create' ? "새 캐릭터 등록" : "캐릭터 수정"}
                     </h2>
                     <button
                         onClick={handleCloseModal}
-                        className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                        className="p-2 hover:bg-(--color-bg-secondary) rounded-full transition-colors"
                     >
-                        <X className="w-6 h-6 text-gray-500" />
+                        <X className="w-6 h-6 text-(--color-icon-secondary)" />
                     </button>
                 </div>
 
@@ -383,12 +383,12 @@ export default function CharacterManageModal({
                         <div className="flex-1 space-y-6">
                             {/* Name */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">이름  <span className="text-red-500">*</span></label>
+                                <label className="block text-sm font-medium text-(--color-text-secondary) mb-1">이름  <span className="text-red-500">*</span></label>
                                 <input
                                     type="text"
                                     value={formData.name}
                                     onChange={e => setFormData({ ...formData, name: e.target.value })}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                                    className="w-full px-4 py-2 bg-(--color-bg-input-primary) text-(--color-text-primary) border border-(--color-border) rounded-lg focus:ring-2 focus:ring-(--color-brand-primary) focus:border-(--color-brand-primary) outline-none transition-all"
                                     placeholder="캐릭터 이름을 입력하세요"
                                     required
                                 />
@@ -410,12 +410,12 @@ export default function CharacterManageModal({
                             <CopyrightSelector copyright={formData.copyright} setCopyright={(s) => setFormData({ ...formData, copyright: s })} />
                             {/* Status Message */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">상태 메시지  <span className="text-red-500">*</span></label>
+                                <label className="block text-sm font-medium text-(--color-text-secondary) mb-1">상태 메시지  <span className="text-red-500">*</span></label>
                                 <input
                                     type="text"
                                     value={formData.status_message}
                                     onChange={e => setFormData({ ...formData, status_message: e.target.value })}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
+                                    className="w-full px-4 py-2 bg-(--color-bg-input-primary) text-(--color-text-primary) border border-(--color-border) rounded-lg focus:ring-2 focus:ring-(--color-brand-primary) focus:border-(--color-brand-primary) outline-none transition-all"
                                     placeholder="캐릭터의 한 줄 상태 메시지를 입력하세요. 캐릭터의 매력을 한껏 어필해보세요!"
                                     required
                                 />
@@ -423,18 +423,18 @@ export default function CharacterManageModal({
 
                             {/* Summary */}
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">캐릭터 소개  <span className="text-red-500">*</span></label>
+                                <label className="block text-sm font-medium text-(--color-text-secondary) mb-1">캐릭터 소개  <span className="text-red-500">*</span></label>
                                 <textarea
                                     value={formData.summary}
                                     onChange={e => setFormData({ ...formData, summary: e.target.value })}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none h-70 resize-none transition-all"
+                                    className="w-full px-4 py-2 bg-(--color-bg-input-primary) text-(--color-text-primary) border border-(--color-border) rounded-lg focus:ring-2 focus:ring-(--color-brand-primary) focus:border-(--color-brand-primary) outline-none h-70 resize-none transition-all"
                                     placeholder="캐릭터의 소개글을 작성해주세요. 다른 유저들이 캐릭터를 이해하는 데 도움이 됩니다."
                                 />
                             </div>
                         </div>
 
                         {/* Right Column: File Upload & Data Preview */}
-                        <div className="flex-1 flex flex-col gap-6 border-l border-gray-100 pl-8">
+                        <div className="flex-1 flex flex-col gap-6 border-l border-(--color-border-secondary) pl-8">
                             {/* Image Upload */}
                             <FileUpload previewUrl={previewUrl} onFileChange={handleFileChange} required={mode === 'create'} />
 
@@ -444,10 +444,10 @@ export default function CharacterManageModal({
                     </form>
                 </div>
 
-                <div className="p-6 border-t border-gray-100 bg-gray-50 flex gap-3">
+                <div className="p-6 border-t border-(--color-border-secondary) bg-(--color-bg-secondary) flex gap-3">
                     <button
                         onClick={handleSubmit}
-                        className={`${mode === 'edit' ? 'w-[90%]' : 'w-full'} bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition-colors shadow-lg shadow-indigo-500/20`}
+                        className={`${mode === 'edit' ? 'w-[90%]' : 'w-full'} bg-(--color-brand-primary) text-white py-3 rounded-xl font-semibold hover:bg-(--color-brand-secondary) transition-colors shadow-lg shadow-indigo-500/20`}
                     >
                         {mode === 'create' ? "등록하기" : "수정하기"}
                     </button>

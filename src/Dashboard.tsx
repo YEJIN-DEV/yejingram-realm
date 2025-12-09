@@ -174,10 +174,10 @@ export default function Dashboard() {
                     }}
                     onDragOver={handleDragOver}
                     onDrop={handleDrop}
-                    className="bg-white border-2 border-dashed border-(--color-border-secondary) rounded-3xl p-10 flex flex-col items-center justify-center text-center hover:border-[#6366f1] hover:bg-[#6366f1]/5 transition-all cursor-pointer group"
+                    className="bg-(--color-bg-primary) border-2 border-dashed border-(--color-border-secondary) rounded-3xl p-10 flex flex-col items-center justify-center text-center hover:border-(--color-brand-primary) hover:bg-(--color-brand-faint) transition-all cursor-pointer group"
                 >
-                    <div className="w-16 h-16 bg-(--color-bg-secondary) rounded-full flex items-center justify-center mb-4 group-hover:bg-[#6366f1]/10 transition-colors">
-                        <Plus className="w-8 h-8 text-(--color-text-secondary) group-hover:text-[#6366f1]" />
+                    <div className="w-16 h-16 bg-(--color-bg-secondary) rounded-full flex items-center justify-center mb-4 group-hover:bg-(--color-brand-muted) transition-colors">
+                        <Plus className="w-8 h-8 text-(--color-text-secondary) group-hover:text-(--color-brand-primary)" />
                     </div>
                     <h3 className="text-lg font-semibold text-(--color-text-primary) mb-2">새로운 캐릭터 등록하기</h3>
                     <p className="text-(--color-text-secondary) max-w-md">
@@ -196,7 +196,7 @@ export default function Dashboard() {
                         <select
                             value={sortOption}
                             onChange={(e) => setSortOption(e.target.value as any)}
-                            className="px-3 py-2 rounded-lg border border-(--color-border-secondary) bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#6366f1]"
+                            className="px-3 py-2 rounded-lg border border-(--color-border-secondary) bg-(--color-bg-primary) text-sm focus:outline-none focus:ring-2 focus:ring-(--color-brand-primary)"
                         >
                             <option value="name">이름순</option>
                             <option value="popularity">인기도순</option>
@@ -208,7 +208,7 @@ export default function Dashboard() {
 
                         <button
                             onClick={() => setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}
-                            className="p-2 rounded-lg border border-(--color-border-secondary) bg-white hover:bg-gray-50 transition-colors flex items-center gap-1 text-sm font-medium text-gray-600"
+                            className="p-2 rounded-lg border border-(--color-border-secondary) bg-(--color-bg-primary) hover:bg-(--color-bg-secondary) transition-colors flex items-center gap-1 text-sm font-medium text-(--color-text-tertiary)"
                         >
                             <ArrowUpDown className="w-4 h-4" />
                             {sortOrder === 'asc' ? '오름차순' : '내림차순'}
@@ -218,15 +218,15 @@ export default function Dashboard() {
                 <div>
                     {isLoading ? (
                         <div className="flex justify-center items-center py-20">
-                            <Loader2 className="w-10 h-10 text-[#6366f1] animate-spin" />
+                            <Loader2 className="w-10 h-10 text-(--color-brand-primary) animate-spin" />
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {sortedCharacters.map((char) => (
-                                <div key={char.id} className="bg-white rounded-3xl p-6 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.05),0_8px_10px_-6px_rgba(0,0,0,0.01)] border border-(--color-border-secondary) hover:-translate-y-1 transition-transform duration-300">
+                                <div key={char.id} className="bg-(--color-bg-primary) rounded-3xl p-6 shadow-[0_10px_25px_-5px_rgba(0,0,0,0.05),0_8px_10px_-6px_rgba(0,0,0,0.01)] border border-(--color-border-secondary) hover:-translate-y-1 transition-transform duration-300">
                                     <div className="flex items-start justify-between mb-6">
                                         <div className="flex items-center gap-4 w-full">
-                                            <div className="w-14 h-14 shrink-0 rounded-2xl bg-linear-to-br from-[#6366f1] to-[#a855f7] flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-indigo-500/20">
+                                            <div className="w-14 h-14 shrink-0 rounded-2xl bg-linear-to-br from-(--color-brand-primary) to-(--color-brand-accent) flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-indigo-500/20">
                                                 <img src={char.thumbnail} alt={char.name} className="w-full h-full object-cover rounded-2xl" />
                                             </div>
                                             <div className="min-w-0 flex-1 cursor-pointer" onClick={() => window.open(`/character?id=${char.id}`, '_blank')}>
@@ -236,24 +236,24 @@ export default function Dashboard() {
                                         </div>
                                     </div>
 
-                                    <div className="grid grid-cols-3 gap-2 mb-6 bg-gray-50 rounded-2xl p-4">
+                                    <div className="grid grid-cols-3 gap-2 mb-6 bg-(--color-bg-secondary) rounded-2xl p-4">
                                         <div className="text-center">
-                                            <div className="flex items-center justify-center gap-1 text-xs text-gray-500 mb-1">
+                                            <div className="flex items-center justify-center gap-1 text-xs text-(--color-text-informative-primary) mb-1">
                                                 <Flame className="w-3 h-3" /> 인기도
                                             </div>
-                                            <div className="font-bold text-gray-900">{char.popularity.toFixed(2)}</div>
+                                            <div className="font-bold text-(--color-text-primary)">{char.popularity.toFixed(2)}</div>
                                         </div>
-                                        <div className="text-center border-l border-gray-200">
-                                            <div className="flex items-center justify-center gap-1 text-xs text-gray-500 mb-1">
+                                        <div className="text-center border-l border-(--color-border)">
+                                            <div className="flex items-center justify-center gap-1 text-xs text-(--color-text-informative-primary) mb-1">
                                                 <Eye className="w-3 h-3" /> 조회수
                                             </div>
-                                            <div className="font-bold text-gray-900">{char.views.toLocaleString()}</div>
+                                            <div className="font-bold text-(--color-text-primary)">{char.views.toLocaleString()}</div>
                                         </div>
-                                        <div className="text-center border-l border-gray-200">
-                                            <div className="flex items-center justify-center gap-1 text-xs text-gray-500 mb-1">
+                                        <div className="text-center border-l border-(--color-border)">
+                                            <div className="flex items-center justify-center gap-1 text-xs text-(--color-text-informative-primary) mb-1">
                                                 <Download className="w-3 h-3" /> 다운로드
                                             </div>
-                                            <div className="font-bold text-gray-900">{char.downloads.toLocaleString()}</div>
+                                            <div className="font-bold text-(--color-text-primary)">{char.downloads.toLocaleString()}</div>
                                         </div>
                                     </div>
 
@@ -264,7 +264,7 @@ export default function Dashboard() {
                                                 setSelectedCharacter(char)
                                                 setIsModalOpen(true)
                                             }}
-                                            className="flex-1 bg-[#6366f1] text-white py-3 rounded-xl font-semibold hover:bg-[#4f46e5] transition-colors shadow-lg shadow-indigo-500/20"
+                                            className="flex-1 bg-(--color-brand-primary) text-white py-3 rounded-xl font-semibold hover:bg-(--color-brand-secondary) transition-colors shadow-lg shadow-indigo-500/20"
                                         >
                                             관리
                                         </button>

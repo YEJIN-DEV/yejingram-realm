@@ -130,12 +130,12 @@ function SearchPage() {
             <div className="text-center mb-10">
                 <h1 className="text-3xl font-extrabold text-(--color-text-primary) mb-3 tracking-tight">YejinRealm</h1>
                 <h2 className="text-lg text-(--color-text-primary) m-0">
-                    <span className="text-[#6366f1] font-bold">{String(displayCount).padStart(3, '0')}</span>명의 캐릭터가 Yejingram Realm에서 기다리고 있어요. 함께할 캐릭터를 찾아보세요!
+                    <span className="text-(--color-brand-primary) font-bold">{String(displayCount).padStart(3, '0')}</span>명의 캐릭터가 Yejingram Realm에서 기다리고 있어요. 함께할 캐릭터를 찾아보세요!
                 </h2>
             </div>
 
-            <div className="bg-white p-7.5 rounded-3xl shadow-[0_10px_25px_-5px_rgba(0,0,0,0.05),0_8px_10px_-6px_rgba(0,0,0,0.01)] mb-10 border border-(--color-border-secondary)">
-                <div className="relative flex items-center bg-(--color-bg-input-secondary) border-2 border-(--color-border) rounded-2xl px-4 py-2 transition-all duration-200 focus-within:border-[#6366f1] focus-within:bg-white focus-within:shadow-[0_0_0_4px_rgba(99,102,241,0.1)]">
+            <div className="bg-(--color-bg-primary) p-7.5 rounded-3xl shadow-[0_10px_25px_-5px_rgba(0,0,0,0.05),0_8px_10px_-6px_rgba(0,0,0,0.01)] mb-10 border border-(--color-border-secondary)">
+                <div className="relative flex items-center bg-(--color-bg-input-secondary) border-2 border-(--color-border) rounded-2xl px-4 py-2 transition-all duration-200 focus-within:border-(--color-brand-primary) focus-within:bg-(--color-bg-primary) focus-within:shadow-[0_0_0_4px_var(--color-brand-shadow)]">
                     <div className="text-(--color-icon-secondary) flex items-center mr-3">
                         <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -165,7 +165,7 @@ function SearchPage() {
                     {['React', 'Node.js', 'TypeScript', 'Frontend', 'Backend', 'Full Stack'].map((keyword) => (
                         <button
                             key={keyword}
-                            className="bg-(--color-bg-input-primary) border border-(--color-border) px-3 py-1.5 rounded-full text-xs text-(--color-text-tertiary) cursor-pointer transition-all duration-200 hover:bg-[#e0e7ff] hover:text-[#4f46e5] hover:border-[#c7d2fe]"
+                            className="bg-(--color-bg-input-primary) border border-(--color-border) px-3 py-1.5 rounded-full text-xs text-(--color-text-tertiary) cursor-pointer transition-all duration-200 hover:bg-(--color-brand-light) hover:text-(--color-brand-secondary) hover:border-(--color-brand-border)"
                             onClick={() => setQuery(keyword)}
                         >
                             {keyword}
@@ -177,14 +177,14 @@ function SearchPage() {
             <div className="mt-10">
                 {loading ? (
                     <div className="flex justify-center items-center py-20">
-                        <Loader2 className="w-10 h-10 text-[#6366f1] animate-spin" />
+                        <Loader2 className="w-10 h-10 text-(--color-brand-primary) animate-spin" />
                     </div>
                 ) : characters.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {characters.map((character) => (
                             <div
                                 key={character.id}
-                                className="bg-white rounded-2xl border border-(--color-border) p-6 cursor-pointer transition-all duration-200 flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0_12px_24px_-8px_rgba(0,0,0,0.1)] hover:border-[#c7d2fe]"
+                                className="bg-(--color-bg-primary) rounded-2xl border border-(--color-border) p-6 cursor-pointer transition-all duration-200 flex flex-col justify-between hover:-translate-y-1 hover:shadow-[0_12px_24px_-8px_rgba(0,0,0,0.1)] hover:border-(--color-brand-border)"
                                 onClick={() => window.location.href = `/character?id=${character.id}`}
                             >
                                 <div className="flex gap-4 mb-4">
@@ -196,7 +196,7 @@ function SearchPage() {
                                     <div className="flex-1 min-w-0">
                                         <h3 className="m-0 mb-1.5 text-xl font-bold text-(--color-text-primary) flex items-center gap-2 flex-wrap">
                                             {character.name}
-                                            <span className="flex text-xs font-medium bg-[#eff6ff] text-[#3b82f6] px-2 py-0.5 rounded-md border border-[#dbeafe]">
+                                            <span className="flex text-xs font-medium bg-(--color-tag-bg) text-(--color-tag-text) px-2 py-0.5 rounded-md border border-(--color-tag-border)">
                                                 <Flame className='w-4 h-4' /> {character.popularity.toFixed(2)}
                                             </span>
                                         </h3>
@@ -237,7 +237,7 @@ function SearchPage() {
 
                 <div className="flex justify-center items-center gap-4 mt-10">
                     <button
-                        className="px-4 py-2 bg-white border border-(--color-border) rounded-lg text-sm font-medium text-[#374151] cursor-pointer transition-all duration-200 hover:bg-(--color-bg-secondary) hover:border-[#d1d5db] disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-4 py-2 bg-(--color-bg-primary) border border-(--color-border) rounded-lg text-sm font-medium text-(--color-text-interface) cursor-pointer transition-all duration-200 hover:bg-(--color-bg-secondary) hover:border-(--color-button-disabled) disabled:opacity-50 disabled:cursor-not-allowed"
                         onClick={handlePrev}
                         disabled={currentPageIndex === 0 || loading}
                     >
@@ -247,7 +247,7 @@ function SearchPage() {
                         Page {currentPageIndex + 1}
                     </span>
                     <button
-                        className="px-4 py-2 bg-white border border-(--color-border) rounded-lg text-sm font-medium text-[#374151] cursor-pointer transition-all duration-200 hover:bg-(--color-bg-secondary) hover:border-[#d1d5db] disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-4 py-2 bg-(--color-bg-primary) border border-(--color-border) rounded-lg text-sm font-medium text-(--color-text-interface) cursor-pointer transition-all duration-200 hover:bg-(--color-bg-secondary) hover:border-(--color-button-disabled) disabled:opacity-50 disabled:cursor-not-allowed"
                         onClick={handleNext}
                         disabled={!lastKey || loading}
                     >
