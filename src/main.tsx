@@ -22,7 +22,7 @@ window.addEventListener('message', (event) => {
 const cognitoAuthConfig = {
   authority: "https://cognito-idp.ap-northeast-2.amazonaws.com/ap-northeast-2_qpXc0tRPJ",
   client_id: "3mjaiv26pdraeb0erjj5am92ve",
-  redirect_uri: "http://localhost:5173", // TODO: 실배포시 realm.yejingram.com 으로 변경
+  redirect_uri: import.meta.env.DEV ? "http://localhost:5173" : "https://realm.yejingram.com",
   response_type: "code",
   scope: "email openid profile",
 };
