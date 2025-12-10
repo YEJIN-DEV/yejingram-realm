@@ -1,6 +1,7 @@
-import { StrictMode } from 'react'
+import { StrictMode, useState, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
+import { Moon, Sun, Languages } from 'lucide-react'
 import Character from './Character.tsx'
 import SearchPage from './Search.tsx'
 import { AuthProvider, useAuth } from 'react-oidc-context'
@@ -31,6 +32,32 @@ function App() {
   const auth = useAuth();
   const isInIframe = window.self !== window.top;
 
+  const [theme, setTheme] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    }
+    return 'light';
+  });
+  const [lang, setLang] = useState('ko');
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.classList.add('disable-transitions');
+
+    if (theme === 'dark') {
+      root.classList.add('dark');
+    } else {
+      root.classList.remove('dark');
+    }
+    localStorage.setItem('theme', theme);
+
+    const timer = setTimeout(() => {
+      root.classList.remove('disable-transitions');
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, [theme]);
+
   return (
     <BrowserRouter>
       <Toaster toastOptions={{ duration: 5000 }} />
@@ -40,13 +67,32 @@ function App() {
             <Link to="/" className="font-bold text-(--color-text-primary) no-underline">
               YEJINGRAM<br />REALM
             </Link>
-            <div className="flex gap-3">
-              <Link to="/" className="no-underline text-(--color-text-secondary) uppercase">
-                검색
-              </Link>
+            <div className="flex gap-3 items-center">
+              <div className="flex items-center gap-1">
+                <Languages className="w-4 h-4 text-(--color-text-secondary)" />
+                <select
+                  value={lang}
+                  onChange={(e) => setLang(e.target.value)}
+                  className="bg-transparent text-(--color-text-secondary) text-xs border-none outline-none cursor-pointer uppercase"
+                >
+                  <option value="ko">KO</option>
+                  <option value="ja">JA</option>
+                  <option value="en">EN</option>
+                </select>
+              </div>
+
+              <button
+                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                className="bg-transparent border-none cursor-pointer p-0 text-(--color-text-secondary) flex items-center"
+                aria-label="Toggle Dark Mode"
+              >
+                {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              </button>
+
+              <span className="text-(--color-text-secondary)">|</span>
+
               {auth.isAuthenticated ? (
                 <>
-                  <span className="text-(--color-text-secondary)">|</span>
                   <Link to="/dashboard" className="no-underline text-(--color-text-secondary) uppercase">
                     마이페이지
                   </Link>
