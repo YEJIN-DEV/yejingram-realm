@@ -13,6 +13,7 @@ import { Toaster } from 'react-hot-toast'
 window.addEventListener('message', (event) => {
   if (event.data.type === 'CSS_VARIABLES') {
     const { variables, theme } = event.data;
+    document.documentElement.classList.add('disable-transitions');
     // :root에 변수 적용
     if (variables) {
       for (const [key, value] of Object.entries(variables)) {
@@ -24,6 +25,10 @@ window.addEventListener('message', (event) => {
       document.documentElement.classList.remove('light', 'dark');
       document.documentElement.classList.add(theme);
     }
+    // 트랜지션 비활성화 클래스 제거
+    setTimeout(() => {
+      document.documentElement.classList.remove('disable-transitions');
+    }, 0);
   }
 });
 
