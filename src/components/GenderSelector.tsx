@@ -1,25 +1,28 @@
+import { useTranslation } from 'react-i18next'
+
 interface Props {
     gender: number | null
     setGender: (g: number | null) => void
 }
 
 export default function GenderSelector({ gender, setGender }: Props) {
+    const { t } = useTranslation()
     return (
         <div>
             <div className="flex justify-between items-center mb-2">
-                <label className="block text-sm font-medium text-(--color-text-secondary)">성별</label>
+                <label className="block text-sm font-medium text-(--color-text-secondary)">{t('common.gender')}</label>
                 {gender !== null && (
                     <button
                         type="button"
                         onClick={() => setGender(null)}
                         className="text-xs text-(--color-text-tertiary) hover:text-red-500 transition-colors cursor-pointer"
                     >
-                        선택 취소
+                        {t('components.gender.cancel')}
                     </button>
                 )}
             </div>
             <div className="flex gap-4">
-                {[{ label: '여성', value: 0 }, { label: '남성', value: 1 }, { label: '기타', value: 2 }].map(option => (
+                {[{ label: t('components.gender.female'), value: 0 }, { label: t('components.gender.male'), value: 1 }, { label: t('components.gender.other'), value: 2 }].map(option => (
                     <label key={option.value} className={`flex items-center gap-2 cursor-pointer px-4 py-2 rounded-lg border transition-all ${gender === option.value ? 'border-(--color-brand-primary) bg-(--color-brand-faint) text-(--color-brand-secondary)' : 'border-(--color-border) hover:bg-(--color-bg-secondary)'}`}>
                         <input
                             type="radio"

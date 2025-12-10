@@ -9,6 +9,8 @@ import Privacy from './Privacy.tsx'
 import TOS from './TOS.tsx'
 import Dashboard from './Dashboard.tsx'
 import { Toaster } from 'react-hot-toast'
+import './i18n/i18n'
+import { useTranslation } from 'react-i18next'
 
 window.addEventListener('message', (event) => {
   if (event.data.type === 'CSS_VARIABLES') {
@@ -42,6 +44,7 @@ const cognitoAuthConfig = {
 
 function App() {
   const auth = useAuth();
+  const { t, i18n } = useTranslation();
   const isInIframe = window.self !== window.top;
 
   const [theme, setTheme] = useState(() => {
@@ -50,7 +53,10 @@ function App() {
     }
     return 'light';
   });
-  const [lang, setLang] = useState('ko');
+
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+  };
 
   useEffect(() => {
     const root = document.documentElement;
@@ -83,8 +89,8 @@ function App() {
               <div className="flex items-center gap-1">
                 <Languages className="w-4 h-4 text-(--color-text-secondary)" />
                 <select
-                  value={lang}
-                  onChange={(e) => setLang(e.target.value)}
+                  value={i18n.resolvedLanguage}
+                  onChange={(e) => changeLanguage(e.target.value)}
                   className="bg-transparent text-(--color-text-secondary) text-xs border-none outline-none cursor-pointer uppercase"
                 >
                   <option value="ko">KO</option>
@@ -100,20 +106,17 @@ function App() {
               >
                 {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
               </button>
-
-              <span className="text-(--color-text-secondary)">|</span>
-
               {auth.isAuthenticated ? (
                 <>
                   <Link to="/dashboard" className="no-underline text-(--color-text-secondary) uppercase">
-                    마이페이지
+                    {t('header.my_page')}
                   </Link>
                   <span className="text-(--color-text-secondary)">|</span>
                   <button
                     className="no-underline text-(--color-text-secondary) uppercase bg-transparent border-none cursor-pointer p-0 font-inherit"
                     onClick={() => auth.removeUser()}
                   >
-                    로그아웃
+                    {t('header.logout')}
                   </button>
                 </>
               ) : (
@@ -121,11 +124,11 @@ function App() {
                   className="no-underline text-(--color-text-secondary) uppercase bg-transparent border-none cursor-pointer p-0 font-inherit"
                   onClick={() => auth.signinRedirect()}
                 >
-                  로그인
+                  {t('header.login')}
                 </button>
               )}
             </div>
-          </nav>
+          </nav >
         )}
         <Routes>
           <Route path="/" element={<SearchPage />} />
@@ -136,13 +139,13 @@ function App() {
         </Routes>
         {/* Footer (Copyright, Privacy Policy, Terms of Service) */}
         <footer className="w-full max-w-7xl mx-auto py-6 px-6 text-center text-xs text-(--color-text-secondary)">
-          &copy; {new Date().getFullYear()} Yejingram Realm. All rights reserved.&nbsp;|&nbsp;
+          &copy; {new Date().getFullYear()} Yejingram Realm. {t('footer.all_rights_reserved')}&nbsp;|&nbsp;
           Email: <a href="mailto:support@yejingram.com" className="text-(--color-text-secondary) underline">support@yejingram.com</a>&nbsp;|&nbsp;
-          <a href="/privacy" className="text-(--color-text-secondary) underline">Privacy Policy</a>&nbsp;|&nbsp;
-          <a href="/terms" className="text-(--color-text-secondary) underline">Terms of Service</a>
+          <a href="/privacy" className="text-(--color-text-secondary) underline">{t('footer.privacy_policy')}</a>&nbsp;|&nbsp;
+          <a href="/terms" className="text-(--color-text-secondary) underline">{t('footer.terms_of_service')}</a>
         </footer>
-      </div>
-    </BrowserRouter>
+      </div >
+    </BrowserRouter >
   );
 }
 

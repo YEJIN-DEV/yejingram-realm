@@ -1,6 +1,7 @@
 import { Download, Eye, Flame, Book, Smile } from 'lucide-react'
 import { useEffect, useState, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 interface CharacterData {
   summary: string
@@ -34,6 +35,7 @@ interface ApiResponse {
 }
 
 function Character() {
+  const { t } = useTranslation()
   const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768)
   const [characters, setCharacters] = useState<CharacterData[]>([])
   const [selectedCharacter, setSelectedCharacter] = useState<CharacterData | null>(null)
@@ -98,7 +100,7 @@ function Character() {
       return {
         url: 'http://www.wtfpl.net/',
         image: 'http://www.wtfpl.net/wp-content/uploads/2012/12/wtfpl-badge-4.png',
-        summary: '제약 없이 자유롭게 이용 가능합니다.',
+        summary: t('character_detail.license.wtfpl_summary'),
         isCC: false
       }
     }
@@ -114,12 +116,12 @@ function Character() {
       const image = `https://licensebuttons.net/l/${code}/${version}/88x31.png`
 
       const summaryParts = []
-      if (code.includes('by')) summaryParts.push('저작자 표시')
-      if (code.includes('nc')) summaryParts.push('비영리')
-      if (code.includes('nd')) summaryParts.push('변경 금지')
-      if (code.includes('sa')) summaryParts.push('동일조건변경허락')
+      if (code.includes('by')) summaryParts.push(t('character_detail.license.cc_by'))
+      if (code.includes('nc')) summaryParts.push(t('character_detail.license.cc_nc'))
+      if (code.includes('nd')) summaryParts.push(t('character_detail.license.cc_nd'))
+      if (code.includes('sa')) summaryParts.push(t('character_detail.license.cc_sa'))
 
-      const summary = `${summaryParts.join(', ')} 조건 하에 이용 가능합니다.`
+      const summary = `${summaryParts.join(', ')} ${t('character_detail.license.conditions')}`
 
       return {
         url,
@@ -224,7 +226,7 @@ function Character() {
                 className="w-full py-2 text-xs text-(--color-sidebar-text-dim) hover:text-(--color-sidebar-text) bg-transparent border border-(--color-sidebar-border) rounded-lg mt-2 cursor-pointer transition-colors"
                 onClick={handleNext}
               >
-                Load More
+                {t('common.load_more')}
               </button>
             )}
           </ul>
@@ -236,20 +238,20 @@ function Character() {
           <header className="flex justify-between items-end mb-6 pb-3 border-b-2 border-(--color-border)">
             <div className="resume-title">
               <h1 className="m-0 text-2xl">{selectedCharacter.name}</h1>
-              <p className="mt-1 text-sm text-(--color-text-secondary)">{selectedCharacter.status_message || 'No status message'}</p>
+              <p className="mt-1 text-sm text-(--color-text-secondary)">{selectedCharacter.status_message || t('character_detail.no_status_message')}</p>
             </div>
-            <div className="text-right text-xs text-(--color-text-secondary)">
+            <div className="text-right text-(--color-text-secondary) text-xs">
               {/* <div>ID: {selectedCharacter.id}</div> */}
-              <div className="mt-0.5">Uploaded: {new Date(selectedCharacter.created_at * 1000).toLocaleString()}</div>
-              <div className="mt-0.5">Last Updated: {new Date(selectedCharacter.updated_at * 1000).toLocaleString()}</div>
+              <div className="mt-0.5">{t('character_detail.upload_date')}: {new Date(selectedCharacter.created_at * 1000).toLocaleString()}</div>
+              <div className="mt-0.5">{t('character_detail.update_date')}: {new Date(selectedCharacter.updated_at * 1000).toLocaleString()}</div>
               <div className="mt-2 flex gap-3 justify-end text-(--color-text-tertiary)">
-                <span className="flex items-center gap-1" title="Popularity">
+                <span className="flex items-center gap-1" title={t('dashboard.stats.popularity')}>
                   <Flame className='w-3 h-3' /> {selectedCharacter.popularity.toFixed(2)}
                 </span>
-                <span className="flex items-center gap-1" title="Views">
+                <span className="flex items-center gap-1" title={t('dashboard.stats.views')}>
                   <Eye className='w-3 h-3' /> {selectedCharacter.view_count}
                 </span>
-                <span className="flex items-center gap-1" title="Downloads">
+                <span className="flex items-center gap-1" title={t('dashboard.stats.downloads')}>
                   <Download className='w-3 h-3' /> {selectedCharacter.download_count}
                 </span>
               </div>
@@ -257,37 +259,37 @@ function Character() {
           </header>
 
           <section className="mt-4.5">
-            <h2 className="m-0 mb-1.5 text-sm tracking-wide uppercase text-(--color-text-tertiary)">Basic Info</h2>
+            <h2 className="m-0 mb-1.5 text-sm tracking-wide uppercase text-(--color-text-tertiary)">{t('character_detail.basic_info')}</h2>
             <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-4 items-stretch max-md:flex max-md:flex-col-reverse max-md:gap-6 max-md:items-center">
               <table className="w-full border-collapse border border-(--color-border) text-xs m-0 max-md:border max-md:border-(--color-border) max-md:rounded-lg max-md:overflow-hidden">
                 <tbody>
                   <tr className="max-md:flex max-md:flex-col max-md:border-b max-md:border-(--color-border)">
-                    <th className="p-2 border border-(--color-border) text-left bg-(--color-bg-secondary) font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-(--color-bg-secondary) max-md:text-(--color-text-secondary) max-md:pb-1 max-md:border-none">Name</th>
-                    <td className="p-2 border border-(--color-border) text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-(--color-border-secondary)">{selectedCharacter.name || 'Unknown'}</td>
-                    <th className="p-2 border border-(--color-border) text-left bg-(--color-bg-secondary) font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-(--color-bg-secondary) max-md:text-(--color-text-secondary) max-md:pb-1 max-md:border-none">Uploader</th>
-                    <td className="p-2 border border-(--color-border) text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-(--color-border-secondary)">{selectedCharacter.uploader_nickname || 'Anonymous'}</td>
+                    <th className="p-2 border border-(--color-border) text-left bg-(--color-bg-secondary) font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-(--color-bg-secondary) max-md:text-(--color-text-secondary) max-md:pb-1 max-md:border-none">{t('common.name')}</th>
+                    <td className="p-2 border border-(--color-border) text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-(--color-border-secondary)">{selectedCharacter.name || t('common.unknown')}</td>
+                    <th className="p-2 border border-(--color-border) text-left bg-(--color-bg-secondary) font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-(--color-bg-secondary) max-md:text-(--color-text-secondary) max-md:pb-1 max-md:border-none">{t('character_detail.uploader')}</th>
+                    <td className="p-2 border border-(--color-border) text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-(--color-border-secondary)">{selectedCharacter.uploader_nickname || t('common.anonymous')}</td>
                   </tr>
                   <tr className="max-md:flex max-md:flex-col max-md:border-b max-md:border-(--color-border)">
-                    <th className="p-2 border border-(--color-border) text-left bg-(--color-bg-secondary) font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-(--color-bg-secondary) max-md:text-(--color-text-secondary) max-md:pb-1 max-md:border-none">Gender</th>
-                    <td className="p-2 border border-(--color-border) text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-(--color-border-secondary)">{selectedCharacter.gender === 0 ? 'Female' : selectedCharacter.gender === 1 ? 'Male' : selectedCharacter.gender === 2 ? 'Other' : 'Not Specified'}</td>
+                    <th className="p-2 border border-(--color-border) text-left bg-(--color-bg-secondary) font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-(--color-bg-secondary) max-md:text-(--color-text-secondary) max-md:pb-1 max-md:border-none">{t('common.gender')}</th>
+                    <td className="p-2 border border-(--color-border) text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-(--color-border-secondary)">{selectedCharacter.gender === 0 ? t('components.gender.female') : selectedCharacter.gender === 1 ? t('components.gender.male') : selectedCharacter.gender === 2 ? t('components.gender.other') : t('common.not_specified')}</td>
                     <th className="p-2 border border-(--color-border) text-left bg-(--color-bg-secondary) font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-(--color-bg-secondary) max-md:text-(--color-text-secondary) max-md:pb-1 max-md:border-none">NSFW</th>
-                    <td className="p-2 border border-(--color-border) text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-(--color-border-secondary)">{selectedCharacter.is_nsfw ? 'Yes' : 'No'}</td>
+                    <td className="p-2 border border-(--color-border) text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-(--color-border-secondary)">{selectedCharacter.is_nsfw ? t('common.yes') : t('common.no')}</td>
                   </tr>
                   <tr className="max-md:flex max-md:flex-col max-md:border-b max-md:border-(--color-border)">
-                    <th className="p-2 border border-(--color-border) text-left bg-(--color-bg-secondary) font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-(--color-bg-secondary) max-md:text-(--color-text-secondary) max-md:pb-1 max-md:border-none">Phone</th>
+                    <th className="p-2 border border-(--color-border) text-left bg-(--color-bg-secondary) font-semibold whitespace-nowrap max-md:block max-md:w-full max-md:bg-(--color-bg-secondary) max-md:text-(--color-text-secondary) max-md:pb-1 max-md:border-none">{t('common.phone')}</th>
                     <td className="p-2 border border-(--color-border) text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-(--color-border-secondary)">{selectedCharacter.id.replace(/(\d{3})(\d{4})(\d{4})/, '$1-$2-$3')}</td>
                     <td colSpan={2} className="p-2 border border-(--color-border) text-left max-md:block max-md:w-full max-md:pt-1 max-md:border-none max-md:border-b max-md:border-(--color-border-secondary)">
                       <div className="flex gap-3 items-center">
                         {selectedCharacter.has_lore && (
                           <div className="flex items-center gap-1">
                             <Book className="w-4 h-4 text-blue-500" />
-                            <span>로어북 포함됨</span>
+                            <span>{t('character_detail.lorebook_included')}</span>
                           </div>
                         )}
                         {selectedCharacter.has_sticker && (
                           <div className="flex items-center gap-1">
                             <Smile className="w-4 h-4 text-yellow-500" />
-                            <span>스티커 포함됨</span>
+                            <span>{t('character_detail.sticker_included')}</span>
                           </div>
                         )}
                         {!selectedCharacter.has_lore && !selectedCharacter.has_sticker && '-'}
@@ -312,14 +314,14 @@ function Character() {
           </section>
 
           <section className="mt-4.5">
-            <h2 className="m-0 mb-1.5 text-sm tracking-wide uppercase text-(--color-text-tertiary)">Summary</h2>
+            <h2 className="m-0 mb-1.5 text-sm tracking-wide uppercase text-(--color-text-tertiary)">{t('character_modal.label.summary')}</h2>
             <p className="m-1.5 text-(--color-text-tertiary) leading-relaxed">
-              {selectedCharacter.summary || selectedCharacter.status_message || 'No summary available.'}
+              {selectedCharacter.summary || selectedCharacter.status_message || t('character_detail.no_summary')}
             </p>
           </section>
 
           <section className="mt-4.5">
-            <h2 className="m-0 mb-1.5 text-sm tracking-wide uppercase text-(--color-text-tertiary)">Tags</h2>
+            <h2 className="m-0 mb-1.5 text-sm tracking-wide uppercase text-(--color-text-tertiary)">{t('common.tags')}</h2>
             <div className="flex flex-wrap gap-2 mt-2">
               {selectedCharacter.tags && selectedCharacter.tags.map((tag, i) => (
                 <span key={i} className="inline-flex items-center px-2.5 py-1 rounded-full bg-(--color-brand-secondary) text-(--color-text-accent) text-xs tracking-tight lowercase cursor-default shadow-[0_6px_14px_var(--color-brand-shadow)]">
@@ -352,12 +354,12 @@ function Character() {
           <div className="relative min-w-30 px-4.5 py-2.5 rounded-l-xl text-(--color-text-primary) text-xs font-semibold tracking-wide text-center bg-linear-to-br from-(--color-btn-amber-from) to-(--color-btn-amber-to) shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-150 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-0 max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap max-md:hover:translate-x-0 max-md:shadow-none max-md:hover:shadow-none" onClick={() => {
             window.open(`https://d3rd8muqzoyvtk.cloudfront.net/realm/${selectedCharacter.id}/download`, '_blank')
           }}>
-            DOWNLOAD
+            {t('character_detail.button.download')}
           </div>
           <div className="relative min-w-30 px-4.5 py-2.5 rounded-l-xl text-(--color-text-primary) text-xs font-semibold tracking-wide text-center bg-linear-to-br from-(--color-btn-sky-from) to-(--color-btn-sky-to) shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-150 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-0 max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap max-md:hover:translate-x-0 max-md:shadow-none max-md:hover:shadow-none" onClick={() => {
             window.open(`${import.meta.env.DEV ? "http://localhost:5174" : import.meta.env.VITE_YEJINGRAM_URL}/?realmId=${selectedCharacter.id}&charname=${selectedCharacter.name}`, '_blank')
           }}>
-            YEJINGRAM에서 열기
+            {t('character_detail.open_in_yejingram')}
           </div>
           <div className="relative min-w-30 px-4.5 py-2.5 rounded-l-xl text-(--color-text-primary) text-xs font-semibold tracking-wide text-center bg-linear-to-br from-(--color-btn-red-from) to-(--color-btn-red-to) shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-150 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-0 max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap max-md:hover:translate-x-0 max-md:shadow-none max-md:hover:shadow-none">
             CONTACT

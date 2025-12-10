@@ -4,6 +4,7 @@ import { decodeText } from './util/imageStego'
 import toast from 'react-hot-toast'
 import { useAuth } from 'react-oidc-context';
 import type { Character } from './types/character'
+import { useTranslation } from 'react-i18next'
 
 import TagInput from './components/TagInput'
 import FileUpload from './components/FileUpload'
@@ -51,6 +52,7 @@ export default function CharacterManageModal({
     initialData
 }: CharacterManageModalProps) {
     const auth = useAuth()
+    const { t } = useTranslation()
     const [formData, setFormData] = useState({
         name: '',
         gender: null as number | null,
@@ -108,11 +110,10 @@ export default function CharacterManageModal({
                     setCharacterData(parsedData)
                     setFormData(prev => ({
                         ...prev,
-                        name: parsedData.name
                     }))
                 } catch (error) {
                     console.error(error)
-                    alert("유효하지 않은 캐릭터 파일입니다. 올바른 형식의 PNG 파일을 업로드해주세요.")
+                    alert(t('character_modal.error.invalid_file'))
                     setSelectedFile(null)
                     setPreviewUrl(null)
                     setCharacterData(null)
@@ -171,7 +172,7 @@ export default function CharacterManageModal({
     }
 
     const handleCloseModal = () => {
-        if (window.confirm("작성중이던 내용이 전부 지워집니다. 정말 닫으시겠습니까?")) {
+        if (window.confirm(t('character_modal.confirm_close'))) {
             onClose()
             setFormData({
                 name: '',
@@ -193,27 +194,27 @@ export default function CharacterManageModal({
         e.preventDefault()
 
         if (mode === 'create' && !selectedFile) {
-            toast.error("캐릭터 파일을 업로드해주세요.")
+            toast.error(t('character_modal.error.upload_file'))
             return
         }
 
         if (!formData.name?.trim()) {
-            toast.error("이름을 입력해주세요.")
+            toast.error(t('character_modal.error.enter_name'))
             return
         }
 
         if (!formData.status_message?.trim()) {
-            toast.error("상태메시지를 입력해주세요.")
+            toast.error(t('character_modal.error.enter_status_message'))
             return
         }
 
         if (!formData.summary?.trim()) {
-            toast.error("캐릭터 소개를 입력해주세요.")
+            toast.error(t('character_modal.error.enter_summary'))
             return
         }
 
         if (formData.is_nsfw === null) {
-            toast.error("NSFW 여부를 선택해주세요.")
+            toast.error(t('character_modal.error.select_nsfw'))
             return
         }
 
@@ -229,7 +230,7 @@ export default function CharacterManageModal({
                     const { upload_url } = await requestCreateCharacter(metadata, idToken)
                     await uploadFileToS3(upload_url, selectedFile)
 
-                    toast.success("썸네일과 봇카드가 반영되는 데 까지 몇 초 정도 걸릴 수 있습니다.")
+                    toast.success(t('character_modal.thumbnail_update_notice'))
                 } else {
                     // Edit mode
                     if (!initialData?.id) throw new Error("Character ID is missing")
@@ -237,14 +238,14 @@ export default function CharacterManageModal({
                     const updateData = buildUpdateData(formData, initialData, selectedFile, characterData)
 
                     if (!hasChanges(updateData)) {
-                        throw new Error("수정된 사항이 없어 업데이트할 수 없습니다!")
+                        throw new Error(t('character_modal.error.no_changes'))
                     }
 
                     const data = await updateCharacter(updateData, idToken)
 
                     if (data.upload_url && selectedFile) {
                         await uploadFileToS3(data.upload_url, selectedFile)
-                        toast.success("변경된 썸네일과 봇카드가 반영되는 데 까지 몇 초 정도 걸릴 수 있습니다.")
+                        toast.success(t('character_modal.thumbnail_update_notice_edit'))
                     }
                 }
             } catch (error) {
@@ -256,7 +257,7 @@ export default function CharacterManageModal({
         toast.promise(
             uploadPromise(),
             {
-                loading: mode === 'create' ? '캐릭터를 등록하는 중입니다...' : '캐릭터를 수정하는 중입니다...',
+                loading: mode === 'create' ? t('character_modal.registering') : t('character_modal.updating'),
                 success: () => {
                     onClose()
                     if (onSuccess) onSuccess()
@@ -273,13 +274,13 @@ export default function CharacterManageModal({
                     setSelectedFile(null)
                     setPreviewUrl(null)
                     setCharacterData(null)
-                    return mode === 'create' ? '성공적으로 등록되었습니다!' : '성공적으로 수정되었습니다!'
+                    return mode === 'create' ? t('character_modal.success.register') : t('character_modal.success.update')
                 },
                 error: (err) => {
-                    if (err instanceof Error && err.message === "수정된 사항이 없어 업데이트할 수 없습니다!") {
+                    if (err instanceof Error && err.message === t('character_modal.error.no_changes')) {
                         return err.message
                     }
-                    return mode === 'create' ? '등록에 실패했습니다.' : '수정에 실패했습니다.'
+                    return mode === 'create' ? t('character_modal.error.register_fail') : t('character_modal.error.update_fail')
                 },
             }
         )
@@ -288,29 +289,29 @@ export default function CharacterManageModal({
     const handleDelete = async () => {
         if (mode !== 'edit') return // Safeguard
         if (!initialData?.id) {
-            toast.error("삭제할 캐릭터 ID가 없습니다.")
+            toast.error(t('character_modal.error.no_character_id'))
             return
         }
 
-        if (!window.confirm("정말로 이 캐릭터를 삭제하시겠습니까? 삭제된 캐릭터는 복구할 수 없습니다.")) {
+        if (!window.confirm(t('character_modal.confirm_delete'))) {
             return
         }
 
         // 한 번 더 확인
-        if (!window.confirm("정말로, 정말로 이 캐릭터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.")) {
+        if (!window.confirm(t('character_modal.confirm_delete_final'))) {
             return
         }
 
         const idToken = auth.user?.id_token
         if (!idToken) {
-            toast.error("인증이 필요합니다.")
+            toast.error(t('character_modal.error.auth_required'))
             return
         }
 
         toast.promise(
             deleteCharacter(initialData.id, idToken),
             {
-                loading: '캐릭터를 삭제하는 중입니다...',
+                loading: t('character_modal.deleting'),
                 success: () => {
                     onClose()
                     if (onSuccess) onSuccess()
@@ -327,9 +328,9 @@ export default function CharacterManageModal({
                     setSelectedFile(null)
                     setPreviewUrl(null)
                     setCharacterData(null)
-                    return '성공적으로 삭제되었습니다!'
+                    return t('character_modal.success.delete')
                 },
-                error: '삭제에 실패했습니다.',
+                error: t('character_modal.error.delete_fail'),
             }
         )
     }
@@ -354,7 +355,7 @@ export default function CharacterManageModal({
                     })
                     .catch(err => {
                         console.error("Failed to load initial file:", err)
-                        toast.error("이미지를 불러오는데 실패했습니다.")
+                        toast.error(t('character_modal.error.load_image_fail'))
                     })
             }
         }
@@ -367,7 +368,7 @@ export default function CharacterManageModal({
             <div className="bg-(--color-bg-primary) rounded-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden flex flex-col relative shadow-2xl">
                 <div className="p-6 border-b border-(--color-border-secondary) flex justify-between items-center">
                     <h2 className="text-2xl font-bold text-(--color-text-primary)">
-                        {mode === 'create' ? "새 캐릭터 등록" : "캐릭터 수정"}
+                        {mode === 'create' ? t('character_modal.title.register') : t('character_modal.title.edit')}
                     </h2>
                     <button
                         onClick={handleCloseModal}
@@ -383,13 +384,13 @@ export default function CharacterManageModal({
                         <div className="flex-1 space-y-6">
                             {/* Name */}
                             <div>
-                                <label className="block text-sm font-medium text-(--color-text-secondary) mb-1">이름  <span className="text-red-500">*</span></label>
+                                <label className="block text-sm font-medium text-(--color-text-secondary) mb-1">{t('character_modal.name')}  <span className="text-red-500">*</span></label>
                                 <input
                                     type="text"
                                     value={formData.name}
                                     onChange={e => setFormData({ ...formData, name: e.target.value })}
                                     className="w-full px-4 py-2 bg-(--color-bg-input-primary) text-(--color-text-primary) border border-(--color-border) rounded-lg focus:ring-2 focus:ring-(--color-brand-primary) focus:border-(--color-brand-primary) outline-none transition-all"
-                                    placeholder="캐릭터 이름을 입력하세요"
+                                    placeholder={t('character_modal.placeholder.name')}
                                     required
                                 />
                             </div>
@@ -410,25 +411,25 @@ export default function CharacterManageModal({
                             <CopyrightSelector copyright={formData.copyright} setCopyright={(s) => setFormData({ ...formData, copyright: s })} />
                             {/* Status Message */}
                             <div>
-                                <label className="block text-sm font-medium text-(--color-text-secondary) mb-1">상태 메시지  <span className="text-red-500">*</span></label>
+                                <label className="block text-sm font-medium text-(--color-text-secondary) mb-1">{t('character_modal.status_message')}  <span className="text-red-500">*</span></label>
                                 <input
                                     type="text"
                                     value={formData.status_message}
                                     onChange={e => setFormData({ ...formData, status_message: e.target.value })}
                                     className="w-full px-4 py-2 bg-(--color-bg-input-primary) text-(--color-text-primary) border border-(--color-border) rounded-lg focus:ring-2 focus:ring-(--color-brand-primary) focus:border-(--color-brand-primary) outline-none transition-all"
-                                    placeholder="캐릭터의 한 줄 상태 메시지를 입력하세요. 캐릭터의 매력을 한껏 어필해보세요!"
+                                    placeholder={t('character_modal.placeholder.status_message')}
                                     required
                                 />
                             </div>
 
                             {/* Summary */}
                             <div>
-                                <label className="block text-sm font-medium text-(--color-text-secondary) mb-1">캐릭터 소개  <span className="text-red-500">*</span></label>
+                                <label className="block text-sm font-medium text-(--color-text-secondary) mb-1">{t('character_modal.summary')}  <span className="text-red-500">*</span></label>
                                 <textarea
                                     value={formData.summary}
                                     onChange={e => setFormData({ ...formData, summary: e.target.value })}
                                     className="w-full px-4 py-2 bg-(--color-bg-input-primary) text-(--color-text-primary) border border-(--color-border) rounded-lg focus:ring-2 focus:ring-(--color-brand-primary) focus:border-(--color-brand-primary) outline-none h-70 resize-none transition-all"
-                                    placeholder="캐릭터의 소개글을 작성해주세요. 다른 유저들이 캐릭터를 이해하는 데 도움이 됩니다."
+                                    placeholder={t('character_modal.placeholder.summary')}
                                 />
                             </div>
                         </div>
@@ -449,14 +450,14 @@ export default function CharacterManageModal({
                         onClick={handleSubmit}
                         className={`${mode === 'edit' ? 'w-[90%]' : 'w-full'} bg-(--color-brand-primary) text-white py-3 rounded-xl font-semibold hover:bg-(--color-brand-secondary) transition-colors shadow-lg shadow-indigo-500/20`}
                     >
-                        {mode === 'create' ? "등록하기" : "수정하기"}
+                        {mode === 'create' ? t('character_modal.button.register') : t('character_modal.button.update')}
                     </button>
                     {mode === 'edit' && (
                         <button
                             onClick={handleDelete}
                             className="w-[10%] bg-red-600 text-white py-3 rounded-xl font-semibold hover:bg-red-700 transition-colors shadow-lg shadow-red-500/20"
                         >
-                            삭제하기
+                            {t('character_modal.button.delete')}
                         </button>
                     )}
                 </div>

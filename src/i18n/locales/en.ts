@@ -1,0 +1,201 @@
+export default {
+    common: {
+        yes: "Yes",
+        no: "No",
+        on: "On",
+        off: "Off",
+        unknown: "Unknown",
+        anonymous: "Anonymous",
+        not_specified: "Not Specified",
+        name: "Name",
+        gender: "Gender",
+        tags: "Tags",
+        phone: "Phone",
+        load_more: "Load More",
+    },
+    header: {
+        my_page: "My Page",
+        logout: "Logout",
+        login: "Login",
+    },
+    footer: {
+        privacy_policy: "Privacy Policy",
+        terms_of_service: "Terms of Service",
+        all_rights_reserved: "All rights reserved.",
+    },
+    dashboard: {
+        login_required: "Login is required for this menu",
+        title: "{{name}}'s Dashboard",
+        subtitle: "Manage your characters and check statistics.",
+        upload_character: "Upload Character",
+        register_new_character: "Register New Character",
+        upload_description: "Register your own charming character and introduce it to users worldwide!",
+        upload_instruction: "Click to start upload, or drag and drop a Yejingram PNG file.",
+        my_character_list: "My Character List",
+        manage: "Manage",
+        sort: {
+            name: "Name",
+            popularity: "Popularity",
+            views: "Views",
+            downloads: "Downloads",
+            upload_date: "Upload Date",
+            update_date: "Update Date",
+            asc: "Ascending",
+            desc: "Descending",
+        },
+        stats: {
+            popularity: "Popularity",
+            views: "Views",
+            downloads: "Downloads",
+        }
+    },
+    character_modal: {
+        title: {
+            register: "Register New Character",
+            edit: "Edit Character",
+        },
+        label: {
+            status_message: "Status Message",
+            summary: "Character Summary",
+        },
+        placeholder: {
+            name: "Enter character name",
+            status_message: "Enter a one-line status message for the character. Appeal your character's charm!",
+            summary: "Please write a summary of the character. It helps other users understand the character.",
+        },
+        button: {
+            register: "Register",
+            update: "Update",
+            delete: "Delete",
+        },
+        error: {
+            invalid_file: "Invalid character file. Please upload a valid PNG file.",
+            upload_file: "Please upload a character file.",
+            enter_name: "Please enter a name.",
+            enter_status: "Please enter a status message.",
+            enter_summary: "Please enter a character summary.",
+            select_nsfw: "Please select NSFW status.",
+            no_changes: "No changes made to update!",
+            register_fail: "Registration failed.",
+            update_fail: "Update failed.",
+            no_id: "No character ID to delete.",
+            auth_required: "Authentication required.",
+            delete_fail: "Deletion failed.",
+            load_image_fail: "Failed to load image.",
+        },
+        notice: {
+            thumbnail_update: "It may take a few seconds for the thumbnail and bot card to reflect.",
+            thumbnail_update_edit: "It may take a few seconds for the changed thumbnail and bot card to reflect.",
+        },
+        status: {
+            registering: "Registering character...",
+            updating: "Updating character...",
+            deleting: "Deleting character...",
+        },
+        success: {
+            register: "Successfully registered!",
+            update: "Successfully updated!",
+            delete: "Successfully deleted!",
+        },
+        confirm_close: "All content in progress will be lost. Are you sure you want to close?",
+        confirm_delete: "Are you sure you want to delete this character? Deleted characters cannot be recovered.",
+        confirm_delete_final: "Are you really, really sure you want to delete this character? This action cannot be undone.",
+    },
+    search: {
+        subtitle: " characters are waiting in Yejingram Realm. Find a character to be with!",
+        placeholder: "Search characters by name, status message, description, tags...",
+        recommended_keywords: "Recommended Keywords:",
+        no_summary: "No summary available.",
+        no_results: "No search results",
+        try_other_keywords: "Try searching with other keywords.",
+        total: "Total",
+        characters_registered: "characters are registered.",
+        button: "Search",
+        pagination: {
+            prev: "Previous Page",
+            next: "Next Page",
+        }
+    },
+    character_detail: {
+        lorebook_included: "Lorebook Included",
+        sticker_included: "Sticker Included",
+        open_in_yejingram: "Open in YEJINGRAM",
+        uploader: "Uploader",
+        upload_date: "Upload Date",
+        update_date: "Update Date",
+        basic_info: "Basic Info",
+        no_status_message: "No status message",
+        no_summary: "No summary available.",
+        button: {
+            download: "Download",
+            chat: "Chat",
+            back: "Back to List",
+        },
+        license: {
+            title: "License",
+            this_character_is: "This character",
+            follows: "follows the license.",
+            cc_by: "Attribution",
+            cc_nc: "NonCommercial",
+            cc_nd: "NoDerivatives",
+            cc_sa: "ShareAlike",
+            conditions: "Available under conditions.",
+            wtfpl_summary: "You can use it freely without restrictions.",
+            wtfpl_learn_more: "Learn more",
+        }
+    },
+    components: {
+        copyright: {
+            title: "Copyright Setting",
+            not_set: "Not Set",
+            cc_nc: "NonCommercial",
+            cc_mod: "Modifications",
+            allow: "Allow",
+            cc_sa: "ShareAlike",
+            cc_nd: "NoDerivatives",
+            selected: "Selected License:",
+        },
+        data_preview: {
+            title: "Data Preview",
+            hint: "Upload an image to preview data",
+            tab: {
+                info: "Info",
+                lorebook: "Lorebook",
+                stickers: "Stickers",
+            },
+            info: {
+                prompt: "Prompt",
+                response_time: "Response Time",
+                thinking_time: "Thinking Time",
+                reactivity: "Reactivity",
+                tone: "Tone",
+                proactive_chat: "Proactive Chat",
+            },
+            lorebook: {
+                no_name: "No Name",
+                no_data: "No lorebook data.",
+            },
+            sticker: {
+                no_data: "No sticker data available.",
+            }
+        },
+        file_upload: {
+            label: "Character File",
+            upload_png: "Upload PNG File",
+            instruction: "Click or drag to upload",
+        },
+        gender: {
+            cancel: "Cancel Selection",
+            female: "Female",
+            male: "Male",
+            other: "Other",
+        },
+        nsfw: {
+            label: "NSFW (Contains explicit adult content)",
+        },
+        tag_input: {
+            label: "Tags (Separated by commas)",
+            placeholder: "Enter tags separated by commas",
+        }
+    }
+};

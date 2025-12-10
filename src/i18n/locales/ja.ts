@@ -1,0 +1,201 @@
+export default {
+    common: {
+        yes: "はい",
+        no: "いいえ",
+        on: "オン",
+        off: "オフ",
+        unknown: "不明",
+        anonymous: "匿名",
+        not_specified: "指定なし",
+        name: "名前",
+        gender: "性別",
+        tags: "タグ",
+        phone: "電話番号",
+        load_more: "もっと見る",
+    },
+    header: {
+        my_page: "マイページ",
+        logout: "ログアウト",
+        login: "ログイン",
+    },
+    footer: {
+        privacy_policy: "プライバシーポリシー",
+        terms_of_service: "利用規約",
+        all_rights_reserved: "All rights reserved.",
+    },
+    dashboard: {
+        login_required: "ログインが必要なメニューです",
+        title: "{{name}}様のダッシュボード",
+        subtitle: "キャラクターを管理し、統計を確認してください。",
+        upload_character: "キャラクターアップロード",
+        register_new_character: "新しいキャラクターを登録",
+        upload_description: "自分だけの魅力的なキャラクターを登録して、世界中のユーザーに紹介しましょう！",
+        upload_instruction: "クリックしてアップロードを開始するか、Yejingram PNGファイルをドラッグ＆ドロップしてください。",
+        my_character_list: "マイキャラクターリスト",
+        manage: "管理",
+        sort: {
+            name: "名前順",
+            popularity: "人気順",
+            views: "閲覧数順",
+            downloads: "ダウンロード順",
+            upload_date: "アップロード日順",
+            update_date: "更新日順",
+            asc: "昇順",
+            desc: "降順",
+        },
+        stats: {
+            popularity: "人気度",
+            views: "閲覧数",
+            downloads: "ダウンロード",
+        }
+    },
+    character_modal: {
+        title: {
+            register: "新しいキャラクター登録",
+            edit: "キャラクター修正",
+        },
+        label: {
+            status_message: "ステータスメッセージ",
+            summary: "キャラクター紹介",
+        },
+        placeholder: {
+            name: "キャラクター名を入力してください",
+            status_message: "キャラクターの一言ステータスメッセージを入力してください。キャラクターの魅力をアピールしましょう！",
+            summary: "キャラクターの紹介文を作成してください。他のユーザーがキャラクターを理解するのに役立ちます。",
+        },
+        button: {
+            register: "登録する",
+            update: "修正する",
+            delete: "削除する",
+        },
+        error: {
+            invalid_file: "無効なキャラクターファイルです。正しい形式のPNGファイルをアップロードしてください。",
+            upload_file: "キャラクターファイルをアップロードしてください。",
+            enter_name: "名前を入力してください。",
+            enter_status: "ステータスメッセージを入力してください。",
+            enter_summary: "キャラクター紹介を入力してください。",
+            select_nsfw: "NSFWの有無を選択してください。",
+            no_changes: "変更がないため更新できません！",
+            register_fail: "登録に失敗しました。",
+            update_fail: "修正に失敗しました。",
+            no_id: "削除するキャラクターIDがありません。",
+            auth_required: "認証が必要です。",
+            delete_fail: "削除に失敗しました。",
+            load_image_fail: "画像の読み込みに失敗しました。",
+        },
+        notice: {
+            thumbnail_update: "サムネイルとボットカードが反映されるまで数秒かかる場合があります。",
+            thumbnail_update_edit: "変更されたサムネイルとボットカードが反映されるまで数秒かかる場合があります。",
+        },
+        status: {
+            registering: "キャラクターを登録中...",
+            updating: "キャラクターを修正中...",
+            deleting: "キャラクターを削除中...",
+        },
+        success: {
+            register: "正常に登録されました！",
+            update: "正常に修正されました！",
+            delete: "正常に削除されました！",
+        },
+        confirm_close: "作成中の内容がすべて消去されます。本当に閉じますか？",
+        confirm_delete: "本当にこのキャラクターを削除しますか？削除されたキャラクターは復元できません。",
+        confirm_delete_final: "本当に、本当にこのキャラクターを削除しますか？この操作は取り消せません。",
+    },
+    search: {
+        subtitle: "人のキャラクターがYejingram Realmで待っています。一緒にいるキャラクターを探してみてください！",
+        placeholder: "名前、ステータスメッセージ、説明、タグでキャラクターを検索...",
+        recommended_keywords: "おすすめキーワード:",
+        no_summary: "紹介文がありません。",
+        no_results: "検索結果がありません",
+        try_other_keywords: "他のキーワードで検索してみてください。",
+        total: "合計",
+        characters_registered: "個のキャラクターが登録されています。",
+        button: "検索",
+        pagination: {
+            prev: "前のページ",
+            next: "次のページ",
+        }
+    },
+    character_detail: {
+        lorebook_included: "ロアブック込み",
+        sticker_included: "ステッカー込み",
+        open_in_yejingram: "YEJINGRAMで開く",
+        uploader: "アップローダー",
+        upload_date: "アップロード日",
+        update_date: "更新日",
+        basic_info: "基本情報",
+        no_status_message: "ステータスメッセージなし",
+        no_summary: "紹介文がありません。",
+        button: {
+            download: "ダウンロード",
+            chat: "チャットする",
+            back: "リストに戻る",
+        },
+        license: {
+            title: "ライセンス",
+            this_character_is: "このキャラクターは",
+            follows: "ライセンスに従います。",
+            cc_by: "表示",
+            cc_nc: "非営利",
+            cc_nd: "改変禁止",
+            cc_sa: "継承",
+            conditions: "条件の下で利用可能です。",
+            wtfpl_summary: "制約なく自由に利用可能です。",
+            wtfpl_learn_more: "詳しく",
+        }
+    },
+    components: {
+        copyright: {
+            title: "著作権設定",
+            not_set: "未設定",
+            cc_nc: "非営利 (NonCommercial)",
+            cc_mod: "変更許可 (Modifications)",
+            allow: "許可",
+            cc_sa: "継承 (ShareAlike)",
+            cc_nd: "改変禁止 (NoDerivatives)",
+            selected: "選択されたライセンス:",
+        },
+        data_preview: {
+            title: "データプレビュー",
+            hint: "画像をアップロードするとデータが表示されます",
+            tab: {
+                info: "情報",
+                lorebook: "ロアブック",
+                stickers: "ステッカー",
+            },
+            info: {
+                prompt: "プロンプト",
+                response_time: "反応速度",
+                thinking_time: "思考時間",
+                reactivity: "反応性",
+                tone: "トーン",
+                proactive_chat: "先読みチャット",
+            },
+            lorebook: {
+                no_name: "名前なし",
+                no_data: "ロアブックデータがありません。",
+            },
+            sticker: {
+                no_data: "ステッカーデータがありません。",
+            }
+        },
+        file_upload: {
+            label: "キャラクターファイル",
+            upload_png: "PNGファイルアップロード",
+            instruction: "クリックまたはドラッグしてアップロード",
+        },
+        gender: {
+            cancel: "選択解除",
+            female: "女性",
+            male: "男性",
+            other: "その他",
+        },
+        nsfw: {
+            label: "NSFW (露骨な成人向けコンテンツを含む)",
+        },
+        tag_input: {
+            label: "タグ (カンマ区切り)",
+            placeholder: "タグを入力してカンマで区切ってください",
+        }
+    }
+};

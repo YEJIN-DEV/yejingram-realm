@@ -1,12 +1,15 @@
+import { useTranslation } from 'react-i18next'
+
 interface Props {
     copyright: string
     setCopyright: (s: string) => void
 }
 
 export default function CopyrightSelector({ copyright, setCopyright }: Props) {
+    const { t } = useTranslation()
     return (
         <div>
-            <label className="block text-sm font-medium text-(--color-text-secondary) mb-2">저작권 설정</label>
+            <label className="block text-sm font-medium text-(--color-text-secondary) mb-2">{t('components.copyright.title')}</label>
             <div className="space-y-3">
                 <select
                     value={
@@ -22,7 +25,7 @@ export default function CopyrightSelector({ copyright, setCopyright }: Props) {
                     }}
                     className="w-full px-4 py-2 bg-(--color-bg-input-primary) text-(--color-text-primary) border border-(--color-border) rounded-lg focus:ring-2 focus:ring-(--color-brand-primary) focus:border-(--color-brand-primary) outline-none transition-all"
                 >
-                    <option value="">미설정</option>
+                    <option value="">{t('components.copyright.not_set')}</option>
                     <option value="CC">Creative Commons (CC)</option>
                     <option value="WTFPL">WTFPL</option>
                 </select>
@@ -48,11 +51,11 @@ export default function CopyrightSelector({ copyright, setCopyright }: Props) {
                                 }}
                                 className="w-4 h-4 text-(--color-brand-primary) focus:ring-(--color-brand-primary) border-(--color-border) rounded"
                             />
-                            <label htmlFor="cc_nc" className="text-(--color-text-secondary) select-none cursor-pointer">비영리 (NonCommercial)</label>
+                            <label htmlFor="cc_nc" className="text-(--color-text-secondary) select-none cursor-pointer">{t('components.copyright.cc_nc')}</label>
                         </div>
 
                         <div className="space-y-2">
-                            <div className="text-(--color-text-secondary) font-medium">변경 허락 (Modifications)</div>
+                            <div className="text-(--color-text-secondary) font-medium">{t('components.copyright.cc_mod')}</div >
                             <div className="space-y-1 pl-1">
                                 <label className="flex items-center gap-2 cursor-pointer">
                                     <input
@@ -67,7 +70,7 @@ export default function CopyrightSelector({ copyright, setCopyright }: Props) {
                                         }}
                                         className="w-4 h-4 text-(--color-brand-primary) focus:ring-(--color-brand-primary)"
                                     />
-                                    <span className="text-(--color-text-primary)">허용</span>
+                                    <span className="text-(--color-text-primary)">{t('components.copyright.allow')}</span>
                                 </label>
                                 <label className="flex items-center gap-2 cursor-pointer">
                                     <input
@@ -83,7 +86,7 @@ export default function CopyrightSelector({ copyright, setCopyright }: Props) {
                                         }}
                                         className="w-4 h-4 text-(--color-brand-primary) focus:ring-(--color-brand-primary)"
                                     />
-                                    <span className="text-(--color-text-primary)">동일조건변경허락 (ShareAlike)</span>
+                                    <span className="text-(--color-text-primary)">{t('components.copyright.cc_sa')}</span>
                                 </label>
                                 <label className="flex items-center gap-2 cursor-pointer">
                                     <input
@@ -99,13 +102,19 @@ export default function CopyrightSelector({ copyright, setCopyright }: Props) {
                                         }}
                                         className="w-4 h-4 text-(--color-brand-primary) focus:ring-(--color-brand-primary)"
                                     />
-                                    <span className="text-(--color-text-primary)">변경금지 (NoDerivatives)</span>
+                                    <span className="text-(--color-text-primary)">{t('components.copyright.cc_nd')}</span>
                                 </label>
                             </div>
                         </div>
                         <div className="pt-2 border-t border-(--color-border) text-xs text-(--color-text-secondary)">
-                            선택된 라이선스: <span className="font-mono font-bold text-(--color-brand-primary)">{copyright}</span>
+                            {t('components.copyright.selected_license')} <span className="font-mono font-bold text-(--color-brand-primary)">{copyright}</span>
                         </div>
+                    </div>
+                )}
+
+                {copyright === 'WTFPL' && (
+                    <div className="bg-(--color-bg-secondary) p-4 rounded-lg border border-(--color-border) text-sm text-(--color-text-secondary)">
+                        {t('components.copyright.wtfpl_desc')} <a href="http://www.wtfpl.net/" target="_blank" rel="noopener noreferrer" className="text-(--color-brand-primary) hover:underline">{t('components.copyright.wtfpl_link')}</a>
                     </div>
                 )}
             </div>

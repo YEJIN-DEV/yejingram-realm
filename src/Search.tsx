@@ -1,5 +1,6 @@
 import { Flame, Loader2 } from 'lucide-react'
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 
 interface CharacterData {
     summary: string
@@ -24,6 +25,7 @@ interface ApiResponse {
 }
 
 function SearchPage() {
+    const { t } = useTranslation()
     const [query, setQuery] = useState('')
     const [characters, setCharacters] = useState<CharacterData[]>([])
     const [totalCount, setTotalCount] = useState(0)
@@ -130,7 +132,7 @@ function SearchPage() {
             <div className="text-center mb-10">
                 <h1 className="text-3xl font-extrabold text-(--color-text-primary) mb-3 tracking-tight">YejinRealm</h1>
                 <h2 className="text-lg text-(--color-text-primary) m-0">
-                    <span className="text-(--color-brand-primary) font-bold">{String(displayCount).padStart(3, '0')}</span>명의 캐릭터가 Yejingram Realm에서 기다리고 있어요. 함께할 캐릭터를 찾아보세요!
+                    <span className="text-(--color-brand-primary) font-bold">{String(displayCount).padStart(3, '0')}</span>{t('search.subtitle')}
                 </h2>
             </div>
 
@@ -144,7 +146,7 @@ function SearchPage() {
                     <input
                         type="text"
                         className="flex-1 border-none bg-transparent text-base py-3 outline-none text-(--color-text-primary) w-full placeholder-(--color-text-informative-secondary)"
-                        placeholder="이름, 상태 메시지, 설명, 태그로 캐릭터를 검색해보세요..."
+                        placeholder={t('search.placeholder')}
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
                     />
@@ -161,7 +163,7 @@ function SearchPage() {
                 </div>
 
                 <div className="mt-5 flex flex-wrap gap-2 items-center">
-                    <span className="text-xs font-semibold text-(--color-text-secondary) mr-1">추천 키워드:</span>
+                    <span className="text-xs font-semibold text-(--color-text-secondary) mr-1">{t('search.recommended_keywords')}</span>
                     {['React', 'Node.js', 'TypeScript', 'Frontend', 'Backend', 'Full Stack'].map((keyword) => (
                         <button
                             key={keyword}
@@ -208,7 +210,7 @@ function SearchPage() {
                                         )}
                                         {/* Summary */}
                                         <p className="m-0 text-sm text-(--color-text-secondary) leading-relaxed line-clamp-2 overflow-hidden">
-                                            {character.summary || '소개글이 없습니다.'}
+                                            {character.summary || t('search.no_summary')}
                                         </p>
                                     </div>
                                 </div>
@@ -230,8 +232,8 @@ function SearchPage() {
                     </div>
                 ) : (
                     <div className="text-center py-15 text-(--color-text-secondary)">
-                        <p className="text-lg font-semibold mb-2">검색 결과가 없습니다</p>
-                        <span>다른 키워드로 검색해보세요.</span>
+                        <p className="text-lg font-semibold mb-2">{t('search.no_results')}</p>
+                        <span>{t('search.try_other_keywords')}</span>
                     </div>
                 )}
 
@@ -241,7 +243,7 @@ function SearchPage() {
                         onClick={handlePrev}
                         disabled={currentPageIndex === 0 || loading}
                     >
-                        이전 페이지
+                        {t('search.prev_page')}
                     </button>
                     <span className="text-sm font-medium text-(--color-text-secondary)">
                         Page {currentPageIndex + 1}
@@ -251,7 +253,7 @@ function SearchPage() {
                         onClick={handleNext}
                         disabled={!lastKey || loading}
                     >
-                        다음 페이지
+                        {t('search.next_page')}
                     </button>
                 </div>
             </div>

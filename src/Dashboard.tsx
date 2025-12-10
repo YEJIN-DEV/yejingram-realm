@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { Eye, Download, Plus, Flame, Loader2, ArrowUpDown } from 'lucide-react'
 import CharacterManageModal from './CharacterManageModal'
+import { useTranslation } from 'react-i18next'
 
 interface ApiCharacterItem {
     summary: string
@@ -46,6 +47,7 @@ interface DashboardCharacter {
 export default function Dashboard() {
     const auth = useAuth()
     const navigate = useNavigate()
+    const { t } = useTranslation()
     const [myCharacters, setMyCharacters] = useState<DashboardCharacter[]>([])
     const [charCount, setCharCount] = useState(0)
     const [isModalOpen, setIsModalOpen] = useState(false)
@@ -59,7 +61,7 @@ export default function Dashboard() {
     useEffect(() => {
         if (!auth.isLoading) {
             if (!auth.isAuthenticated) {
-                toast.error("로그인이 필요한 메뉴입니다")
+                toast.error(t('dashboard.login_required'))
                 if (auth.user) {
                     auth.removeUser()
                 }
@@ -155,16 +157,16 @@ export default function Dashboard() {
     return (
         <div className="w-full max-w-7xl mx-auto py-10 px-5 font-sans">
             <div className="mb-10">
-                <h1 className="text-3xl font-extrabold text-(--color-text-primary) mb-3 tracking-tight">{auth.user?.profile.nickname}님의 대시보드</h1>
+                <h1 className="text-3xl font-extrabold text-(--color-text-primary) mb-3 tracking-tight">{t('dashboard.title', { name: auth.user?.profile.nickname })}</h1>
                 <p className="text-base text-(--color-text-secondary) m-0">
-                    내 캐릭터를 관리하고 통계를 확인하세요.
+                    {t('dashboard.subtitle')}
                 </p>
             </div>
 
             {/* Upload Section */}
             <div className="mb-12">
                 <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-bold text-(--color-text-primary)">캐릭터 업로드</h2>
+                    <h2 className="text-2xl font-bold text-(--color-text-primary)">{t('dashboard.upload_character')}</h2>
                 </div>
                 <div
                     onClick={() => {
@@ -179,18 +181,18 @@ export default function Dashboard() {
                     <div className="w-16 h-16 bg-(--color-bg-secondary) rounded-full flex items-center justify-center mb-4 group-hover:bg-(--color-brand-muted) transition-colors">
                         <Plus className="w-8 h-8 text-(--color-text-secondary) group-hover:text-(--color-brand-primary)" />
                     </div>
-                    <h3 className="text-lg font-semibold text-(--color-text-primary) mb-2">새로운 캐릭터 등록하기</h3>
+                    <h3 className="text-lg font-semibold text-(--color-text-primary) mb-2">{t('dashboard.register_new_character')}</h3>
                     <p className="text-(--color-text-secondary) max-w-md">
-                        나만의 매력적인 캐릭터를 등록하고 전 세계 유저들에게 소개해보세요!
+                        {t('dashboard.upload_description')}
                     </p>
-                    <small className="text-(--color-text-secondary) mt-4">클릭해서 업로드를 시작하거나, 예진그램 PNG 파일을 드래그 앤 드롭하세요.</small>
+                    <small className="text-(--color-text-secondary) mt-4">{t('dashboard.upload_instruction')}</small>
                 </div>
             </div>
 
             {/* My Characters List */}
             <div>
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
-                    <h2 className="text-2xl font-bold text-(--color-text-primary)">내 캐릭터 목록 ({charCount})</h2>
+                    <h2 className="text-2xl font-bold text-(--color-text-primary)">{t('dashboard.my_character_list')} ({charCount})</h2>
 
                     <div className="flex items-center gap-2">
                         <select
@@ -198,12 +200,12 @@ export default function Dashboard() {
                             onChange={(e) => setSortOption(e.target.value as any)}
                             className="px-3 py-2 rounded-lg border border-(--color-border-secondary) bg-(--color-bg-primary) text-sm focus:outline-none focus:ring-2 focus:ring-(--color-brand-primary)"
                         >
-                            <option value="name">이름순</option>
-                            <option value="popularity">인기도순</option>
-                            <option value="views">조회수순</option>
-                            <option value="downloads">다운로드순</option>
-                            <option value="created_at">업로드 날짜순</option>
-                            <option value="updated_at">업데이트 날짜순</option>
+                            <option value="name">{t('dashboard.sort.name')}</option>
+                            <option value="popularity">{t('dashboard.sort.popularity')}</option>
+                            <option value="views">{t('dashboard.sort.views')}</option>
+                            <option value="downloads">{t('dashboard.sort.downloads')}</option>
+                            <option value="created_at">{t('dashboard.sort.created_at')}</option>
+                            <option value="updated_at">{t('dashboard.sort.updated_at')}</option>
                         </select>
 
                         <button
@@ -211,7 +213,7 @@ export default function Dashboard() {
                             className="p-2 rounded-lg border border-(--color-border-secondary) bg-(--color-bg-primary) hover:bg-(--color-bg-secondary) transition-colors flex items-center gap-1 text-sm font-medium text-(--color-text-tertiary)"
                         >
                             <ArrowUpDown className="w-4 h-4" />
-                            {sortOrder === 'asc' ? '오름차순' : '내림차순'}
+                            {sortOrder === 'asc' ? t('dashboard.sort.asc') : t('dashboard.sort.desc')}
                         </button>
                     </div>
                 </div>
@@ -239,19 +241,19 @@ export default function Dashboard() {
                                     <div className="grid grid-cols-3 gap-2 mb-6 bg-(--color-bg-secondary) rounded-2xl p-4">
                                         <div className="text-center">
                                             <div className="flex items-center justify-center gap-1 text-xs text-(--color-text-informative-primary) mb-1">
-                                                <Flame className="w-3 h-3" /> 인기도
+                                                <Flame className="w-3 h-3" /> {t('dashboard.stats.popularity')}
                                             </div>
                                             <div className="font-bold text-(--color-text-primary)">{char.popularity.toFixed(2)}</div>
                                         </div>
                                         <div className="text-center border-l border-(--color-border)">
                                             <div className="flex items-center justify-center gap-1 text-xs text-(--color-text-informative-primary) mb-1">
-                                                <Eye className="w-3 h-3" /> 조회수
+                                                <Eye className="w-3 h-3" /> {t('dashboard.stats.views')}
                                             </div>
                                             <div className="font-bold text-(--color-text-primary)">{char.views.toLocaleString()}</div>
                                         </div>
                                         <div className="text-center border-l border-(--color-border)">
                                             <div className="flex items-center justify-center gap-1 text-xs text-(--color-text-informative-primary) mb-1">
-                                                <Download className="w-3 h-3" /> 다운로드
+                                                <Download className="w-3 h-3" /> {t('dashboard.stats.downloads')}
                                             </div>
                                             <div className="font-bold text-(--color-text-primary)">{char.downloads.toLocaleString()}</div>
                                         </div>
@@ -266,7 +268,7 @@ export default function Dashboard() {
                                             }}
                                             className="flex-1 bg-(--color-brand-primary) text-white py-3 rounded-xl font-semibold hover:bg-(--color-brand-secondary) transition-colors shadow-lg shadow-indigo-500/20"
                                         >
-                                            관리
+                                            {t('dashboard.manage')}
                                         </button>
                                     </div>
                                 </div>

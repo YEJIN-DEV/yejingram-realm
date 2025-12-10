@@ -1,0 +1,201 @@
+export default {
+    common: {
+        yes: "예",
+        no: "아니오",
+        on: "켜짐",
+        off: "꺼짐",
+        unknown: "알 수 없음",
+        anonymous: "익명",
+        not_specified: "지정되지 않음",
+        name: "이름",
+        gender: "성별",
+        tags: "태그",
+        phone: "전화번호",
+        load_more: "더 보기",
+    },
+    header: {
+        my_page: "마이페이지",
+        logout: "로그아웃",
+        login: "로그인",
+    },
+    footer: {
+        privacy_policy: "개인정보처리방침",
+        terms_of_service: "서비스 이용약관",
+        all_rights_reserved: "All rights reserved.",
+    },
+    dashboard: {
+        login_required: "로그인이 필요한 메뉴입니다",
+        title: "{{name}}님의 대시보드",
+        subtitle: "내 캐릭터를 관리하고 통계를 확인하세요.",
+        upload_character: "캐릭터 업로드",
+        register_new_character: "새로운 캐릭터 등록하기",
+        upload_description: "나만의 매력적인 캐릭터를 등록하고 전 세계 유저들에게 소개해보세요!",
+        upload_instruction: "클릭해서 업로드를 시작하거나, 예진그램 PNG 파일을 드래그 앤 드롭하세요.",
+        my_character_list: "내 캐릭터 목록",
+        manage: "관리",
+        sort: {
+            name: "이름순",
+            popularity: "인기도순",
+            views: "조회수순",
+            downloads: "다운로드순",
+            upload_date: "업로드 날짜순",
+            update_date: "업데이트 날짜순",
+            asc: "오름차순",
+            desc: "내림차순",
+        },
+        stats: {
+            popularity: "인기도",
+            views: "조회수",
+            downloads: "다운로드",
+        }
+    },
+    character_modal: {
+        title: {
+            register: "새 캐릭터 등록",
+            edit: "캐릭터 수정",
+        },
+        label: {
+            status_message: "상태 메시지",
+            summary: "캐릭터 소개",
+        },
+        placeholder: {
+            name: "캐릭터 이름을 입력하세요",
+            status_message: "캐릭터의 한 줄 상태 메시지를 입력하세요. 캐릭터의 매력을 한껏 어필해보세요!",
+            summary: "캐릭터의 소개글을 작성해주세요. 다른 유저들이 캐릭터를 이해하는 데 도움이 됩니다.",
+        },
+        button: {
+            register: "등록하기",
+            update: "수정하기",
+            delete: "삭제하기",
+        },
+        error: {
+            invalid_file: "유효하지 않은 캐릭터 파일입니다. 올바른 형식의 PNG 파일을 업로드해주세요.",
+            upload_file: "캐릭터 파일을 업로드해주세요.",
+            enter_name: "이름을 입력해주세요.",
+            enter_status: "상태메시지를 입력해주세요.",
+            enter_summary: "캐릭터 소개를 입력해주세요.",
+            select_nsfw: "NSFW 여부를 선택해주세요.",
+            no_changes: "수정된 사항이 없어 업데이트할 수 없습니다!",
+            register_fail: "등록에 실패했습니다.",
+            update_fail: "수정에 실패했습니다.",
+            no_id: "삭제할 캐릭터 ID가 없습니다.",
+            auth_required: "인증이 필요합니다.",
+            delete_fail: "삭제에 실패했습니다.",
+            load_image_fail: "이미지를 불러오는데 실패했습니다.",
+        },
+        notice: {
+            thumbnail_update: "썸네일과 봇카드가 반영되는 데 까지 몇 초 정도 걸릴 수 있습니다.",
+            thumbnail_update_edit: "변경된 썸네일과 봇카드가 반영되는 데 까지 몇 초 정도 걸릴 수 있습니다.",
+        },
+        status: {
+            registering: "캐릭터를 등록하는 중입니다...",
+            updating: "캐릭터를 수정하는 중입니다...",
+            deleting: "캐릭터를 삭제하는 중입니다...",
+        },
+        success: {
+            register: "성공적으로 등록되었습니다!",
+            update: "성공적으로 수정되었습니다!",
+            delete: "성공적으로 삭제되었습니다!",
+        },
+        confirm_close: "작성중이던 내용이 전부 지워집니다. 정말 닫으시겠습니까?",
+        confirm_delete: "정말로 이 캐릭터를 삭제하시겠습니까? 삭제된 캐릭터는 복구할 수 없습니다.",
+        confirm_delete_final: "정말로, 정말로 이 캐릭터를 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+    },
+    search: {
+        subtitle: "명의 캐릭터가 Yejingram Realm에서 기다리고 있어요. 함께할 캐릭터를 찾아보세요!",
+        placeholder: "이름, 상태 메시지, 설명, 태그로 캐릭터를 검색해보세요...",
+        recommended_keywords: "추천 키워드:",
+        no_summary: "소개글이 없습니다.",
+        no_results: "검색 결과가 없습니다",
+        try_other_keywords: "다른 키워드로 검색해보세요.",
+        total: "총",
+        characters_registered: "개의 캐릭터가 등록되어 있습니다.",
+        button: "검색",
+        pagination: {
+            prev: "이전 페이지",
+            next: "다음 페이지",
+        }
+    },
+    character_detail: {
+        lorebook_included: "로어북 포함됨",
+        sticker_included: "스티커 포함됨",
+        open_in_yejingram: "YEJINGRAM에서 열기",
+        uploader: "업로더",
+        upload_date: "업로드 날짜",
+        update_date: "업데이트 날짜",
+        basic_info: "기본 정보",
+        no_status_message: "상태 메시지 없음",
+        no_summary: "소개글이 없습니다.",
+        button: {
+            download: "다운로드",
+            chat: "채팅하기",
+            back: "목록으로",
+        },
+        license: {
+            title: "라이선스",
+            this_character_is: "이 캐릭터는",
+            follows: "라이선스를 따릅니다.",
+            cc_by: "저작자 표시",
+            cc_nc: "비영리",
+            cc_nd: "변경 금지",
+            cc_sa: "동일조건변경허락",
+            conditions: "조건 하에 이용 가능합니다.",
+            wtfpl_summary: "제약 없이 자유롭게 이용 가능합니다.",
+            wtfpl_learn_more: "자세히 알아보기",
+        }
+    },
+    components: {
+        copyright: {
+            title: "저작권 설정",
+            not_set: "미설정",
+            cc_nc: "비영리 (NonCommercial)",
+            cc_mod: "변경 허락 (Modifications)",
+            allow: "허용",
+            cc_sa: "동일조건변경허락 (ShareAlike)",
+            cc_nd: "변경 금지 (NoDerivatives)",
+            selected: "선택된 라이선스:",
+        },
+        data_preview: {
+            title: "데이터 미리보기",
+            hint: "이미지를 업로드하면 데이터가 표시됩니다",
+            tab: {
+                info: "정보",
+                lorebook: "로어북",
+                stickers: "스티커",
+            },
+            info: {
+                prompt: "프롬프트",
+                response_time: "반응 속도",
+                thinking_time: "생각하는 시간",
+                reactivity: "반응성",
+                tone: "톤",
+                proactive_chat: "선톡 기능",
+            },
+            lorebook: {
+                no_name: "이름 없음",
+                no_data: "로어북 데이터가 없습니다.",
+            },
+            sticker: {
+                no_data: "스티커 데이터가 없습니다.",
+            }
+        },
+        file_upload: {
+            label: "캐릭터 파일",
+            upload_png: "PNG 파일 업로드",
+            instruction: "클릭하거나 드래그하여 업로드",
+        },
+        gender: {
+            cancel: "선택 취소",
+            female: "여성",
+            male: "남성",
+            other: "기타",
+        },
+        nsfw: {
+            label: "NSFW 여부 (명시적인 성인 묘사 포함)",
+        },
+        tag_input: {
+            label: "태그 (쉼표로 구분)",
+            placeholder: "태그를 입력하고 쉼표로 구분하세요",
+        }
+    }
+};
