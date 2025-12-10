@@ -355,7 +355,7 @@ function Character() {
             DOWNLOAD
           </div>
           <div className="relative min-w-30 px-4.5 py-2.5 rounded-l-xl text-(--color-text-primary) text-xs font-semibold tracking-wide text-center bg-linear-to-br from-(--color-btn-sky-from) to-(--color-btn-sky-to) shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-150 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-0 max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap max-md:hover:translate-x-0 max-md:shadow-none max-md:hover:shadow-none" onClick={() => {
-            window.open(`${import.meta.env.DEV ? "https://dev.yejingram.com" : import.meta.env.VITE_YEJINGRAM_URL}/?realmId=${selectedCharacter.id}`, '_blank')
+            window.open(`${import.meta.env.DEV ? "http://localhost:5174" : import.meta.env.VITE_YEJINGRAM_URL}/?realmId=${selectedCharacter.id}&charname=${selectedCharacter.name}`, '_blank')
           }}>
             YEJINGRAM에서 열기
           </div>
