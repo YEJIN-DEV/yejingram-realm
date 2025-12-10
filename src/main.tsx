@@ -12,10 +12,17 @@ import { Toaster } from 'react-hot-toast'
 
 window.addEventListener('message', (event) => {
   if (event.data.type === 'CSS_VARIABLES') {
-    const variables = event.data.variables;
+    const { variables, theme } = event.data;
     // :root에 변수 적용
-    for (const [key, value] of Object.entries(variables)) {
-      document.documentElement.style.setProperty(key, value as string);
+    if (variables) {
+      for (const [key, value] of Object.entries(variables)) {
+        document.documentElement.style.setProperty(key, value as string);
+      }
+    }
+    // 테마 클래스(light/dark) 적용
+    if (theme) {
+      document.documentElement.classList.remove('light', 'dark');
+      document.documentElement.classList.add(theme);
     }
   }
 });
