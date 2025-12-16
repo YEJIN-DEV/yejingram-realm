@@ -1,4 +1,4 @@
-import { StrictMode, useState, useEffect, use } from 'react'
+import { StrictMode, useState, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import { Moon, Sun, Languages } from 'lucide-react'
