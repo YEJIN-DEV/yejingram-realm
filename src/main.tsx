@@ -1,4 +1,4 @@
-import { StrictMode, useState, useEffect } from 'react'
+import { StrictMode, useState, useEffect, use } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import { Moon, Sun, Languages } from 'lucide-react'
@@ -13,8 +13,9 @@ import './i18n/i18n'
 import { useTranslation } from 'react-i18next'
 
 window.addEventListener('message', (event) => {
+  const { i18n } = useTranslation();
   if (event.data.type === 'CSS_VARIABLES') {
-    const { variables, theme } = event.data;
+    const { variables, theme, locale } = event.data;
     document.documentElement.classList.add('disable-transitions');
     // :root에 변수 적용
     if (variables) {
@@ -26,6 +27,10 @@ window.addEventListener('message', (event) => {
     if (theme) {
       document.documentElement.classList.remove('light', 'dark');
       document.documentElement.classList.add(theme);
+    }
+    // 언어 설정
+    if (locale) {
+      i18n.changeLanguage(locale);
     }
     // 트랜지션 비활성화 클래스 제거
     setTimeout(() => {
