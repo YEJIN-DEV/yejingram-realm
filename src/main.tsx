@@ -9,11 +9,10 @@ import Privacy from './Privacy.tsx'
 import TOS from './TOS.tsx'
 import Dashboard from './Dashboard.tsx'
 import { Toaster } from 'react-hot-toast'
-import './i18n/i18n'
+import i18n from './i18n/i18n'
 import { useTranslation } from 'react-i18next'
 
 window.addEventListener('message', (event) => {
-  const { i18n } = useTranslation();
   if (event.data.type === 'CSS_VARIABLES') {
     const { variables, theme, locale } = event.data;
     document.documentElement.classList.add('disable-transitions');
