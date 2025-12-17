@@ -229,6 +229,13 @@ function SearchPage() {
                                 </div>
                             </div>
                         ))}
+                        {characters.length % 2 !== 0 && (
+                            <div className="hidden md:flex lg:hidden items-end justify-end p-6 select-none pointer-events-none opacity-20">
+                                <h3 className="text-3xl font-black text-right text-(--color-text-primary) tracking-widest leading-relaxed">
+                                    YEJINGRAM<br />REALM
+                                </h3>
+                            </div>
+                        )}
                     </div>
                 ) : (
                     <div className="text-center py-15 text-(--color-text-secondary)">
@@ -243,7 +250,7 @@ function SearchPage() {
                         onClick={handlePrev}
                         disabled={currentPageIndex === 0 || loading}
                     >
-                        {t('search.prev_page')}
+                        {t('search.pagination.prev')}
                     </button>
                     <span className="text-sm font-medium text-(--color-text-secondary)">
                         Page {currentPageIndex + 1}
@@ -253,7 +260,7 @@ function SearchPage() {
                         onClick={handleNext}
                         disabled={!lastKey || loading}
                     >
-                        {t('search.next_page')}
+                        {t('search.pagination.next')}
                     </button>
                 </div>
             </div>
