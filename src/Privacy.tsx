@@ -1,5 +1,3 @@
-
-import React from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 
 const Privacy = () => {
