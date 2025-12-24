@@ -117,6 +117,7 @@ export default {
         }
     },
     character_detail: {
+        back_to_search: "검색창으로 돌아가기",
         lorebook_included: "로어북 포함됨",
         sticker_included: "스티커 포함됨",
         open_in_yejingram: "YEJINGRAM에서 열기",

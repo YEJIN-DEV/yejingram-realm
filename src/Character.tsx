@@ -1,4 +1,4 @@
-import { Download, Eye, Flame, Book, Smile } from 'lucide-react'
+import { Download, Eye, Flame, Book, Smile, ArrowLeft } from 'lucide-react'
 import { useEffect, useState, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -190,6 +190,15 @@ function Character() {
         </button>
 
         <div className={`flex flex-col gap-3 mt-6 flex-1 min-h-0 transition-opacity duration-200 ${!sidebarOpen ? 'md:opacity-0 md:pointer-events-none' : ''}`}>
+          {window.self !== window.top && (
+            <button
+              className="flex items-center gap-2 w-full px-3 py-2 mb-2 text-xs font-medium text-(--color-sidebar-text) bg-(--color-sidebar-item-bg) hover:bg-[rgba(255,255,255,0.1)] border border-(--color-sidebar-border) rounded-lg cursor-pointer transition-colors"
+              onClick={() => window.location.href = window.location.origin}
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              {t('character_detail.back_to_search')}
+            </button>
+          )}
           <div className="flex justify-between items-baseline shrink-0">
             <h2 className="m-0 text-xs tracking-widest uppercase text-(--color-sidebar-text-muted)">CHARACTERS</h2>
             <span className="text-xs text-(--color-sidebar-text-dim)">{characters.length}</span>
@@ -357,7 +366,15 @@ function Character() {
             {t('character_detail.button.download')}
           </div>
           <div className="relative min-w-30 px-4.5 py-2.5 rounded-l-xl text-(--color-text-primary) text-xs font-semibold tracking-wide text-center bg-linear-to-br from-(--color-btn-sky-from) to-(--color-btn-sky-to) shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-150 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-0 max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap max-md:hover:translate-x-0 max-md:shadow-none max-md:hover:shadow-none" onClick={() => {
-            window.open(`${import.meta.env.DEV ? "http://localhost:5174" : import.meta.env.VITE_YEJINGRAM_URL}/?realmId=${selectedCharacter.id}&charname=${selectedCharacter.name}`, '_blank')
+            if (window.self !== window.top) {
+              window.parent.postMessage({
+                type: 'open_in_yejingram',
+                realmId: selectedCharacter.id,
+                charname: selectedCharacter.name
+              }, '*')
+            } else {
+              window.open(`${import.meta.env.DEV ? "http://localhost:5174" : import.meta.env.VITE_YEJINGRAM_URL}/?realmId=${selectedCharacter.id}&charname=${selectedCharacter.name}`, '_blank')
+            }
           }}>
             {t('character_detail.open_in_yejingram')}
           </div>

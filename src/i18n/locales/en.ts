@@ -117,6 +117,7 @@ export default {
         }
     },
     character_detail: {
+        back_to_search: "Back to Search",
         lorebook_included: "Lorebook Included",
         sticker_included: "Sticker Included",
         open_in_yejingram: "Open in YEJINGRAM",

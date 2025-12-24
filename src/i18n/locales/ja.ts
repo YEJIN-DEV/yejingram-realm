@@ -117,6 +117,7 @@ export default {
         }
     },
     character_detail: {
+        back_to_search: "検索に戻る",
         lorebook_included: "ロアブック込み",
         sticker_included: "ステッカー込み",
         open_in_yejingram: "YEJINGRAMで開く",
