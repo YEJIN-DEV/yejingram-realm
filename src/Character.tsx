@@ -179,7 +179,7 @@ function Character() {
         onClick={() => setSidebarOpen(false)}
       ></div>
 
-      <aside className={`sticky top-6 h-[60dvh] bg-(--color-sidebar-bg) text-(--color-sidebar-text) rounded-2xl p-4 shadow-[0_22px_45px_rgba(15,23,42,0.4),0_0_0_1px_rgba(15,23,42,0.6)] flex flex-col overflow-hidden max-md:fixed max-md:top-0 max-md:left-0 max-md:bottom-0 max-md:w-[50vw] max-md:h-screen max-md:z-3000 max-md:transition-transform max-md:duration-300 max-md:ease-in-out max-md:rounded-r-2xl max-md:shadow-[0_0_24px_rgba(0,0,0,0.2)] ${!sidebarOpen ? 'max-md:-translate-x-full' : 'max-md:translate-x-0'}`}>
+      <aside className={`bg-(--color-sidebar-bg) text-(--color-sidebar-text) rounded-2xl p-4 shadow-[0_22px_45px_rgba(15,23,42,0.4),0_0_0_1px_rgba(15,23,42,0.6)] flex flex-col overflow-hidden max-md:fixed max-md:top-0 max-md:left-0 max-md:bottom-0 max-md:w-[50vw] max-md:h-screen max-md:z-3000 max-md:transition-transform max-md:duration-300 max-md:ease-in-out max-md:rounded-r-2xl max-md:shadow-[0_0_24px_rgba(0,0,0,0.2)] ${!sidebarOpen ? 'max-md:-translate-x-full' : 'max-md:translate-x-0'}`}>
         <button
           className="top-3 left-3 w-8 h-8 rounded-full border-none bg-(--color-sidebar-bg) inline-flex flex-col items-center justify-center gap-1 cursor-pointer shadow-[0_8px_18px_rgba(15,23,42,0.9)] z-10"
           onClick={() => setSidebarOpen(!sidebarOpen)}
