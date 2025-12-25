@@ -133,6 +133,11 @@ export default {
             back: "Back to List",
             share: "Share Contact",
         },
+        share: {
+            title: "Yejingram Contact: {{name}}",
+            success: "URL copied to clipboard",
+            failure: "Failed to copy URL",
+        },
         license: {
             title: "License",
             this_character_is: "This character",

@@ -133,6 +133,11 @@ export default {
             back: "リストに戻る",
             share: "連絡先を共有",
         },
+        share: {
+            title: "Yejingram 連絡先: {{name}}",
+            success: "URLがクリップボードにコピーされました",
+            failure: "URLのコピーに失敗しました",
+        },
         license: {
             title: "ライセンス",
             this_character_is: "このキャラクターは",

@@ -150,13 +150,11 @@ function Character() {
     }
 
     const url = `${baseUrl}/character?id=${selectedCharacter.id}`
-    const text = `예진그램 연락처: ${selectedCharacter.name}\n연락처 보기: ${url}`
 
     if (navigator.share && /Mobi|Android/i.test(navigator.userAgent)) {
       try {
         await navigator.share({
-          title: `예진그램 연락처: ${selectedCharacter.name}`,
-          text: text,
+          title: `${t('character_detail.share.title', { name: selectedCharacter.name })}`,
           url: url
         })
       } catch (err) {
@@ -165,7 +163,7 @@ function Character() {
     } else {
       try {
         await navigator.clipboard.writeText(url)
-        toast.success('링크가 복사되었습니다.')
+        toast.success(t('character_detail.share.success'))
       } catch (err) {
         // Fallback for iframe
         const textArea = document.createElement("textarea")
@@ -179,10 +177,10 @@ function Character() {
 
         try {
           document.execCommand('copy')
-          toast.success('링크가 복사되었습니다.')
+          toast.success(t('character_detail.share.success'))
         } catch (e) {
           console.error('Failed to copy:', e)
-          toast.error('링크 복사에 실패했습니다.')
+          toast.error(t('character_detail.share.failure'))
         }
         document.body.removeChild(textArea)
       }

@@ -133,6 +133,11 @@ export default {
             back: "목록으로",
             share: "연락처 공유하기",
         },
+        share: {
+            title: "예진그램 연락처: {{name}}",
+            success: "URL이 복사되었습니다",
+            failure: "URL 복사에 실패했습니다",
+        },
         license: {
             title: "라이선스",
             this_character_is: "이 캐릭터는",
