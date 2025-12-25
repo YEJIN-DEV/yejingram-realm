@@ -131,6 +131,7 @@ export default {
             download: "ダウンロード",
             chat: "チャットする",
             back: "リストに戻る",
+            share: "連絡先を共有",
         },
         license: {
             title: "ライセンス",

@@ -131,6 +131,7 @@ export default {
             download: "다운로드",
             chat: "채팅하기",
             back: "목록으로",
+            share: "연락처 공유하기",
         },
         license: {
             title: "라이선스",

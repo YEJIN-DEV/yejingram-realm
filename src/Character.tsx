@@ -2,6 +2,7 @@ import { Download, Eye, Flame, Book, Smile, ArrowLeft } from 'lucide-react'
 import { useEffect, useState, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import toast from 'react-hot-toast'
 
 interface CharacterData {
   summary: string
@@ -137,6 +138,54 @@ function Character() {
   const handleNext = () => {
     if (lastKey) {
       fetchList(lastKey)
+    }
+  }
+
+  const handleShare = async () => {
+    if (!selectedCharacter) return
+
+    let baseUrl = window.location.origin
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+      baseUrl = 'https://realm.dev.yejingram.com'
+    }
+
+    const url = `${baseUrl}/character?id=${selectedCharacter.id}`
+    const text = `예진그램 연락처: ${selectedCharacter.name}\n연락처 보기: ${url}`
+
+    if (navigator.share && /Mobi|Android/i.test(navigator.userAgent)) {
+      try {
+        await navigator.share({
+          title: `예진그램 연락처: ${selectedCharacter.name}`,
+          text: text,
+          url: url
+        })
+      } catch (err) {
+        console.error('Error sharing:', err)
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(url)
+        toast.success('링크가 복사되었습니다.')
+      } catch (err) {
+        // Fallback for iframe
+        const textArea = document.createElement("textarea")
+        textArea.value = url
+        textArea.style.position = "fixed"
+        textArea.style.left = "-9999px"
+        textArea.style.top = "0"
+        document.body.appendChild(textArea)
+        textArea.focus()
+        textArea.select()
+
+        try {
+          document.execCommand('copy')
+          toast.success('링크가 복사되었습니다.')
+        } catch (e) {
+          console.error('Failed to copy:', e)
+          toast.error('링크 복사에 실패했습니다.')
+        }
+        document.body.removeChild(textArea)
+      }
     }
   }
 
@@ -378,8 +427,8 @@ function Character() {
           }}>
             {t('character_detail.open_in_yejingram')}
           </div>
-          <div className="relative min-w-30 px-4.5 py-2.5 rounded-l-xl text-(--color-text-primary) text-xs font-semibold tracking-wide text-center bg-linear-to-br from-(--color-btn-red-from) to-(--color-btn-red-to) shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-150 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-0 max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap max-md:hover:translate-x-0 max-md:shadow-none max-md:hover:shadow-none">
-            CONTACT
+          <div className="relative min-w-30 px-4.5 py-2.5 rounded-l-xl text-(--color-text-primary) text-xs font-semibold tracking-wide text-center bg-linear-to-br from-(--color-btn-red-from) to-(--color-btn-red-to) shadow-[0_10px_20px_rgba(15,23,42,0.18),0_0_0_1px_rgba(15,23,42,0.05)] cursor-pointer transition-all duration-150 hover:-translate-x-1 hover:shadow-[0_16px_28px_rgba(15,23,42,0.2),0_0_0_1px_rgba(15,23,42,0.06)] max-md:min-w-0 max-md:flex-1 max-md:rounded-lg max-md:px-3 max-md:py-2.5 max-md:text-xs max-md:whitespace-nowrap max-md:hover:translate-x-0 max-md:shadow-none max-md:hover:shadow-none" onClick={handleShare}>
+            {t('character_detail.button.share')}
           </div>
         </div>
       </main >

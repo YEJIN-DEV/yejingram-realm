@@ -131,6 +131,7 @@ export default {
             download: "Download",
             chat: "Chat",
             back: "Back to List",
+            share: "Share Contact",
         },
         license: {
             title: "License",
