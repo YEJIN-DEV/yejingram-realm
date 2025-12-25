@@ -83,6 +83,38 @@
     --color-btn-sky-to: #bfdbfe;
     --color-btn-red-from: #fee2e2;
     --color-btn-red-to: #fecaca;
+
+    /* Semantic Alert Colors (Warning - Orange) */
+    --color-warning-bg: #fff7ed;
+    /* orange-50 */
+    --color-warning-border: #f97316;
+    /* orange-500 */
+    --color-warning-text: #9a3412;
+    /* orange-800 */
+    --color-warning-text-muted: #c2410c;
+    /* orange-700 */
+
+    /* Semantic Alert Colors (Danger - Red) */
+    --color-danger-bg: #fef2f2;
+    /* red-50 */
+    --color-danger-border: #ef4444;
+    /* red-500 */
+    --color-danger-text: #991b1b;
+    /* red-800 */
+    --color-danger-text-muted: #b91c1c;
+    /* red-700 */
+    --color-danger-icon: #f87171;
+    /* red-400 */
+
+    /* Semantic Alert Colors (Neutral - Gray) */
+    --color-neutral-bg: #f9fafb;
+    /* gray-50 */
+    --color-neutral-border: #6b7280;
+    /* gray-500 */
+    --color-neutral-text: #1f2937;
+    /* gray-800 */
+    --color-neutral-text-muted: #374151;
+    /* gray-700 */
 }
 
 .dark {
@@ -162,6 +194,38 @@
     --color-btn-sky-to: #1e40af;
     --color-btn-red-from: #b91c1c;
     --color-btn-red-to: #991b1b;
+
+    /* Semantic Alert Colors (Warning - Orange) - Dark Mode */
+    --color-warning-bg: #431407;
+    /* orange-950 */
+    --color-warning-border: #c2410c;
+    /* orange-700 */
+    --color-warning-text: #fed7aa;
+    /* orange-200 */
+    --color-warning-text-muted: #fdba74;
+    /* orange-300 */
+
+    /* Semantic Alert Colors (Danger - Red) - Dark Mode */
+    --color-danger-bg: #450a0a;
+    /* red-950 */
+    --color-danger-border: #b91c1c;
+    /* red-700 */
+    --color-danger-text: #fecaca;
+    /* red-200 */
+    --color-danger-text-muted: #fca5a5;
+    /* red-300 */
+    --color-danger-icon: #f87171;
+    /* red-400 */
+
+    /* Semantic Alert Colors (Neutral - Gray) - Dark Mode */
+    --color-neutral-bg: #1f2937;
+    /* gray-800 */
+    --color-neutral-border: #4b5563;
+    /* gray-600 */
+    --color-neutral-text: #f3f4f6;
+    /* gray-100 */
+    --color-neutral-text-muted: #d1d5db;
+    /* gray-300 */
 }
 
 /* Instagram 스타일 Inter 폰트 설정 */
