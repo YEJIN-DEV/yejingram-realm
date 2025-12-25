@@ -200,10 +200,8 @@ function Character() {
 
   if (!selectedCharacter) {
     return (
-      <div className="w-full max-w-7xl p-6">
-        <div className="flex justify-center items-center h-screen">
-          Loading...
-        </div>
+      <div className="flex justify-center items-center h-screen w-full">
+        Loading...
       </div>
     )
   }

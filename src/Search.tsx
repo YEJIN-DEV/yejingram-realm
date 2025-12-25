@@ -1,6 +1,7 @@
 import { Flame, Loader2 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import BetaBadge from './components/BetaBadge'
 
 interface CharacterData {
     summary: string
@@ -130,7 +131,10 @@ function SearchPage() {
     return (
         <div className="w-full max-w-[90vw] mx-auto py-10 px-5 font-sans">
             <div className="text-center mb-10">
-                <h1 className="text-3xl font-extrabold text-(--color-text-primary) mb-3 tracking-tight">YejinRealm</h1>
+                <h1 className="text-3xl font-extrabold text-(--color-text-primary) mb-3 tracking-tight flex items-center justify-center">
+                    YejinRealm
+                    <BetaBadge />
+                </h1>
                 <h2 className="text-lg text-(--color-text-primary) m-0">
                     <span className="text-(--color-brand-primary) font-bold">{String(displayCount).padStart(3, '0')}</span>{t('search.subtitle')}
                 </h2>
