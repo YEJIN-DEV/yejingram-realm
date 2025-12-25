@@ -162,7 +162,7 @@ function SearchPage() {
                     )}
                 </div>
 
-                <div className="mt-5 flex flex-wrap gap-2 items-center">
+                {/* <div className="mt-5 flex flex-wrap gap-2 items-center">
                     <span className="text-xs font-semibold text-(--color-text-secondary) mr-1">{t('search.recommended_keywords')}</span>
                     {['React', 'Node.js', 'TypeScript', 'Frontend', 'Backend', 'Full Stack'].map((keyword) => (
                         <button
@@ -173,7 +173,7 @@ function SearchPage() {
                             {keyword}
                         </button>
                     ))}
-                </div>
+                </div> */}
             </div>
 
             <div className="mt-10">
