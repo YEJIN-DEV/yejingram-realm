@@ -116,13 +116,13 @@ export default function DataPreview({ characterData, activeTab, setActiveTab }: 
                                         </div>
                                     ))
                                 ) : (
-                                    <div className="col-span-3 text-center text-(--color-text-secondary) py-8">{t('components.data_preview.stickers.no_data')}</div>
+                                    <div className="col-span-3 text-center text-(--color-text-secondary) py-8">{t('components.data_preview.sticker.no_data')}</div>
                                 )}
                             </div>
                         )}
                     </>
                 ) : (
-                    <div className="h-full flex items-center justify-center text-(--color-text-secondary) italic">{t('components.data_preview.upload_hint')}</div>
+                    <div className="h-full flex items-center justify-center text-(--color-text-secondary) italic">{t('components.data_preview.hint')}</div>
                 )}
             </div>
         </div>

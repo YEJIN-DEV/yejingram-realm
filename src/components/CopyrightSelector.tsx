@@ -107,7 +107,7 @@ export default function CopyrightSelector({ copyright, setCopyright }: Props) {
                             </div>
                         </div>
                         <div className="pt-2 border-t border-(--color-border) text-xs text-(--color-text-secondary)">
-                            {t('components.copyright.selected_license')} <span className="font-mono font-bold text-(--color-brand-primary)">{copyright}</span>
+                            {t('components.copyright.selected')} <span className="font-mono font-bold text-(--color-brand-primary)">{copyright}</span>
                         </div>
                     </div>
                 )}

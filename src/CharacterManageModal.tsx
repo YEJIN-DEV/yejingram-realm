@@ -245,7 +245,7 @@ export default function CharacterManageModal({
 
                     if (data.upload_url && selectedFile) {
                         await uploadFileToS3(data.upload_url, selectedFile)
-                        toast.success(t('character_modal.thumbnail_update_notice_edit'))
+                        toast.success(t('character_modal.notice.thumbnail_update_edit'))
                     }
                 }
             } catch (error) {
@@ -257,7 +257,7 @@ export default function CharacterManageModal({
         toast.promise(
             uploadPromise(),
             {
-                loading: mode === 'create' ? t('character_modal.registering') : t('character_modal.updating'),
+                loading: mode === 'create' ? t('character_modal.status.registering') : t('character_modal.status.updating'),
                 success: () => {
                     onClose()
                     if (onSuccess) onSuccess()
@@ -311,7 +311,7 @@ export default function CharacterManageModal({
         toast.promise(
             deleteCharacter(initialData.id, idToken),
             {
-                loading: t('character_modal.deleting'),
+                loading: t('character_modal.status.deleting'),
                 success: () => {
                     onClose()
                     if (onSuccess) onSuccess()
@@ -384,7 +384,7 @@ export default function CharacterManageModal({
                         <div className="flex-1 space-y-6">
                             {/* Name */}
                             <div>
-                                <label className="block text-sm font-medium text-(--color-text-secondary) mb-1">{t('character_modal.name')}  <span className="text-red-500">*</span></label>
+                                <label className="block text-sm font-medium text-(--color-text-secondary) mb-1">{t('common.name')}  <span className="text-red-500">*</span></label>
                                 <input
                                     type="text"
                                     value={formData.name}
@@ -411,7 +411,7 @@ export default function CharacterManageModal({
                             <CopyrightSelector copyright={formData.copyright} setCopyright={(s) => setFormData({ ...formData, copyright: s })} />
                             {/* Status Message */}
                             <div>
-                                <label className="block text-sm font-medium text-(--color-text-secondary) mb-1">{t('character_modal.status_message')}  <span className="text-red-500">*</span></label>
+                                <label className="block text-sm font-medium text-(--color-text-secondary) mb-1">{t('character_modal.label.status_message')}  <span className="text-red-500">*</span></label>
                                 <input
                                     type="text"
                                     value={formData.status_message}
@@ -424,7 +424,7 @@ export default function CharacterManageModal({
 
                             {/* Summary */}
                             <div>
-                                <label className="block text-sm font-medium text-(--color-text-secondary) mb-1">{t('character_modal.summary')}  <span className="text-red-500">*</span></label>
+                                <label className="block text-sm font-medium text-(--color-text-secondary) mb-1">{t('character_modal.label.summary')}  <span className="text-red-500">*</span></label>
                                 <textarea
                                     value={formData.summary}
                                     onChange={e => setFormData({ ...formData, summary: e.target.value })}
