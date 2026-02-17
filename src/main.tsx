@@ -12,6 +12,9 @@ import { Toaster } from 'react-hot-toast'
 import i18n from './i18n/i18n'
 import { useTranslation } from 'react-i18next'
 
+// Shared setter so the module-level message handler can update React state
+let __setThemeFromParent: ((t: string) => void) | null = null;
+
 window.addEventListener('message', (event) => {
   if (event.data.type === 'CSS_VARIABLES') {
     const { variables, theme, locale } = event.data;
@@ -26,6 +29,8 @@ window.addEventListener('message', (event) => {
     if (theme) {
       document.documentElement.classList.remove('light', 'dark');
       document.documentElement.classList.add(theme);
+      // Sync React state so the App useEffect doesn't overwrite the class
+      __setThemeFromParent?.(theme);
     }
     // 언어 설정
     if (locale) {
@@ -52,11 +57,20 @@ function App() {
   const isInIframe = window.self !== window.top;
 
   const [theme, setTheme] = useState(() => {
+    // When embedded in an iframe, don't read localStorage — the parent will
+    // push the correct theme via postMessage(CSS_VARIABLES).
+    if (isInIframe) return 'light';
     if (typeof window !== 'undefined') {
       return localStorage.getItem('theme') || 'light';
     }
     return 'light';
   });
+
+  // Register the setter so the module-level message handler can sync state
+  useEffect(() => {
+    __setThemeFromParent = setTheme;
+    return () => { __setThemeFromParent = null; };
+  }, []);
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
@@ -71,7 +85,10 @@ function App() {
     } else {
       root.classList.remove('dark');
     }
-    localStorage.setItem('theme', theme);
+    // Only persist to localStorage when not in iframe
+    if (!isInIframe) {
+      localStorage.setItem('theme', theme);
+    }
 
     const timer = setTimeout(() => {
       root.classList.remove('disable-transitions');
