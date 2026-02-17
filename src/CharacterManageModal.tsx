@@ -232,7 +232,7 @@ export default function CharacterManageModal({
                     const { upload_url } = await requestCreateCharacter(metadata, idToken)
                     await uploadFileToS3(upload_url, selectedFile)
 
-                    toast.success(t('character_modal.thumbnail_update_notice'))
+                    toast.success(t('character_modal.notice.thumbnail_update_notice'))
                 } else {
                     // Edit mode
                     if (!initialData?.id) throw new Error("Character ID is missing")
