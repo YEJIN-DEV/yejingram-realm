@@ -85,6 +85,7 @@ export default {
         },
         notice: {
             thumbnail_update: "썸네일과 봇카드가 반영되는 데 까지 몇 초 정도 걸릴 수 있습니다.",
+            thumbnail_update_notice: "등록 후 썸네일과 봇카드가 반영되는 데 까지 몇 초 정도 걸릴 수 있습니다.",
             thumbnail_update_edit: "변경된 썸네일과 봇카드가 반영되는 데 까지 몇 초 정도 걸릴 수 있습니다.",
         },
         status: {

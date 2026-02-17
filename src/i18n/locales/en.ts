@@ -85,6 +85,7 @@ export default {
         },
         notice: {
             thumbnail_update: "It may take a few seconds for the thumbnail and bot card to reflect.",
+            thumbnail_update_notice: "It may take a few seconds for the thumbnail and bot card to reflect after registration.",
             thumbnail_update_edit: "It may take a few seconds for the changed thumbnail and bot card to reflect.",
         },
         status: {

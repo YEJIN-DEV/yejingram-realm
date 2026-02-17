@@ -85,6 +85,7 @@ export default {
         },
         notice: {
             thumbnail_update: "サムネイルとボットカードが反映されるまで数秒かかる場合があります。",
+            thumbnail_update_notice: "登録後、サムネイルとボットカードが反映されるまで数秒かかる場合があります。",
             thumbnail_update_edit: "変更されたサムネイルとボットカードが反映されるまで数秒かかる場合があります。",
         },
         status: {
