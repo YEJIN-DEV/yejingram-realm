@@ -80,7 +80,7 @@ export default {
             no_changes: "수정된 사항이 없어 업데이트할 수 없습니다!",
             register_fail: "등록에 실패했습니다.",
             update_fail: "수정에 실패했습니다.",
-            no_id: "삭제할 캐릭터 ID가 없습니다.",
+            no_character_id: "삭제할 캐릭터 ID가 없습니다.",
             auth_required: "인증이 필요합니다.",
             delete_fail: "삭제에 실패했습니다.",
             load_image_fail: "이미지를 불러오는데 실패했습니다.",

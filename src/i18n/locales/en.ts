@@ -80,7 +80,7 @@ export default {
             no_changes: "No changes made to update!",
             register_fail: "Registration failed.",
             update_fail: "Update failed.",
-            no_id: "No character ID to delete.",
+            no_character_id: "No character ID to delete.",
             auth_required: "Authentication required.",
             delete_fail: "Deletion failed.",
             load_image_fail: "Failed to load image.",

@@ -80,7 +80,7 @@ export default {
             no_changes: "変更がないため更新できません！",
             register_fail: "登録に失敗しました。",
             update_fail: "修正に失敗しました。",
-            no_id: "削除するキャラクターIDがありません。",
+            no_character_id: "削除するキャラクターIDがありません。",
             auth_required: "認証が必要です。",
             delete_fail: "削除に失敗しました。",
             load_image_fail: "画像の読み込みに失敗しました。",

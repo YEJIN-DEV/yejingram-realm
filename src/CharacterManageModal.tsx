@@ -206,7 +206,7 @@ export default function CharacterManageModal({
         }
 
         if (!formData.status_message?.trim()) {
-            toast.error(t('character_modal.error.enter_status_message'))
+            toast.error(t('character_modal.error.enter_status'))
             return
         }
 
@@ -448,7 +448,7 @@ export default function CharacterManageModal({
                                         )}
                                     </button>
                                 </div>
-                                
+
                                 {showSummaryPreview ? (
                                     <div className="w-full px-4 py-2 bg-(--color-bg-input-primary) text-(--color-text-primary) border border-(--color-border) rounded-lg h-70 overflow-y-auto text-sm [&_h1]:text-xl [&_h1]:font-bold [&_h1]:mb-2 [&_h2]:text-lg [&_h2]:font-bold [&_h2]:mb-2 [&_h3]:text-base [&_h3]:font-bold [&_h3]:mb-1 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:mb-1 [&_a]:text-blue-400 [&_a]:underline [&_blockquote]:border-l-4 [&_blockquote]:border-gray-500 [&_blockquote]:pl-4 [&_blockquote]:italic [&_code]:bg-gray-800 [&_code]:px-1 [&_code]:rounded [&_pre]:bg-gray-800 [&_pre]:p-2 [&_pre]:rounded [&_pre]:overflow-x-auto">
                                         <ReactMarkdown>
