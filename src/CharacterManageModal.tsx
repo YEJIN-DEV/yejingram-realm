@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
-import { X } from 'lucide-react'
+import { X, Eye, Edit2 } from 'lucide-react'
 import { decodeText } from './util/imageStego'
 import toast from 'react-hot-toast'
+import ReactMarkdown from 'react-markdown'
 import { useAuth } from 'react-oidc-context';
 import type { Character } from './types/character'
 import { useTranslation } from 'react-i18next'
@@ -69,6 +70,7 @@ export default function CharacterManageModal({
     const [characterData, setCharacterData] = useState<Character | null>(null)
 
     const [activeTab, setActiveTab] = useState<'info' | 'lore' | 'stickers'>('info')
+    const [showSummaryPreview, setShowSummaryPreview] = useState(false)
 
     useEffect(() => {
         if (isOpen) {
@@ -423,14 +425,44 @@ export default function CharacterManageModal({
                             </div>
 
                             {/* Summary */}
-                            <div>
-                                <label className="block text-sm font-medium text-(--color-text-secondary) mb-1">{t('character_modal.label.summary')}  <span className="text-red-500">*</span></label>
-                                <textarea
-                                    value={formData.summary}
-                                    onChange={e => setFormData({ ...formData, summary: e.target.value })}
-                                    className="w-full px-4 py-2 bg-(--color-bg-input-primary) text-(--color-text-primary) border border-(--color-border) rounded-lg focus:ring-2 focus:ring-(--color-brand-primary) focus:border-(--color-brand-primary) outline-none h-70 resize-none transition-all"
-                                    placeholder={t('character_modal.placeholder.summary')}
-                                />
+                            <div className="relative">
+                                <div className="flex justify-between items-end mb-1">
+                                    <label className="block text-sm font-medium text-(--color-text-secondary)">
+                                        {t('character_modal.label.summary')} <span className="text-red-500">*</span>
+                                    </label>
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowSummaryPreview(!showSummaryPreview)}
+                                        className="text-xs flex items-center gap-1 text-(--color-text-tertiary) hover:text-(--color-text-primary) transition-colors pb-1"
+                                    >
+                                        {showSummaryPreview ? (
+                                            <>
+                                                <Edit2 className="w-3 h-3" />
+                                                {t('common.edit', '편집')}
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Eye className="w-3 h-3" />
+                                                {t('common.preview', '미리보기')}
+                                            </>
+                                        )}
+                                    </button>
+                                </div>
+                                
+                                {showSummaryPreview ? (
+                                    <div className="w-full px-4 py-2 bg-(--color-bg-input-primary) text-(--color-text-primary) border border-(--color-border) rounded-lg h-70 overflow-y-auto text-sm [&_h1]:text-xl [&_h1]:font-bold [&_h1]:mb-2 [&_h2]:text-lg [&_h2]:font-bold [&_h2]:mb-2 [&_h3]:text-base [&_h3]:font-bold [&_h3]:mb-1 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:mb-1 [&_a]:text-blue-400 [&_a]:underline [&_blockquote]:border-l-4 [&_blockquote]:border-gray-500 [&_blockquote]:pl-4 [&_blockquote]:italic [&_code]:bg-gray-800 [&_code]:px-1 [&_code]:rounded [&_pre]:bg-gray-800 [&_pre]:p-2 [&_pre]:rounded [&_pre]:overflow-x-auto">
+                                        <ReactMarkdown>
+                                            {formData.summary || t('character_detail.no_summary')}
+                                        </ReactMarkdown>
+                                    </div>
+                                ) : (
+                                    <textarea
+                                        value={formData.summary}
+                                        onChange={e => setFormData({ ...formData, summary: e.target.value })}
+                                        className="w-full px-4 py-2 bg-(--color-bg-input-primary) text-(--color-text-primary) border border-(--color-border) rounded-lg focus:ring-2 focus:ring-(--color-brand-primary) focus:border-(--color-brand-primary) outline-none h-70 resize-none transition-all font-mono text-sm leading-relaxed"
+                                        placeholder={t('character_modal.placeholder.summary')}
+                                    />
+                                )}
                             </div>
                         </div>
 

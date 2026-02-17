@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import toast from 'react-hot-toast'
+import ReactMarkdown from 'react-markdown'
 
 interface CharacterData {
   summary: string
@@ -369,9 +370,11 @@ function Character() {
 
           <section className="mt-4.5">
             <h2 className="m-0 mb-1.5 text-sm tracking-wide uppercase text-(--color-text-tertiary)">{t('character_modal.label.summary')}</h2>
-            <p className="m-1.5 text-(--color-text-tertiary) leading-relaxed">
-              {selectedCharacter.summary || selectedCharacter.status_message || t('character_detail.no_summary')}
-            </p>
+            <div className="m-1.5 text-(--color-text-tertiary) leading-relaxed text-sm [&_h1]:text-xl [&_h1]:font-bold [&_h1]:mb-2 [&_h2]:text-lg [&_h2]:font-bold [&_h2]:mb-2 [&_h3]:text-base [&_h3]:font-bold [&_h3]:mb-1 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_li]:mb-1 [&_a]:text-blue-400 [&_a]:underline [&_blockquote]:border-l-4 [&_blockquote]:border-gray-500 [&_blockquote]:pl-4 [&_blockquote]:italic [&_code]:bg-gray-800 [&_code]:px-1 [&_code]:rounded [&_pre]:bg-gray-800 [&_pre]:p-2 [&_pre]:rounded [&_pre]:overflow-x-auto">
+              <ReactMarkdown>
+                {selectedCharacter.summary || selectedCharacter.status_message || t('character_detail.no_summary')}
+              </ReactMarkdown>
+            </div>
           </section>
 
           <section className="mt-4.5">

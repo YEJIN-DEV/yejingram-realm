@@ -12,6 +12,8 @@ export default {
         tags: "태그",
         phone: "전화번호",
         load_more: "더 보기",
+        edit: "편집",
+        preview: "미리보기",
     },
     header: {
         my_page: "마이페이지",

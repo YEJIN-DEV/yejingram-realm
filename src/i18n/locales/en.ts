@@ -12,6 +12,8 @@ export default {
         tags: "Tags",
         phone: "Phone",
         load_more: "Load More",
+        edit: "Edit",
+        preview: "Preview",
     },
     header: {
         my_page: "My Page",

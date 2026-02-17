@@ -12,6 +12,8 @@ export default {
         tags: "タグ",
         phone: "電話番号",
         load_more: "もっと見る",
+        edit: "編集",
+        preview: "プレビュー",
     },
     header: {
         my_page: "マイページ",
