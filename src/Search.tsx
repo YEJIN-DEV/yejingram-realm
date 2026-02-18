@@ -133,6 +133,9 @@ function SearchPage() {
             <div className="text-center mb-10">
                 <h1 className="text-3xl font-extrabold text-(--color-text-primary) mb-3 tracking-tight flex items-center justify-center">
                     YejinRealm
+                    <a href={import.meta.env.DEV ? "http://localhost:5174" : import.meta.env.VITE_YEJINREALM_URL} className="hover:opacity-80 transition-opacity">
+                        YejinRealm
+                    </a>
                     <BetaBadge />
                 </h1>
                 <h2 className="text-lg text-(--color-text-primary) m-0">
